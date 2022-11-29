@@ -24,13 +24,13 @@ class ParticlesFrame:
 
 def read_input_files(input_file_directory_path):
     
-    print('\tReading static file...')
+    print('Reading static file...')
     simulation_result = __read_static_input_file(input_file_directory_path+"static.txt")
-    print('\tStatic file successfully read')
+    print('Static file successfully read')
 
-    print('\tReading dynamic file...')
+    print('Reading dynamic file...')
     __read_dynamic_input_file(input_file_directory_path+"dynamic.txt",simulation_result)
-    print('\tDynamic file successfully read')
+    print('Dynamic file successfully read')
 
     return simulation_result
 

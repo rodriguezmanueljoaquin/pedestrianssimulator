@@ -1,3 +1,5 @@
+import Utils.DFXhandler;
+import Utils.Vector;
 import Walls.Wall;
 
 import java.io.File;
@@ -7,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,7 +18,7 @@ public class Main {
         }
 
         // crear walls
-        List<Wall> walls = new ArrayList<>();
+        List<Wall> walls = DFXhandler.importWallsFromDFX("./src/Utils/SegmentosGeometria.txt");
 
         // crear agents
         List<Agent> agents = new ArrayList<>();

@@ -1,6 +1,5 @@
 package Walls;
 
-
 import Utils.Vector;
 
 public class Wall {
@@ -30,7 +29,7 @@ public class Wall {
 
     @Override
     public String toString() {
-        return String.format("%f;%f;%f;%f\n", this.A.getX(), this.A.getY(), this.B.getX(), this.B.getY());
+        return String.format("%f;%f;%f;%f", this.A.getX(), this.A.getY(), this.B.getX(), this.B.getY());
     }
 
     //https://math.stackexchange.com/questions/2193720/find-a-point-on-a-line-segment-which-is-the-closest-to-other-point-not-on-the-li
