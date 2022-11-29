@@ -18,8 +18,9 @@ class SimulationResult:
         return self.__str__()
 
 class ParticlesFrame:
-    def __init__(self):
+    def __init__(self, time):
         self.particles = list()
+        self.time = time
 
 def read_input_files(input_file_directory_path):
     
@@ -52,7 +53,24 @@ def __read_static_input_file(static_input_file_path):
     return SimulationResult(walls)
     
 def __read_dynamic_input_file(dynamic_input_file_path, simulation_result):
-    pass
+    read = True
+    file = open(dynamic_input_file_path , 'r')
+    while read:
+        line = file.readline()
+        if not line:
+            read = False
+        else:
+            current_time = float(line.strip())
+            particles_frame = ParticlesFrame(current_time)
+            # for i in range(0, simulation_result.agents_qty+1):
+            # should read as much particles as there are in each generation
+            #     line = file.readline()
+            #     particles_frame.particles.append(__get_particle_data(line))
+
+            simulation_result.particles_by_frame.append(particles_frame)
+
+    file.close()
+    return simulation_result
 
 def __get_particle_data(line):
     data = line.split(";")
