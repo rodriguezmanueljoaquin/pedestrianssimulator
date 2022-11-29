@@ -1,3 +1,5 @@
+package Agent;
+
 public enum AgentStates {
     MOVING,
     ATTENDING,

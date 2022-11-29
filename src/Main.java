@@ -1,7 +1,9 @@
+import Agent.Agent;
 import Environment.Environment;
 import Environment.Server;
 import Utils.DFXHandler;
 import Environment.Wall;
+import Environment.Target;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,7 +21,7 @@ public class Main {
         }
 
         // crear walls
-        List<Wall> walls = DFXHandler.importWallsFromDFX("./src/Utils/SegmentosGeometria.txt");
+        List<Wall> walls = DFXHandler.importWallsFromDFX("./src/Utils/DFXExamples/SegmentosGeometria.txt");
 
         // crear agents
         List<Agent> agents = new ArrayList<>();

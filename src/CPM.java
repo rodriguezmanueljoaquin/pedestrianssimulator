@@ -1,3 +1,4 @@
+import Agent.Agent;
 import Environment.Environment;
 
 import java.util.List;
@@ -13,8 +14,8 @@ public class CPM {
 
 
         // encontrar colisiones
-//        List<Agent> wallCollisions = new ArrayList<>();
-//        List<Vector<Agent>> agentsCollisions = new ArrayList<>();
+//        List<Agent.Agent> wallCollisions = new ArrayList<>();
+//        List<Vector<Agent.Agent>> agentsCollisions = new ArrayList<>();
 //        for (int i = 0 ; i < agents.size() ; i++) {
 //            // check wall collisions for agent i
 //
@@ -30,7 +31,7 @@ public class CPM {
         // actualizar velocidades de particulas que no colisionaron con CPM
     }
 
-//    private void radiusUpdate(Agent agent, boolean contact, Double DELTA_T) {
+//    private void radiusUpdate(Agent.Agent agent, boolean contact, Double DELTA_T) {
 //        if (contact) {
 //            agent.setRadius(this.MIN_RADIUS);
 //        } else if (agent.getRadius() < this.MAX_RADIUS)

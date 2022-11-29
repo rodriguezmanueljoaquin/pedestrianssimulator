@@ -1,3 +1,4 @@
+import Agent.Agent;
 import Environment.Environment;
 import Environment.Wall;
 
