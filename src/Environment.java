@@ -5,12 +5,14 @@ import java.util.List;
 public class Environment {
     private List<Wall> walls;
     private List<Server> servers;
-    private double length, height;
+    private List<Target> targets;
+    private double width, height;
 
-    public Environment(List<Wall> walls, List<Server> servers, double length, double height) {
+    public Environment(List<Wall> walls, List<Server> servers, List<Target> targets, double width, double height) {
         this.walls = walls;
         this.servers = servers;
-        this.length = length;
+        this.targets = targets;
+        this.width = width;
         this.height = height;
     }
 
@@ -22,11 +24,16 @@ public class Environment {
         return servers;
     }
 
-    public double getLength() {
-        return length;
+    public List<Target> getTargets() {
+        return targets;
+    }
+
+    public double getWidth() {
+        return width;
     }
 
     public double getHeight() {
         return height;
     }
+
 }

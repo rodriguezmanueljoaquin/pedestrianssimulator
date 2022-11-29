@@ -28,6 +28,11 @@ public class Wall {
         return this.B;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%f;%f;%f;%f\n", this.A.getX(), this.A.getY(), this.B.getX(), this.B.getY());
+    }
+
     //https://math.stackexchange.com/questions/2193720/find-a-point-on-a-line-segment-which-is-the-closest-to-other-point-not-on-the-li
     public Vector getClosestPoint(Vector P) {
         Vector u = A.substract(P);

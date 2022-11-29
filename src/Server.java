@@ -1,17 +1,32 @@
-import Utils.Vector;
+import java.util.*;
 
 public class Server {
-    private final Vector position;
     private final int maxAttendants;
     private int currentAttendants;
     private static Integer count = 1;
     private final Integer id;
+    private Queue<Agent> queue;
+    private List<Target> targets;
 
-    public Server(Vector position, int maxCapacity) {
-        this.position = position;
+    public Server(int maxCapacity) {
         this.maxAttendants = maxCapacity;
         this.currentAttendants = 0;
         this.id = count++;
+
+        // assign
+        this.queue = new LinkedList<>();
+        this.targets = new ArrayList<>();
+    }
+
+    public void addToQueue(Agent agent) {
+        this.queue.add(agent);
+    }
+
+    public void freeNextInQueue() {
+
+        // emit action to freed agents, make them move to one of the targets
+
+        queue.remove();
     }
 
     public boolean hasCapacity() {
@@ -20,10 +35,6 @@ public class Server {
 
     public void increaseCapacity() {
         this.currentAttendants++;
-    }
-
-    public Vector getPosition() {
-        return this.position;
     }
 
     public Integer getId() {
