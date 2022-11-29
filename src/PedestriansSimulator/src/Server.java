@@ -1,13 +1,13 @@
-import java.util.Vector;
+import Utils.Vector;
 
 public class Server {
-    private final Vector<Double> position;
+    private final Vector position;
     private final int maxAttendants;
     private int currentAttendants;
     private static Integer count = 1;
     private final Integer id;
 
-    public Server(Vector<Double> position, int maxCapacity) {
+    public Server(Vector position, int maxCapacity) {
         this.position = position;
         this.maxAttendants = maxCapacity;
         this.currentAttendants = 0;
@@ -22,7 +22,7 @@ public class Server {
         this.currentAttendants++;
     }
 
-    public Vector<Double> getPosition() {
+    public Vector getPosition() {
         return this.position;
     }
 

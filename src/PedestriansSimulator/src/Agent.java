@@ -1,15 +1,15 @@
-import java.util.Vector;
+import Utils.Vector;
 
 public class Agent {
-    private Vector<Double> position;
-    private Vector<Double> velocity;
+    private Vector position;
+    private Vector velocity;
     private static Integer count = 1;
     private final Integer id;
     private double radius;
     AgentStates state;
     // clock?
 
-    public Agent(Vector<Double> x, Vector<Double> velocity, double radius, AgentStates state) {
+    public Agent(Vector x, Vector velocity, double radius, AgentStates state) {
         this.position = x;
         this.velocity = velocity;
         this.radius = radius;
@@ -18,10 +18,7 @@ public class Agent {
     }
 
     public void updatePosition(double time) {
-        double newX = this.position.get(0) + time * this.velocity.get(0);
-        double newY = this.position.get(1) + time * this.velocity.get(1);
-        this.position.set(0, newX);
-        this.position.set(1, newY);
+        this.position.add(this.velocity.scalarMultiply(time));
     }
 
     public Integer getId() {
@@ -36,19 +33,19 @@ public class Agent {
         this.radius = radius;
     }
 
-    public Vector<Double> getPosition() {
+    public Vector getPosition() {
         return this.position;
     }
 
-    public void setPosition(Vector<Double> position){
+    public void setPosition(Vector position){
         this.position = position;
     }
 
-    public Vector<Double> getVelocity(){
+    public Vector getVelocity(){
         return this.velocity;
     }
 
-    public void setVelocity(Vector<Double> speed){
+    public void setVelocity(Vector speed){
         this.velocity = speed;
     }
 
@@ -62,10 +59,7 @@ public class Agent {
 
 
     public double distance(Agent other) {
-        double distanceX = Math.abs(this.getPosition().get(0) - other.getPosition().get(0));
-        double distanceY = Math.abs(this.getPosition().get(1) - other.getPosition().get(1));
-
-        return Math.sqrt(Math.pow(distanceX,2) + Math.pow(distanceY,2)) - this.radius - other.radius;
+        return this.getPosition().distance(other.position) - this.radius - other.radius;
     }
 }
 
