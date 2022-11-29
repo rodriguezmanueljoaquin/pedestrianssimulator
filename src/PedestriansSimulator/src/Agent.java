@@ -18,7 +18,7 @@ public class Agent {
     }
 
     public void updatePosition(double time) {
-        this.position.add(this.velocity.scalarMultiply(time));
+        this.position = this.position.add(this.velocity.scalarMultiply(time));
     }
 
     public Integer getId() {

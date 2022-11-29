@@ -3,7 +3,7 @@ package Walls;
 
 import Utils.Vector;
 
-public abstract class Wall {
+public class Wall {
     private final Vector A, B; // x1 < x2
 
     public Wall(Vector A, Vector B) {
@@ -30,20 +30,20 @@ public abstract class Wall {
 
     //https://math.stackexchange.com/questions/2193720/find-a-point-on-a-line-segment-which-is-the-closest-to-other-point-not-on-the-li
     public Vector getClosestPoint(Vector P) {
-        Vector A = this.A;
-        Vector B = this.B;
-        Vector u;
-        Vector v;
+        Vector u = A.substract(P);
+        Vector v = B.substract(A);
 
+        double t = - v.dotMultiply(u) / v.dotMultiply(v);
 
-        return P;
+        if(t >= 0 && t <= 1){
+            return A.scalarMultiply(1 - t).add(B.scalarMultiply(t));
+        }
+        if(P.distance(A) > P.distance(B))
+            return B;
+        return A;
     }
-//    private double getClosestDistance(Double x, Double y) {
-//        double hypot = Math.sqrt(Math.pow(this.B - this.A,2) + Math.pow(this.y2 - this.y1,2));
-//        return Math.abs((this.B - this.A)*(this.y1-y) - (this.A - x)*(this.y2 - this.y1)) / hypot;
-//    }
-//
-//    private double getClosestAngle(Double x, Double y){
-//        if(x > th)
-//    }
+
+    private double getClosestDistance(Vector P){
+        return P.distance(this.getClosestPoint(P));
+    }
 }

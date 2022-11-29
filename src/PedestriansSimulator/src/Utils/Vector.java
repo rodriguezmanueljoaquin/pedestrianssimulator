@@ -8,6 +8,11 @@ public class Vector {
         this.y = y;
     }
 
+    public Vector(Integer x, Integer y){
+        this.x = (double)x;
+        this.y = (double)y;
+    }
+
     public Double getX() {
         return x;
     }
@@ -27,7 +32,11 @@ public class Vector {
     }
 
     public Vector multiply(Vector e){
-        return this.setX(this.getX() * e.getX()).setY(this.getY() * e.getY());
+        return new Vector(this.getX() * e.getX(),this.getY() * e.getY());
+    }
+
+    public Double dotMultiply(Vector e){
+        return this.getX() * e.getX() + this.getY() * e.getY();
     }
 
     public Vector scalarMultiply(Double e){
@@ -35,11 +44,11 @@ public class Vector {
     }
 
     public Vector add(Vector e){
-        return this.setX(this.getX() + e.getX()).setY(this.getY() + e.getY());
+        return new Vector(this.getX() + e.getX(),this.getY() + e.getY());
     }
 
     public Vector substract(Vector e){
-        return this.setX(this.getX() - e.getX()).setY(this.getY() - e.getY());
+        return new Vector(this.getX() - e.getX(),this.getY() - e.getY());
     }
 
     public Double distance(Vector e){
@@ -51,5 +60,10 @@ public class Vector {
 
     public Vector clone(){
         return new Vector(this.getX(),this.getY());
+    }
+
+    @Override
+    public String toString() {
+        return "Vector:(" + this.getX() + "," + this.getY() + ")\n";
     }
 }
