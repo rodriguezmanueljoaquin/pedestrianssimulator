@@ -1,4 +1,4 @@
-package Walls;
+package Environment;
 
 import Utils.Vector;
 

@@ -1,4 +1,5 @@
-import Walls.Wall;
+import Environment.Environment;
+import Environment.Wall;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

@@ -1,4 +1,4 @@
-import Walls.Wall;
+package Environment;
 
 import java.util.List;
 
