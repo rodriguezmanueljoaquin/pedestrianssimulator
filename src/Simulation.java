@@ -58,12 +58,14 @@ public class Simulation {
     }
 
     private void writeOutput() {
-        this.writer.println(this.time);
+        this.writer.write(String.format(Locale.ENGLISH, "%f;%d\n", this.time, agents.size()));
         for (Agent agent : this.agents) {
-            this.writer.println(String.format(Locale.ENGLISH, "%d;%f;%f;%f;%f;%f;%d",
+            this.writer.write(String.format(Locale.ENGLISH, "%d;%f;%f;%f;%f;%f;%d\n",
                     agent.getId(), agent.getPosition().getX(), agent.getPosition().getY(), agent.getVelocity().getX(),
                     agent.getVelocity().getY(), agent.getRadius(), agent.getState().ordinal()));
         }
+        this.writer.write("\n"); // end of iterations
+        this.writer.flush();
     }
 
     private void createDynamicFile(String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {

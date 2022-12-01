@@ -4,6 +4,8 @@ import Environment.Server;
 import Utils.DFXHandler;
 import Environment.Wall;
 import Environment.Target;
+import Environment.Objective;
+import Utils.Vector;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,14 +25,18 @@ public class Main {
         // crear walls
         List<Wall> walls = DFXHandler.importWallsFromTxt("./src/Utils/DFXExamples/SegmentosGeometria.txt");
 
-        // crear agents
-        List<Agent> agents = new ArrayList<>();
+
 
         // crear servers
         List<Server> servers = new ArrayList<>();
 
         // crear targets
         List<Target> targets = DFXHandler.importTargetFromTxt("./src/Utils/DFXExamples/ProductList.txt");
+
+        // crear agents
+        List<Agent> agents = new ArrayList<>();
+        agents.add(new Agent(new Vector(2,2), new Vector(0,0), 0.5, targets));
+        agents.add(new Agent(new Vector(5,6), new Vector(0,0), 0.5, targets));
 
         // crear environment
         Environment environment = new Environment(walls, servers, targets, 10., 10.);

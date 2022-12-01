@@ -35,12 +35,10 @@ def exportWalls(walls):
 def exportParticles(particles_by_frame):
     file = open("{}/particles.xyz".format(ovitoFolderName), "w")
     for particle_frame in particles_by_frame:
-        n = len(particle_frame.particles)
-        file.write("{}\ncomment\n".format(n + 1))
+        file.write("{}\ncomment\n".format(len(particle_frame.particles)))
         for particle in particle_frame.particles:
-            radius = particle.radius
-
-            file.write("{} {} {} {} {} {}\n".format(particle.id, particle.x, particle.y, particle.velx, particle.vely, radius))
+            file.write("{} {} {} {} {} {} {}\n"
+                .format(particle.id, particle.x, particle.y, particle.velx, particle.vely, particle.radius, particle.state.value))
     
     file.close()
 

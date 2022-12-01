@@ -12,7 +12,7 @@ public class Agent {
     private final Integer id;
     private double radius;
     private AgentStates state;
-    private List<Objective> objectives;
+    private List<? extends Objective> objectives;
     private Double startedAttendingAt;
     public Double getStartedAttendingAt() {
         return startedAttendingAt;
@@ -23,13 +23,12 @@ public class Agent {
     }
 
 
-    // clock?
 
-    public Agent(Vector x, Vector velocity, double radius, AgentStates state, List<Objective> objectives) {
+    public Agent(Vector x, Vector velocity, double radius, List<? extends Objective> objectives) {
         this.position = x;
         this.velocity = velocity;
         this.radius = radius;
-        this.state = state;
+        this.state = AgentStates.MOVING; //just started
         this.id = count++;
         this.objectives = objectives;
     }
@@ -77,7 +76,7 @@ public class Agent {
         this.state = state;
     }
 
-    public List<Objective> getObjectives() {
+    public List<? extends Objective> getObjectives() {
         return objectives;
     }
 

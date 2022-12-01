@@ -5,7 +5,7 @@ import Utils.Vector;
 
 import java.util.*;
 
-public class Server implements Objective{
+public class Server extends Objective{
     //TODO: IMPLEMENT SERVERS
     private final int maxAttendants;
     private int currentAttendants;
