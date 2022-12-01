@@ -4,6 +4,7 @@ import Environment.Server;
 import Utils.DFXHandler;
 import Environment.Wall;
 import Environment.Target;
+import Utils.Vector;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,6 +26,8 @@ public class Main {
 
         // crear agents
         List<Agent> agents = new ArrayList<>();
+        agents.add(new Agent(new Vector(2,2), new Vector(0,0), 0.5));
+        agents.add(new Agent(new Vector(5,6), new Vector(0,0), 0.5));
 
         // crear servers
         List<Server> servers = new ArrayList<>();

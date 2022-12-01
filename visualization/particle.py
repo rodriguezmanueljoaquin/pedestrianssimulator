@@ -2,7 +2,9 @@ from enum import Enum
 
 # enum
 class ParticleState(Enum):
-    pass
+    MOVING = 0,
+    ATTENDING = 1,
+    WAITING = 2
 
 class Particle:    
     def __init__(self,id,x,y,velx,vely,radius,state):

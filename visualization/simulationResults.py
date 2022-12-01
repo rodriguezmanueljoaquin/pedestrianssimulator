@@ -60,14 +60,19 @@ def __read_dynamic_input_file(dynamic_input_file_path, simulation_result):
         if not line:
             read = False
         else:
-            current_time = float(line.strip())
-            particles_frame = ParticlesFrame(current_time)
-            # for i in range(0, simulation_result.agents_qty+1):
-            # should read as much particles as there are in each generation
-            #     line = file.readline()
-            #     particles_frame.particles.append(__get_particle_data(line))
+            headers = line.split(";")
+            time = float(headers[0])
+            particles_qty = int(headers[1])
+            particles_frame = ParticlesFrame(time)
+            for _ in range(0, particles_qty):
+                line = file.readline()
+                particles_frame.particles.append(__get_particle_data(line))
 
             simulation_result.particles_by_frame.append(particles_frame)
+
+            if(not file.readline()):
+                # there is an enter after each frame
+                raise Exception("Invalid dynamic input file, there are more arguments than expected")
 
     file.close()
     return simulation_result

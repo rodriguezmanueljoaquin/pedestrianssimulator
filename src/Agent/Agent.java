@@ -11,11 +11,11 @@ public class Agent {
     AgentStates state;
     // clock?
 
-    public Agent(Vector x, Vector velocity, double radius, AgentStates state) {
+    public Agent(Vector x, Vector velocity, double radius) {
         this.position = x;
         this.velocity = velocity;
         this.radius = radius;
-        this.state = state;
+        this.state = AgentStates.WAITING; //just started
         this.id = count++;
     }
 
