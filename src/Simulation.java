@@ -30,10 +30,12 @@ public class Simulation {
 
         while (this.time < maxTime) {
             // actualizar posiciones
-            for (Agent agent : this.agents)
+            for (Agent agent : this.agents) {
                 agent.updatePosition(this.dt);
-
+                agent.updateState(time);
+            }
             CPM.updateAgents(agents, environment);
+
 
             // escribir output
             this.writeOutput();

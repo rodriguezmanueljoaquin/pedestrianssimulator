@@ -21,7 +21,7 @@ public class Main {
         }
 
         // crear walls
-        List<Wall> walls = DFXHandler.importWallsFromDFX("./src/Utils/DFXExamples/SegmentosGeometria.txt");
+        List<Wall> walls = DFXHandler.importWallsFromTxt("./src/Utils/DFXExamples/SegmentosGeometria.txt");
 
         // crear agents
         List<Agent> agents = new ArrayList<>();
@@ -30,7 +30,7 @@ public class Main {
         List<Server> servers = new ArrayList<>();
 
         // crear targets
-        List<Target> targets = new ArrayList<>();
+        List<Target> targets = DFXHandler.importTargetFromTxt("./src/Utils/DFXExamples/ProductList.txt");
 
         // crear environment
         Environment environment = new Environment(walls, servers, targets, 10., 10.);

@@ -1,6 +1,9 @@
 package Agent;
 
+import Environment.Objective;
 import Utils.Vector;
+
+import java.util.List;
 
 public class Agent {
     private Vector position;
@@ -8,21 +11,36 @@ public class Agent {
     private static Integer count = 1;
     private final Integer id;
     private double radius;
-    AgentStates state;
+    private AgentStates state;
+    private List<Objective> objectives;
+    private Double startedAttendingAt;
+    public Double getStartedAttendingAt() {
+        return startedAttendingAt;
+    }
+
+    public void setStartedAttendingAt(Double startedAttendingAt) {
+        this.startedAttendingAt = startedAttendingAt;
+    }
+
+
     // clock?
 
-    public Agent(Vector x, Vector velocity, double radius, AgentStates state) {
+    public Agent(Vector x, Vector velocity, double radius, AgentStates state, List<Objective> objectives) {
         this.position = x;
         this.velocity = velocity;
         this.radius = radius;
         this.state = state;
         this.id = count++;
+        this.objectives = objectives;
     }
 
     public void updatePosition(double time) {
         this.position = this.position.add(this.velocity.scalarMultiply(time));
     }
 
+    public void updateState(double time){
+        this.setState(this.getState().nextState(this,time));
+    }
     public Integer getId() {
         return this.id;
     }
@@ -59,6 +77,27 @@ public class Agent {
         this.state = state;
     }
 
+    public List<Objective> getObjectives() {
+        return objectives;
+    }
+
+    public Objective getCurrentObjective(){
+        if(hasObjectives())
+            return objectives.get(0);
+        return null;
+    }
+
+    public Objective getNextObjective(){
+        objectives.remove(0);
+        return getCurrentObjective();
+    }
+
+    public boolean hasObjectives(){
+        return objectives.size() > 0;
+    }
+    public void setObjectives(List<Objective> objectives) {
+        this.objectives = objectives;
+    }
 
     public double distance(Agent other) {
         return this.getPosition().distance(other.position) - this.radius - other.radius;

@@ -1,26 +1,33 @@
 package Environment;
 
-import java.util.Vector;
 
-public class Target {
-    private final Vector<Double> position;
-    private static Integer count = 1;
+import Utils.Vector;
+
+public class Target implements Objective{
+    private final Vector position;
     private final Integer id;
-    private final Long attendingTime; //milliseconds needed to complete task
+    private final Double attendingTime; //milliseconds needed to complete task
 
     // should have information about if it is occupied?
 
-    public Target(Vector<Double> position, Long attendingTime) {
+    public Target(Integer id, Vector position, Double attendingTime) {
         this.position = position;
         this.attendingTime = attendingTime;
-        this.id = count++;
+        this.id = id;
     }
 
-    public Vector<Double> getPosition() {
+    @Override
+    public Vector getPosition() {
         return position;
     }
 
-    public Long getAttendingTime() {
+    public Double getAttendingTime() {
         return attendingTime;
     }
+
+    @Override
+    public Boolean hasAttendingTime() {
+        return true;
+    }
+
 }

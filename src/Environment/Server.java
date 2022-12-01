@@ -1,10 +1,12 @@
 package Environment;
 
 import Agent.Agent;
+import Utils.Vector;
 
 import java.util.*;
 
-public class Server {
+public class Server implements Objective{
+    //TODO: IMPLEMENT SERVERS
     private final int maxAttendants;
     private int currentAttendants;
     private static Integer count = 1;
@@ -41,7 +43,24 @@ public class Server {
         this.currentAttendants++;
     }
 
+
     public Integer getId() {
         return this.id;
     }
+
+    @Override
+    public Vector getPosition() {
+        return null;
+    }
+
+    @Override
+    public Double getAttendingTime() {
+        throw new RuntimeException();
+    }
+
+    @Override
+    public Boolean hasAttendingTime() {
+        return false;
+    }
+
 }
