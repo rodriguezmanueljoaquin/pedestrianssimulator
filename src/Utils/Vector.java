@@ -51,6 +51,12 @@ public class Vector {
         return new Vector(this.getX() - e.getX(),this.getY() - e.getY());
     }
 
+    public Vector normalize() {
+        double hypot = Math.sqrt(Math.pow(this.getX(),2) + Math.pow(this.getY(),2));
+
+        return new Vector(this.getX()/hypot, this.getY()/hypot);
+    }
+
     public Double distance(Vector e){
         double distanceX = Math.abs(this.getX() - e.getX());
         double distanceY = Math.abs(this.getY() - e.getY());

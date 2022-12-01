@@ -33,6 +33,13 @@ public class Agent {
         this.objectives = objectives;
     }
 
+    public void updateVelocity(){
+        Vector objectivePosition = this.getCurrentObjective().getPosition();
+        double speed = this.getState().getVelocity();
+        Vector r = objectivePosition.substract(this.position).normalize();
+        this.setVelocity(r.scalarMultiply(speed));
+    }
+
     public void updatePosition(double time) {
         this.position = this.position.add(this.velocity.scalarMultiply(time));
     }

@@ -14,6 +14,11 @@ public enum AgentStates {
             }
             return MOVING;
         }
+
+        @Override
+        public double getVelocity(){
+            return Constants.STANDARD_VELOCITY;
+        }
     },
     ATTENDING {
         @Override
@@ -25,12 +30,22 @@ public enum AgentStates {
                 return MOVING;
             return LEAVING;
         }
+
+        @Override
+        public double getVelocity(){
+            return 0.0;
+        }
     },
     WAITING {
         //TODO IMPLEMENT WAITING: Server should say when to stop waiting.
         @Override
         public AgentStates nextState(Agent agent,double currentTime){
             return null;
+        }
+
+        @Override
+        public double getVelocity(){
+            return 0.0;
         }
     },
     LEAVING {
@@ -39,7 +54,13 @@ public enum AgentStates {
         public AgentStates nextState(Agent agent,double currentTime){
             return null;
         }
+
+        @Override
+        public double getVelocity(){
+            return Constants.STANDARD_VELOCITY;
+        }
     };
 
     public abstract AgentStates nextState(Agent agent,double currentTime);
+    public abstract double getVelocity();
 }

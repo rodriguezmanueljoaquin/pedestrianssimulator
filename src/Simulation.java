@@ -34,6 +34,10 @@ public class Simulation {
                 agent.updatePosition(this.dt);
                 agent.updateState(time);
             }
+            for(Agent agent : this.agents){
+                agent.updateVelocity();
+            }
+
             CPM.updateAgents(agents, environment);
 
 
@@ -49,9 +53,9 @@ public class Simulation {
         PrintWriter writer = new PrintWriter(outputPath + "/static.txt", "UTF-8");
 
         // walls
-        writer.write(String.format("%d\n", environment.getWalls().size()));
+        writer.write(String.format(Locale.ENGLISH,"%d\n", environment.getWalls().size()));
         for(Wall wall : environment.getWalls())
-            writer.println(wall.toString());
+            writer.write(String.format(Locale.ENGLISH,"%s\n", wall.toString()));
 
         writer.close();
         System.out.println("\tStatic file successfully created");
