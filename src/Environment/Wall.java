@@ -2,6 +2,7 @@ package Environment;
 
 import Utils.Vector;
 
+import java.awt.geom.Line2D;
 import java.util.Locale;
 
 public class Wall {
@@ -49,7 +50,10 @@ public class Wall {
         return A;
     }
 
-    private double getClosestDistance(Vector P){
-        return P.distance(this.getClosestPoint(P));
+    public boolean intersectsLine(Vector origin, Vector destiny) {
+        return Line2D.Double.linesIntersect(
+                origin.getX(), origin.getY(), destiny.getX(), destiny.getY(),
+                this.A.getX(), this.A.getY(), this.B.getX(), this.B.getY()
+        );
     }
 }

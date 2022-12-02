@@ -1,5 +1,9 @@
 package Utils;
 
+import java.util.Objects;
+
+import static Utils.Constants.DOUBLE_EPSILON;
+
 public class Vector {
     Double x;
     Double y;
@@ -70,6 +74,20 @@ public class Vector {
 
     @Override
     public String toString() {
-        return "Vector:(" + this.getX() + "," + this.getY() + ")\n";
+        return this.getX() + ";" + this.getY();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector vector = (Vector) o;
+        return Math.abs(this.x - vector.x) <= DOUBLE_EPSILON &&  Math.abs(this.y - vector.y) <= DOUBLE_EPSILON;
+    }
+
+    @Override
+    public int hashCode() {
+        // round to avoid epsilon error
+        return Objects.hash(Math.round(this.x * DOUBLE_EPSILON) / DOUBLE_EPSILON, Math.round(this.x * DOUBLE_EPSILON) / DOUBLE_EPSILON);
     }
 }
