@@ -2,6 +2,7 @@ import Agent.Agent;
 import Environment.Environment;
 import Environment.Server;
 import GraphGenerator.Graph;
+import GraphGenerator.NodePath;
 import Utils.DFXHandler;
 import Environment.Wall;
 import Environment.Target;
@@ -29,6 +30,9 @@ public class Main {
 
         Graph graph = new Graph(walls);
         graph.generateGraph(new Vector(1,1));
+        graph.generateOutput(RESULTS_PATH);
+        NodePath path = graph.AStar(graph.getNodes().get(new Vector(1,1)), new Vector(13,20));
+        System.out.println(path);
 
         // crear servers
         List<Server> servers = new ArrayList<>();

@@ -1,6 +1,8 @@
 package Agent;
 
 import Environment.Objective;
+import GraphGenerator.Node;
+import GraphGenerator.NodePath;
 import Utils.Vector;
 
 import java.util.List;
@@ -14,15 +16,8 @@ public class Agent {
     private AgentStates state;
     private List<? extends Objective> objectives;
     private Double startedAttendingAt;
-    public Double getStartedAttendingAt() {
-        return startedAttendingAt;
-    }
-
-    public void setStartedAttendingAt(Double startedAttendingAt) {
-        this.startedAttendingAt = startedAttendingAt;
-    }
-
-
+    private NodePath currentPath;
+    private Node currentIntermediateObjectiveNode;
 
     public Agent(Vector x, Vector velocity, double radius, List<? extends Objective> objectives) {
         this.position = x;
@@ -33,29 +28,39 @@ public class Agent {
         this.objectives = objectives;
     }
 
-    public void updateVelocity(){
-        Vector objectivePosition = this.getCurrentObjective().getPosition();
-        double speed = this.getState().getVelocity();
+    public void updateVelocity() {
+        Vector objectivePosition;
+        if (this.position.equals(this.currentIntermediateObjectiveNode.getPosition())) {
+            // intermediate node reached, update it
+            this.currentIntermediateObjectiveNode = this.currentPath.getNodeAfter(this.currentIntermediateObjectiveNode);
+        }
+
+        if (currentIntermediateObjectiveNode == null)
+            // go to objective because it is visible
+            objectivePosition = this.getCurrentObjective().getPosition();
+        else objectivePosition = this.currentIntermediateObjectiveNode.getPosition();
+
         Vector r = objectivePosition.substract(this.position).normalize();
-        this.setVelocity(r.scalarMultiply(speed));
+        this.setVelocity(r.scalarMultiply(this.getState().getVelocity()));
     }
 
     public void updatePosition(double time) {
         this.position = this.position.add(this.velocity.scalarMultiply(time));
     }
 
-    public void updateState(double time){
-        this.setState(this.getState().nextState(this,time));
+    public void updateState(double time) {
+        this.setState(this.getState().nextState(this, time));
     }
+
     public Integer getId() {
         return this.id;
     }
 
-    public double getRadius(){
+    public double getRadius() {
         return radius;
     }
 
-    public void setRadius(double radius){
+    public void setRadius(double radius) {
         this.radius = radius;
     }
 
@@ -63,15 +68,15 @@ public class Agent {
         return this.position;
     }
 
-    public void setPosition(Vector position){
+    public void setPosition(Vector position) {
         this.position = position;
     }
 
-    public Vector getVelocity(){
+    public Vector getVelocity() {
         return this.velocity;
     }
 
-    public void setVelocity(Vector speed){
+    public void setVelocity(Vector speed) {
         this.velocity = speed;
     }
 
@@ -87,20 +92,29 @@ public class Agent {
         return objectives;
     }
 
-    public Objective getCurrentObjective(){
-        if(hasObjectives())
+    public Objective getCurrentObjective() {
+        if (hasObjectives())
             return objectives.get(0);
         return null;
     }
 
-    public Objective getNextObjective(){
+    public Objective getNextObjective() {
         objectives.remove(0);
         return getCurrentObjective();
     }
 
-    public boolean hasObjectives(){
+    public boolean hasObjectives() {
         return objectives.size() > 0;
     }
+
+    public Double getStartedAttendingAt() {
+        return startedAttendingAt;
+    }
+
+    public void setStartedAttendingAt(Double startedAttendingAt) {
+        this.startedAttendingAt = startedAttendingAt;
+    }
+
     public void setObjectives(List<Objective> objectives) {
         this.objectives = objectives;
     }

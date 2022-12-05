@@ -10,9 +10,8 @@ public class Node {
     private final Vector position;
     private final List<Node> neighbors;
 
-    //TODO: Sacar ID
     private static Integer count = 1;
-    public final Integer id;
+    private final Integer id;
 
     public Node(Vector position) {
         this.position = position;
@@ -26,6 +25,10 @@ public class Node {
 
     public List<Node> getNeighbors() {
         return neighbors;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public void addNeighbors(List<Node> nodes) {

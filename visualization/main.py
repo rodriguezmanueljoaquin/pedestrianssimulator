@@ -23,11 +23,20 @@ def visualize_graph_results():
             G.add_edge(id, neighbor)
 
         line = file.readline()
-    
+
+
+    color_map = []
+    visited = [1,2,3,5,8,12,17,22,27,33,39,45,52,59]
+    for node in G:
+        if node in visited:
+            color_map.append('blue')
+        else: 
+            color_map.append('green')      
+
     options = {
         "font_size": 10,
         "node_size": 200,
-        "node_color": "white",
+        "node_color": color_map,
         "edgecolors": "black",
         "linewidths": 5,
         "width": 5,
