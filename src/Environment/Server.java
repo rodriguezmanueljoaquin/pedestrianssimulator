@@ -3,9 +3,12 @@ package Environment;
 import Agent.Agent;
 import Utils.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
-public class Server extends Objective{
+public class Server extends Objective {
     //TODO: IMPLEMENT SERVERS
     private final int maxAttendants;
     private int currentAttendants;

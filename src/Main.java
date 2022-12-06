@@ -1,12 +1,10 @@
 import Agent.Agent;
 import Environment.Environment;
 import Environment.Server;
-import GraphGenerator.Graph;
-import GraphGenerator.NodePath;
-import Utils.DFXHandler;
-import Environment.Wall;
 import Environment.Target;
-import Environment.Objective;
+import Environment.Wall;
+import GraphGenerator.Graph;
+import Utils.DFXHandler;
 import Utils.Vector;
 
 import java.io.File;
@@ -26,13 +24,17 @@ public class Main {
 
         // crear walls
         List<Wall> walls = DFXHandler.importWallsFromTxt("./src/Utils/DFXExamples/SegmentosGeometria.txt");
-        walls.add(new Wall(new Vector(0.,0.), new Vector(14,0)));
+
+        // TODO: PODEMOS CERRAR EL CONTORNO O LAS SALIDAS DEBERIAN NO TENER PAREDES?
+        walls.add(new Wall(new Vector(0., 0.), new Vector(14, 0)));
 
         Graph graph = new Graph(walls);
-        graph.generateGraph(new Vector(1,1));
-        graph.generateOutput(RESULTS_PATH);
-        NodePath path = graph.AStar(graph.getNodes().get(new Vector(1,1)), new Vector(13,20));
-        System.out.println(path);
+        graph.generateGraph(new Vector(1, 1));
+
+        // TESTING:
+//        graph.generateOutput(RESULTS_PATH);
+//        NodePath path = graph.AStar(graph.getNodes().get(new Vector(1,1)), new Vector(13,20));
+//        System.out.println(path);
 
         // crear servers
         List<Server> servers = new ArrayList<>();
@@ -42,7 +44,7 @@ public class Main {
 
         // crear agents
         List<Agent> agents = new ArrayList<>();
-        agents.add(new Agent(new Vector(1,2), new Vector(0,0), 0.5, targets));
+        agents.add(new Agent(new Vector(1, 2), new Vector(0, 0), 0.5, targets));
 //        agents.add(new Agent(new Vector(4,6), new Vector(0,0), 0.5, targets));
 
         // crear environment
@@ -50,7 +52,7 @@ public class Main {
 
         try {
             Simulation.createStaticFile(RESULTS_PATH, environment);
-            Simulation sim = new Simulation(agents, graph,10000, 0.25,0.5, environment, RESULTS_PATH);
+            Simulation sim = new Simulation(agents, graph, 1000, 0.025, 0.25, environment, RESULTS_PATH);
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

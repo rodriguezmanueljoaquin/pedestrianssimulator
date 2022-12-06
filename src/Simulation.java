@@ -15,6 +15,7 @@ public class Simulation {
     private Environment environment;
     private PrintWriter writer;
     private Graph graph;
+
     public Simulation(List<Agent> agents, Graph graph, double maxTime, double dt, double dt2, Environment environment, String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {
         this.agents = agents;
         this.maxTime = maxTime;
@@ -34,9 +35,9 @@ public class Simulation {
             // actualizar posiciones
             for (Agent agent : this.agents) {
                 agent.updatePosition(this.dt);
-                StateMachine.updateAgent(this.graph,agent,this.time);
+                StateMachine.updateAgent(this.graph, agent, this.time);
             }
-            for(Agent agent : this.agents){
+            for (Agent agent : this.agents) {
                 agent.updateVelocity();
             }
 
@@ -55,9 +56,9 @@ public class Simulation {
         PrintWriter writer = new PrintWriter(outputPath + "/static.txt", "UTF-8");
 
         // walls
-        writer.write(String.format(Locale.ENGLISH,"%d\n", environment.getWalls().size()));
-        for(Wall wall : environment.getWalls())
-            writer.write(String.format(Locale.ENGLISH,"%s\n", wall.toString()));
+        writer.write(String.format(Locale.ENGLISH, "%d\n", environment.getWalls().size()));
+        for (Wall wall : environment.getWalls())
+            writer.write(String.format(Locale.ENGLISH, "%s\n", wall.toString()));
 
         writer.close();
         System.out.println("\tStatic file successfully created");

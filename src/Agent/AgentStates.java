@@ -1,8 +1,6 @@
 package Agent;
 
-import GraphGenerator.Graph;
 import Utils.Constants;
-
 
 
 public enum AgentStates {
@@ -31,11 +29,12 @@ public enum AgentStates {
             return Constants.STANDARD_VELOCITY;
         }
     },
-    STARTING{
+    STARTING {
         @Override
         public double getVelocity() {
             return 0.0;
         }
     };
+
     public abstract double getVelocity();
 }

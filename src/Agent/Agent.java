@@ -3,6 +3,7 @@ package Agent;
 import Environment.Objective;
 import GraphGenerator.Node;
 import GraphGenerator.NodePath;
+import Utils.Constants;
 import Utils.Vector;
 
 import java.util.List;
@@ -29,16 +30,19 @@ public class Agent {
     }
 
     public void updateVelocity() {
+        // first check if intermediate node has to be updated
+        if (currentIntermediateObjectiveNode != null &&
+                this.position.distance(this.currentIntermediateObjectiveNode.getPosition()) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
+            // intermediate node reached, update it
+            this.currentIntermediateObjectiveNode = this.currentPath.getNodeAfter(this.currentIntermediateObjectiveNode);
+        }
+
         Vector objectivePosition;
         if (currentIntermediateObjectiveNode == null)
-            // go to objective because it is visible
+            // go to objective because it is visible, there are no remaining intermediate objectives
             objectivePosition = this.getCurrentObjective().getPosition();
         else {
             objectivePosition = this.currentIntermediateObjectiveNode.getPosition();
-            if (this.position.equals(this.currentIntermediateObjectiveNode.getPosition())) {
-                // intermediate node reached, update it
-                this.currentIntermediateObjectiveNode = this.currentPath.getNodeAfter(this.currentIntermediateObjectiveNode);
-            }
         }
 
         Vector r = objectivePosition.substract(this.position).normalize();

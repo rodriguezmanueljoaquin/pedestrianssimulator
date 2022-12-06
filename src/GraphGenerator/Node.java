@@ -32,8 +32,8 @@ public class Node {
     }
 
     public void addNeighbors(List<Node> nodes) {
-        for(Node node : nodes)
-            if(!this.neighbors.contains(node))
+        for (Node node : nodes)
+            if (!this.neighbors.contains(node))
                 this.neighbors.add(node);
     }
 

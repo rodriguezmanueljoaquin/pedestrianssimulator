@@ -7,14 +7,15 @@ import static Utils.Constants.DOUBLE_EPSILON;
 public class Vector {
     Double x;
     Double y;
-    public Vector(Double x, Double y){
+
+    public Vector(Double x, Double y) {
         this.x = x;
         this.y = y;
     }
 
-    public Vector(Integer x, Integer y){
-        this.x = (double)x;
-        this.y = (double)y;
+    public Vector(Integer x, Integer y) {
+        this.x = (double) x;
+        this.y = (double) y;
     }
 
     public Double getX() {
@@ -35,41 +36,41 @@ public class Vector {
         return this;
     }
 
-    public Vector multiply(Vector e){
-        return new Vector(this.getX() * e.getX(),this.getY() * e.getY());
+    public Vector multiply(Vector e) {
+        return new Vector(this.getX() * e.getX(), this.getY() * e.getY());
     }
 
-    public Double dotMultiply(Vector e){
+    public Double dotMultiply(Vector e) {
         return this.getX() * e.getX() + this.getY() * e.getY();
     }
 
-    public Vector scalarMultiply(Double e){
-        return multiply(new Vector(e,e));
+    public Vector scalarMultiply(Double e) {
+        return multiply(new Vector(e, e));
     }
 
-    public Vector add(Vector e){
-        return new Vector(this.getX() + e.getX(),this.getY() + e.getY());
+    public Vector add(Vector e) {
+        return new Vector(this.getX() + e.getX(), this.getY() + e.getY());
     }
 
-    public Vector substract(Vector e){
-        return new Vector(this.getX() - e.getX(),this.getY() - e.getY());
+    public Vector substract(Vector e) {
+        return new Vector(this.getX() - e.getX(), this.getY() - e.getY());
     }
 
     public Vector normalize() {
-        double hypot = Math.sqrt(Math.pow(this.getX(),2) + Math.pow(this.getY(),2));
+        double hypot = Math.sqrt(Math.pow(this.getX(), 2) + Math.pow(this.getY(), 2));
 
-        return new Vector(this.getX()/hypot, this.getY()/hypot);
+        return new Vector(this.getX() / hypot, this.getY() / hypot);
     }
 
-    public Double distance(Vector e){
+    public Double distance(Vector e) {
         double distanceX = Math.abs(this.getX() - e.getX());
         double distanceY = Math.abs(this.getY() - e.getY());
 
-        return Math.sqrt(Math.pow(distanceX,2) + Math.pow(distanceY,2));
+        return Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
     }
 
-    public Vector clone(){
-        return new Vector(this.getX(),this.getY());
+    public Vector clone() {
+        return new Vector(this.getX(), this.getY());
     }
 
     @Override
@@ -82,7 +83,7 @@ public class Vector {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vector vector = (Vector) o;
-        return Math.abs(this.x - vector.x) <= DOUBLE_EPSILON &&  Math.abs(this.y - vector.y) <= DOUBLE_EPSILON;
+        return Math.abs(this.x - vector.x) <= DOUBLE_EPSILON && Math.abs(this.y - vector.y) <= DOUBLE_EPSILON;
     }
 
     @Override

@@ -4,7 +4,6 @@ import Agent.Agent;
 import Environment.Wall;
 import Utils.Vector;
 
-import java.awt.geom.Line2D;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -37,8 +36,8 @@ public class Graph {
     }
 
     private boolean isPositionVisible(Vector origin, Vector destiny) {
-        for(Wall wall : this.walls)
-            if(wall.intersectsLine(origin, destiny))
+        for (Wall wall : this.walls)
+            if (wall.intersectsLine(origin, destiny))
                 return false;
 
         return true;
@@ -53,22 +52,22 @@ public class Graph {
         Node bestNode = null;
         double minDistance = Double.MAX_VALUE;
         double currentDistance;
-        for(Node node : this.nodes.values()){
+        for (Node node : this.nodes.values()) {
             currentDistance = node.getPosition().distance(position);
-            if(currentDistance < minDistance) {
+            if (currentDistance < minDistance) {
                 bestNode = node;
                 minDistance = currentDistance;
             }
         }
-        if(bestNode == null)
+        if (bestNode == null)
             throw new RuntimeException();
         return bestNode;
     }
+
     public NodePath getPathToObjective(Agent agent) {
-        //FixMe:SI ESTO ME DA NULL SIGNIFICA QUE NO HAY NODO A MENOS DE 2 METROS DE DONDE ESTOY, TENEMOS QUE VER QUE HACEMOS
+        // first try to get by current position, otherwise get the closest visible
         Node fromNode = nodes.get(agent.getPosition());
-        System.out.println(agent.getPosition().toString());
-        if(fromNode == null) {
+        if (fromNode == null) {
             fromNode = getClosestVisibleNode(agent.getPosition());
         }
         //Checkear en la state machine de no mandarle null!
@@ -87,13 +86,13 @@ public class Graph {
             List<Node> currentNeighbours = new ArrayList<>();
             Vector startPosition = current.getPosition();
 
-            for(Vector difference : POSSIBLE_NEIGHBORS_POSITION_DIFFERENCE) {
+            for (Vector difference : POSSIBLE_NEIGHBORS_POSITION_DIFFERENCE) {
                 Vector possibleNeighbourPosition = difference.add(startPosition);
 
-                if(this.nodes.containsKey(possibleNeighbourPosition)) {
+                if (this.nodes.containsKey(possibleNeighbourPosition)) {
                     // position already visited (which assures that it is valid)
                     currentNeighbours.add(this.nodes.get(possibleNeighbourPosition));
-                } else if(isPositionVisible(startPosition, possibleNeighbourPosition)) {
+                } else if (isPositionVisible(startPosition, possibleNeighbourPosition)) {
                     // position not visited and valid
                     Node newNode = new Node(possibleNeighbourPosition);
                     currentNeighbours.add(newNode);
@@ -119,15 +118,14 @@ public class Graph {
         while (!isPositionVisible(currentNode.getPosition(), to)) {
             // once target is visible from the last node of the path, return it
             visitedNodesId.add(currentNode.getId());
-            System.out.println(visitedNodesId.size());
 
-            for (Node next: currentNode.getNeighbors()) {
-                if(!visitedNodesId.contains(next.getId())) {
+            for (Node next : currentNode.getNeighbors()) {
+                if (!visitedNodesId.contains(next.getId())) {
                     frontierPaths.add(currentPath.copyAndAdd(next));
                 }
             }
 
-            if(frontierPaths.size() == 0)
+            if (frontierPaths.size() == 0)
                 return null;
 
             currentPath = frontierPaths.poll();
@@ -142,7 +140,7 @@ public class Graph {
 
         PrintWriter writer = null;
         try {
-            writer = new PrintWriter(outputPath+ "graph.txt", "UTF-8");
+            writer = new PrintWriter(outputPath + "graph.txt", "UTF-8");
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

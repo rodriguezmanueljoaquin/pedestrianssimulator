@@ -12,7 +12,6 @@ public class CPM {
         // USAR CPM VIEJO!!!!
 
 
-
         // encontrar colisiones
 //        List<Agent.Agent> wallCollisions = new ArrayList<>();
 //        List<Vector<Agent.Agent>> agentsCollisions = new ArrayList<>();
@@ -24,7 +23,6 @@ public class CPM {
 //
 //            }
 //        }
-
 
 
         // actualizar velocidades de particulas que colisionaron con CPM

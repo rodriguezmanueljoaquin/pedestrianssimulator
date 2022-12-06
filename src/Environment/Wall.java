@@ -32,7 +32,7 @@ public class Wall {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH,"%f;%f;%f;%f", this.A.getX(), this.A.getY(), this.B.getX(), this.B.getY());
+        return String.format(Locale.ENGLISH, "%f;%f;%f;%f", this.A.getX(), this.A.getY(), this.B.getX(), this.B.getY());
     }
 
     //https://math.stackexchange.com/questions/2193720/find-a-point-on-a-line-segment-which-is-the-closest-to-other-point-not-on-the-li
@@ -40,12 +40,12 @@ public class Wall {
         Vector u = A.substract(P);
         Vector v = B.substract(A);
 
-        double t = - v.dotMultiply(u) / v.dotMultiply(v);
+        double t = -v.dotMultiply(u) / v.dotMultiply(v);
 
-        if(t >= 0 && t <= 1){
+        if (t >= 0 && t <= 1) {
             return A.scalarMultiply(1 - t).add(B.scalarMultiply(t));
         }
-        if(P.distance(A) > P.distance(B))
+        if (P.distance(A) > P.distance(B))
             return B;
         return A;
     }
