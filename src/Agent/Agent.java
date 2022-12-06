@@ -23,22 +23,23 @@ public class Agent {
         this.position = x;
         this.velocity = velocity;
         this.radius = radius;
-        this.state = AgentStates.MOVING; //just started
+        this.state = AgentStates.STARTING; //just started
         this.id = count++;
         this.objectives = objectives;
     }
 
     public void updateVelocity() {
         Vector objectivePosition;
-        if (this.position.equals(this.currentIntermediateObjectiveNode.getPosition())) {
-            // intermediate node reached, update it
-            this.currentIntermediateObjectiveNode = this.currentPath.getNodeAfter(this.currentIntermediateObjectiveNode);
-        }
-
         if (currentIntermediateObjectiveNode == null)
             // go to objective because it is visible
             objectivePosition = this.getCurrentObjective().getPosition();
-        else objectivePosition = this.currentIntermediateObjectiveNode.getPosition();
+        else {
+            objectivePosition = this.currentIntermediateObjectiveNode.getPosition();
+            if (this.position.equals(this.currentIntermediateObjectiveNode.getPosition())) {
+                // intermediate node reached, update it
+                this.currentIntermediateObjectiveNode = this.currentPath.getNodeAfter(this.currentIntermediateObjectiveNode);
+            }
+        }
 
         Vector r = objectivePosition.substract(this.position).normalize();
         this.setVelocity(r.scalarMultiply(this.getState().getVelocity()));
@@ -46,10 +47,6 @@ public class Agent {
 
     public void updatePosition(double time) {
         this.position = this.position.add(this.velocity.scalarMultiply(time));
-    }
-
-    public void updateState(double time) {
-        this.setState(this.getState().nextState(this, time));
     }
 
     public Integer getId() {
@@ -101,6 +98,15 @@ public class Agent {
     public Objective getNextObjective() {
         objectives.remove(0);
         return getCurrentObjective();
+    }
+
+    public NodePath getCurrentPath() {
+        return currentPath;
+    }
+
+    public void setCurrentPath(NodePath currentPath) {
+        this.currentIntermediateObjectiveNode = currentPath.getFirstNode();
+        this.currentPath = currentPath;
     }
 
     public boolean hasObjectives() {

@@ -32,7 +32,7 @@ public class DFXHandler {
 
     public static List<Target> importTargetFromTxt(String filePath){
         //TODO: Ver cuanto le pones de attending time, que tipo de distribucion?
-        Double attendingTime = 200.0;
+        Double attendingTime = 200.0; 
         File targetFile;
         Scanner targetScanner;
 

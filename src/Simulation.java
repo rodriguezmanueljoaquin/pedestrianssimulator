@@ -1,6 +1,7 @@
 import Agent.Agent;
 import Environment.Environment;
 import Environment.Wall;
+import GraphGenerator.Graph;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -13,12 +14,13 @@ public class Simulation {
     private double time, maxTime, dt, dt2;
     private Environment environment;
     private PrintWriter writer;
-
-    public Simulation(List<Agent> agents, double maxTime, double dt, double dt2, Environment environment, String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {
+    private Graph graph;
+    public Simulation(List<Agent> agents, Graph graph, double maxTime, double dt, double dt2, Environment environment, String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {
         this.agents = agents;
         this.maxTime = maxTime;
         this.dt = dt;
         this.dt2 = dt2;
+        this.graph = graph;
         this.environment = environment;
         this.time = 0;
         createDynamicFile(outputDirectoryPath);
@@ -32,7 +34,7 @@ public class Simulation {
             // actualizar posiciones
             for (Agent agent : this.agents) {
                 agent.updatePosition(this.dt);
-                agent.updateState(time);
+                StateMachine.updateAgent(this.graph,agent,this.time);
             }
             for(Agent agent : this.agents){
                 agent.updateVelocity();

@@ -27,6 +27,9 @@ public class NodePath {
         return this.path.get(this.path.size()-1);
     }
 
+    public Node getFirstNode() {
+        return this.path.get(0);
+    }
     public NodePath copyAndAdd(Node node) {
         NodePath answer = new NodePath();
         answer.addAll(this.path);
@@ -47,7 +50,7 @@ public class NodePath {
         int index = this.path.indexOf(node);
         if(index == -1)
             throw new RuntimeException("Nonexistent node in path");
-        else if (index == this.path.size()) {
+        else if (index == this.path.size() - 1) {
             return null;
         }
 

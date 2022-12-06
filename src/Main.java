@@ -42,15 +42,15 @@ public class Main {
 
         // crear agents
         List<Agent> agents = new ArrayList<>();
-        agents.add(new Agent(new Vector(2,2), new Vector(0,0), 0.5, targets));
-        agents.add(new Agent(new Vector(5,6), new Vector(0,0), 0.5, targets));
+        agents.add(new Agent(new Vector(1,2), new Vector(0,0), 0.5, targets));
+//        agents.add(new Agent(new Vector(4,6), new Vector(0,0), 0.5, targets));
 
         // crear environment
         Environment environment = new Environment(walls, servers, targets, 10., 10.);
 
         try {
             Simulation.createStaticFile(RESULTS_PATH, environment);
-            Simulation sim = new Simulation(agents, 1000, 0.25,0.5, environment, RESULTS_PATH);
+            Simulation sim = new Simulation(agents, graph,10000, 0.25,0.5, environment, RESULTS_PATH);
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

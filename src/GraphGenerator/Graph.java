@@ -1,5 +1,6 @@
 package GraphGenerator;
 
+import Agent.Agent;
 import Environment.Wall;
 import Utils.Vector;
 
@@ -11,7 +12,7 @@ import java.util.*;
 
 public class Graph {
     private final static double STEP_SIZE = 1;
-    private static Graph instance;
+//    private static Graph instance;
 
     // CLOCKWISE
     private final static Vector[] POSSIBLE_NEIGHBORS_POSITION_DIFFERENCE = {
@@ -41,6 +42,37 @@ public class Graph {
                 return false;
 
         return true;
+    }
+
+    //Cambios que hice:
+    //El agente tiene un nodePath que sigue, el resto se hace desde
+    //el grafo, o sea la logica seria:
+    //  Desde Simulation/State machine le damos un objetivo y un nodePath al agente
+
+    public Node getClosestVisibleNode(Vector position) {
+        Node bestNode = null;
+        double minDistance = Double.MAX_VALUE;
+        double currentDistance;
+        for(Node node : this.nodes.values()){
+            currentDistance = node.getPosition().distance(position);
+            if(currentDistance < minDistance) {
+                bestNode = node;
+                minDistance = currentDistance;
+            }
+        }
+        if(bestNode == null)
+            throw new RuntimeException();
+        return bestNode;
+    }
+    public NodePath getPathToObjective(Agent agent) {
+        //FixMe:SI ESTO ME DA NULL SIGNIFICA QUE NO HAY NODO A MENOS DE 2 METROS DE DONDE ESTOY, TENEMOS QUE VER QUE HACEMOS
+        Node fromNode = nodes.get(agent.getPosition());
+        System.out.println(agent.getPosition().toString());
+        if(fromNode == null) {
+            fromNode = getClosestVisibleNode(agent.getPosition());
+        }
+        //Checkear en la state machine de no mandarle null!
+        return AStar(fromNode, agent.getCurrentObjective().getPosition());
     }
 
     // initialPosition has to be a valid position, from this node the graph will expand
