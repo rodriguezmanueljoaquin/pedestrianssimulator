@@ -6,19 +6,20 @@ import java.awt.geom.Line2D;
 import java.util.Locale;
 
 public class Wall {
-    private final Vector A, B; // x1 < x2
+    private final Vector A, B; // A < B
 
-    public Wall(Vector A, Vector B) {
-        this.A = A;
-        this.B = B;
-        if (A.getX() > B.getX()) {
-            this.A.setX(B.getX());
-            this.B.setX(A.getX());
+    public Wall(Vector x1, Vector x2) {
+        this.A = x1.clone();
+        this.B = x2.clone();
+
+        if (x1.getX() > x2.getX()) {
+            this.A.setX(x2.getX());
+            this.B.setX(x1.getX());
         }
 
-        if (A.getY() > B.getY()) {
-            this.A.setY(B.getY());
-            this.B.setY(A.getY());
+        if (x1.getY() > x2.getY()) {
+            this.A.setY(x2.getY());
+            this.B.setY(x1.getY());
         }
     }
 

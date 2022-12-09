@@ -4,13 +4,9 @@ import Environment.Target;
 import Environment.Wall;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Collectors;
+import java.util.*;
 
-public class DFXHandler {
+public class InputHandler {
     public static List<Wall> importWallsFromTxt(String filePath) {
         File wallFile;
         Scanner wallScanner;
@@ -18,16 +14,23 @@ public class DFXHandler {
         try {
             wallFile = new File(filePath);
             wallScanner = new Scanner(wallFile);
+            wallScanner.useDelimiter(",");
         } catch (Exception e) {
             System.out.println("Encountered exception reading wall file, returning null. Exception: " + e);
             return null;
         }
 
         List<Wall> walls = new ArrayList<>();
+        List<Double> inputs = new ArrayList<>(Arrays.asList(0., 0., 0., 0., 0., 0.));
         while (wallScanner.hasNextLine()) {
-            walls.add(new Wall(new Vector(Double.valueOf(wallScanner.next()), Double.valueOf(wallScanner.next())),
-                    new Vector(Double.valueOf(wallScanner.next()), Double.valueOf(wallScanner.next()))));
+            String[] tokens = wallScanner.nextLine().split(",");
+            for (int i = 0; i < inputs.size(); i++) {
+                inputs.set(i, Double.parseDouble(tokens[i]));
+            }
+            walls.add(new Wall(new Vector(inputs.get(0), inputs.get(1)), new Vector(inputs.get(3), inputs.get(4)))); // assume z is always 0
         }
+
+        wallScanner.close();
         return walls;
     }
 

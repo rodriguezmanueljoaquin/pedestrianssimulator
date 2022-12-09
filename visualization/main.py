@@ -1,6 +1,6 @@
 import exportOvito
 from simulationResults import read_input_files, SimulationResult
-input_files_directory_path = "../results/"
+input_files_directory_path = "./results/"
 
 def visualize_simulation_results():
     simulations_results = read_input_files(input_files_directory_path)
@@ -38,7 +38,7 @@ def visualize_graph_results():
         "node_size": 200,
         "node_color": color_map,
         "edgecolors": "black",
-        "linewidths": 5,
+        "linewidths": 2,
         "width": 5,
     }
     nx.draw_networkx(G, pos, **options)
@@ -50,5 +50,5 @@ def visualize_graph_results():
     plt.show()
 
 if __name__ == "__main__":
-    visualize_simulation_results()
-    # visualize_graph_results()
+    # visualize_simulation_results()
+    visualize_graph_results()

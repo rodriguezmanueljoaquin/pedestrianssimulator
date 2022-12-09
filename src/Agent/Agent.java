@@ -30,6 +30,12 @@ public class Agent {
     }
 
     public void updateVelocity() {
+        if (state == AgentStates.LEAVING){
+            //TODO: Logica de leaving, deberia ir a salida mas cercana
+            this.setVelocity(new Vector(0, 0));
+            return;
+        }
+
         // first check if intermediate node has to be updated
         if (currentIntermediateObjectiveNode != null &&
                 this.position.distance(this.currentIntermediateObjectiveNode.getPosition()) < Constants.MINIMUM_DISTANCE_TO_TARGET) {

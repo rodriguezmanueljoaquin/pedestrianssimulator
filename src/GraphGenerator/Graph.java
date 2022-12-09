@@ -10,7 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class Graph {
-    private final static double STEP_SIZE = 1;
+    private final static double STEP_SIZE = 2;
 //    private static Graph instance;
 
     // CLOCKWISE
@@ -89,16 +89,22 @@ public class Graph {
             for (Vector difference : POSSIBLE_NEIGHBORS_POSITION_DIFFERENCE) {
                 Vector possibleNeighbourPosition = difference.add(startPosition);
 
+                Node neighbor;
                 if (this.nodes.containsKey(possibleNeighbourPosition)) {
-                    // position already visited (which assures that it is valid)
-                    currentNeighbours.add(this.nodes.get(possibleNeighbourPosition));
-                } else if (isPositionVisible(startPosition, possibleNeighbourPosition)) {
-                    // position not visited and valid
-                    Node newNode = new Node(possibleNeighbourPosition);
-                    currentNeighbours.add(newNode);
-                    this.nodes.put(possibleNeighbourPosition, newNode);
+                    // position already considered, is not necessary to create the node
+                    neighbor = this.nodes.get(possibleNeighbourPosition);
 
-                    notVisitedNodes.add(newNode);
+                    // check if its visible
+                    if(isPositionVisible(startPosition, possibleNeighbourPosition))
+                        currentNeighbours.add(neighbor);
+
+                } else if (isPositionVisible(startPosition, possibleNeighbourPosition)) {
+                    // position not considered and valid
+                    neighbor = new Node(possibleNeighbourPosition);
+                    this.nodes.put(possibleNeighbourPosition, neighbor);
+
+                    currentNeighbours.add(neighbor);
+                    notVisitedNodes.add(neighbor);
                 }
             }
 
