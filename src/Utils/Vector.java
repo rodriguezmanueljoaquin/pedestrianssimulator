@@ -5,8 +5,8 @@ import java.util.Objects;
 import static Utils.Constants.DOUBLE_EPSILON;
 
 public class Vector {
-    Double x;
-    Double y;
+    private Double x;
+    private Double y;
 
     public Vector(Double x, Double y) {
         this.x = x;

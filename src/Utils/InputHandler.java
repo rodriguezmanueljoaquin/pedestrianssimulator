@@ -1,5 +1,6 @@
 package Utils;
 
+import Agent.AgentsGenerator;
 import Environment.Target;
 import Environment.Wall;
 
@@ -8,30 +9,64 @@ import java.util.*;
 
 public class InputHandler {
     public static List<Wall> importWallsFromTxt(String filePath) {
-        File wallFile;
-        Scanner wallScanner;
+        Scanner scanner = getCSVScanner(filePath);
 
-        try {
-            wallFile = new File(filePath);
-            wallScanner = new Scanner(wallFile);
-            wallScanner.useDelimiter(",");
-        } catch (Exception e) {
-            System.out.println("Encountered exception reading wall file, returning null. Exception: " + e);
-            return null;
-        }
-
-        List<Wall> walls = new ArrayList<>();
+        List<Wall> result = new ArrayList<>();
         List<Double> inputs = new ArrayList<>(Arrays.asList(0., 0., 0., 0., 0., 0.));
-        while (wallScanner.hasNextLine()) {
-            String[] tokens = wallScanner.nextLine().split(",");
+        while (scanner.hasNextLine()) {
+            String[] tokens = scanner.nextLine().split(",");
             for (int i = 0; i < inputs.size(); i++) {
                 inputs.set(i, Double.parseDouble(tokens[i]));
             }
-            walls.add(new Wall(new Vector(inputs.get(0), inputs.get(1)), new Vector(inputs.get(3), inputs.get(4)))); // assume z is always 0
+            result.add(new Wall(new Vector(inputs.get(0), inputs.get(1)), new Vector(inputs.get(3), inputs.get(4)))); // assume z is always 0
         }
 
-        wallScanner.close();
-        return walls;
+        scanner.close();
+        return result;
+    }
+
+    private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, List<Target> targets) {
+        // TODO: SHOULD RECEIVE BEHAVIOUR MODULE WITH AGENTS GENERATORS PARAMETERS AND POSSIBLE TARGETS, IT SHOULDNT RECEIVE IT AS A PARAMETER
+        Rectangle zone = new Rectangle(
+                new Vector(Collections.min(xInputs), Collections.min(yInputs)),
+                new Vector(Collections.max(xInputs), Collections.max(yInputs))
+        );
+
+        return new AgentsGenerator(zone, 2, 50, 1, 1, 2, targets);
+    }
+
+    public static List<AgentsGenerator> importAgentsGeneratorsFromTxt(String filePath, List<Target> targets) {
+        Scanner scanner = getCSVScanner(filePath);
+
+        List<AgentsGenerator> result = new ArrayList<>();
+        List<Double> xInputs = new ArrayList<>();
+        List<Double> yInputs = new ArrayList<>();
+        int sidesAnalyzed = 0;
+        while (scanner.hasNextLine()) {
+            String[] tokens = scanner.nextLine().split(",");
+            for (int i = 0; i < 6; i++) {
+                if(i % 3 == 0)
+                    xInputs.add(Double.parseDouble(tokens[i]));
+                else if (i % 3 == 1) {
+                    yInputs.add(Double.parseDouble(tokens[i]));
+                }
+            }
+            sidesAnalyzed++;
+
+            if(sidesAnalyzed > 3) {
+                sidesAnalyzed = 0;
+                result.add(createAgentsGenerator(xInputs, yInputs, targets));
+                xInputs.clear();
+                yInputs.clear();
+            }
+        }
+
+        if(sidesAnalyzed != 0) {
+            throw new RuntimeException("AgentsGenerators creation found extra lines on DXF.");
+        }
+
+        scanner.close();
+        return result;
     }
 
     public static List<Target> importTargetFromTxt(String filePath) {
@@ -59,4 +94,19 @@ public class InputHandler {
 
         return targets;
     }
+
+    private static Scanner getCSVScanner(String filePath) {
+        File file;
+        Scanner scanner;
+        try {
+            file = new File(filePath);
+            scanner = new Scanner(file);
+            scanner.useDelimiter(",");
+        } catch (Exception e) {
+            throw new RuntimeException("Encountered exception when trying to read file " + filePath);
+        }
+
+        return scanner;
+    }
+
 }

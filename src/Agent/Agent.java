@@ -20,9 +20,9 @@ public class Agent {
     private NodePath currentPath;
     private Node currentIntermediateObjectiveNode;
 
-    public Agent(Vector x, Vector velocity, double radius, List<? extends Objective> objectives) {
+    public Agent(Vector x, double radius, List<? extends Objective> objectives) {
         this.position = x;
-        this.velocity = velocity;
+        this.velocity = new Vector(0,0);
         this.radius = radius;
         this.state = AgentStates.STARTING; //just started
         this.id = count++;

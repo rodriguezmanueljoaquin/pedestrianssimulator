@@ -34,7 +34,14 @@ def exportWalls(walls):
 
 def exportParticles(particles_by_frame):
     file = open("{}/particles.xyz".format(ovitoFolderName), "w")
+    firstEmptyLinesAvoided = False
     for particle_frame in particles_by_frame:
+        if(not firstEmptyLinesAvoided):
+            if(len(particle_frame.particles) != 0):
+                firstEmptyLinesAvoided = True
+            else:
+                continue
+            
         file.write("{}\ncomment\n".format(len(particle_frame.particles)))
         for particle in particle_frame.particles:
             file.write("{} {} {} {} {} {} {}\n"

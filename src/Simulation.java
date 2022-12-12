@@ -6,6 +6,7 @@ import GraphGenerator.Graph;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -16,8 +17,8 @@ public class Simulation {
     private PrintWriter writer;
     private Graph graph;
 
-    public Simulation(List<Agent> agents, Graph graph, double maxTime, double dt, double dt2, Environment environment, String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {
-        this.agents = agents;
+    public Simulation(Graph graph, double maxTime, double dt, double dt2, Environment environment, String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {
+        this.agents = new ArrayList<>();
         this.maxTime = maxTime;
         this.dt = dt;
         this.dt2 = dt2;
@@ -31,8 +32,11 @@ public class Simulation {
         // first iteration
         this.writeOutput();
 
-        while (this.time < maxTime) {
-            // actualizar posiciones
+        while (this.time < this.maxTime) {
+            // create new agents
+            this.agents.addAll(this.environment.generateAgents(this.time));
+
+            // update positions
             for (Agent agent : this.agents) {
                 agent.updatePosition(this.dt);
                 StateMachine.updateAgent(this.graph, agent, this.time);
@@ -48,6 +52,7 @@ public class Simulation {
             this.writeOutput();
             this.time += this.dt;
         }
+        this.writer.close();
     }
 
     public static void createStaticFile(String outputPath, Environment environment) throws FileNotFoundException, UnsupportedEncodingException {

@@ -1,6 +1,7 @@
 import Agent.Agent;
 import Agent.AgentStates;
 import GraphGenerator.Graph;
+import GraphGenerator.NodePath;
 import Utils.Constants;
 
 public class StateMachine {
@@ -30,7 +31,14 @@ public class StateMachine {
             case STARTING:
                 agent.getNextObjective();
                 if (agent.hasObjectives()) {
-                    agent.setCurrentPath(graph.getPathToObjective(agent));
+                    NodePath path = graph.getPathToObjective(agent);
+                    if(path == null) {
+                        // FIXME! Checkear por que a veces da null
+                        agent.setState(AgentStates.LEAVING);
+                        return;
+                    }
+
+                    agent.setCurrentPath(path);
                     agent.setState(AgentStates.MOVING);
                     return;
                 }
