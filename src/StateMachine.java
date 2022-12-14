@@ -32,7 +32,7 @@ public class StateMachine {
                 agent.getNextObjective();
                 if (agent.hasObjectives()) {
                     NodePath path = graph.getPathToObjective(agent);
-                    if(path == null) {
+                    if (path == null) {
                         // FIXME! Checkear por que a veces da null
                         agent.setState(AgentStates.LEAVING);
                         return;

@@ -95,7 +95,7 @@ public class Graph {
                     neighbor = this.nodes.get(possibleNeighbourPosition);
 
                     // check if its visible
-                    if(isPositionVisible(startPosition, possibleNeighbourPosition))
+                    if (isPositionVisible(startPosition, possibleNeighbourPosition))
                         currentNeighbours.add(neighbor);
 
                 } else if (isPositionVisible(startPosition, possibleNeighbourPosition)) {

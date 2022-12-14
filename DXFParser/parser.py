@@ -83,5 +83,5 @@ def parse_dxf(in_file_path, out_path):
 
 if __name__ == '__main__':
     # parse_dxf("DXFParser/DXFExamples/market.dxf", "input/") TODO: NO FUNCIONA! pedir a alguien que maneje dxf
-    parse_dxf("DXFParser/DXFExamples/Plano1.dxf", "input/")
-    # parse_dxf("DXFParser/DXFExamples/Plano2.dxf", "input/")
+    # parse_dxf("DXFParser/DXFExamples/Plano1.dxf", "input/")
+    parse_dxf("DXFParser/DXFExamples/Plano2.dxf", "input/")

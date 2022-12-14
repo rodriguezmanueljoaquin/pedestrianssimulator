@@ -1,6 +1,7 @@
 package Utils;
 
-import Agent.AgentsGenerator;
+import AgentsGenerator.AgentsGenerator;
+import AgentsGenerator.AgentsGeneratorZone;
 import Environment.Target;
 import Environment.Wall;
 
@@ -27,7 +28,7 @@ public class InputHandler {
 
     private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, List<Target> targets) {
         // TODO: SHOULD RECEIVE BEHAVIOUR MODULE WITH AGENTS GENERATORS PARAMETERS AND POSSIBLE TARGETS, IT SHOULDNT RECEIVE IT AS A PARAMETER
-        Rectangle zone = new Rectangle(
+        AgentsGeneratorZone zone = new AgentsGeneratorZone(
                 new Vector(Collections.min(xInputs), Collections.min(yInputs)),
                 new Vector(Collections.max(xInputs), Collections.max(yInputs))
         );
@@ -45,7 +46,7 @@ public class InputHandler {
         while (scanner.hasNextLine()) {
             String[] tokens = scanner.nextLine().split(",");
             for (int i = 0; i < 6; i++) {
-                if(i % 3 == 0)
+                if (i % 3 == 0)
                     xInputs.add(Double.parseDouble(tokens[i]));
                 else if (i % 3 == 1) {
                     yInputs.add(Double.parseDouble(tokens[i]));
@@ -53,7 +54,7 @@ public class InputHandler {
             }
             sidesAnalyzed++;
 
-            if(sidesAnalyzed > 3) {
+            if (sidesAnalyzed > 3) {
                 sidesAnalyzed = 0;
                 result.add(createAgentsGenerator(xInputs, yInputs, targets));
                 xInputs.clear();
@@ -61,7 +62,7 @@ public class InputHandler {
             }
         }
 
-        if(sidesAnalyzed != 0) {
+        if (sidesAnalyzed != 0) {
             throw new RuntimeException("AgentsGenerators creation found extra lines on DXF.");
         }
 

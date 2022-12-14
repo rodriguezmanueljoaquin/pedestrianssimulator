@@ -22,7 +22,7 @@ public class Agent {
 
     public Agent(Vector x, double radius, List<? extends Objective> objectives) {
         this.position = x;
-        this.velocity = new Vector(0,0);
+        this.velocity = new Vector(0, 0);
         this.radius = radius;
         this.state = AgentStates.STARTING; //just started
         this.id = count++;
@@ -30,7 +30,7 @@ public class Agent {
     }
 
     public void updateVelocity() {
-        if (state == AgentStates.LEAVING){
+        if (state == AgentStates.LEAVING) {
             //TODO: Logica de leaving, deberia ir a salida mas cercana
             this.setVelocity(new Vector(0, 0));
             return;

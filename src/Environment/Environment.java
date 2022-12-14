@@ -1,7 +1,7 @@
 package Environment;
 
 import Agent.Agent;
-import Agent.AgentsGenerator;
+import AgentsGenerator.AgentsGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class Environment {
     public List<Agent> generateAgents(Double time) {
         List<Agent> newAgents = new ArrayList<>();
 
-        for (AgentsGenerator generator: this.generators) {
+        for (AgentsGenerator generator : this.generators) {
             newAgents.addAll(generator.generate(time));
         }
 

@@ -1,13 +1,10 @@
 package Agent;
 
-import Utils.Constants;
-
-
 public enum AgentStates {
     MOVING {
         @Override
         public double getVelocity() {
-            return Constants.STANDARD_VELOCITY;
+            return AgentConstants.STANDARD_VELOCITY;
         }
     },
     ATTENDING {
@@ -26,7 +23,7 @@ public enum AgentStates {
         //TODO: Get nearest exit.
         @Override
         public double getVelocity() {
-            return Constants.STANDARD_VELOCITY;
+            return AgentConstants.STANDARD_VELOCITY;
         }
     },
     STARTING {

@@ -1,4 +1,4 @@
-import Agent.AgentsGenerator;
+import AgentsGenerator.AgentsGenerator;
 import Environment.Environment;
 import Environment.Server;
 import Environment.Target;
@@ -26,14 +26,13 @@ public class Main {
         List<Wall> walls = InputHandler.importWallsFromTxt("./input/PAREDES.csv");
 
         // FIXME: CERRAMOS EL CONTORNO PERO DEBERIA SER UN REQUISITO DEL DXF
-        walls.add(new Wall(new Vector(0., 0.), new Vector(100, 0)));
-        walls.add(new Wall(new Vector(0., 100.), new Vector(100, 100)));
-        walls.add(new Wall(new Vector(0., 0.), new Vector(0, 100)));
-        walls.add(new Wall(new Vector(100., 0.), new Vector(100, 100)));
+        walls.add(new Wall(new Vector(0., 0.), new Vector(50, 0)));
+        walls.add(new Wall(new Vector(50., 0.), new Vector(50, 20)));
+        walls.add(new Wall(new Vector(50., 20.), new Vector(0, 20)));
+        walls.add(new Wall(new Vector(0., 20.), new Vector(0, 0)));
 
         // BORRAR (TEST PARED DIAGONAL)
-        walls.add(new Wall(new Vector(10., 10.), new Vector(50, 50)));
-        walls.add(new Wall(new Vector(2., 20.), new Vector(50, 20)));
+        walls.add(new Wall(new Vector(15, 0), new Vector(20, 5)));
 
 
         Graph graph = new Graph(walls);
@@ -49,7 +48,8 @@ public class Main {
 
         // crear targets
         // TODO: DEBERIA ESTAR EN INPUT Y VENIR DEL DXF
-        List<Target> targets = InputHandler.importTargetFromTxt("./src/Utils/InputExamples/ProductList.txt");
+//        List<Target> targets = InputHandler.importTargetFromTxt("./src/Utils/InputExamples/MarketTargets.txt");
+        List<Target> targets = InputHandler.importTargetFromTxt("./src/Utils/InputExamples/Plano2Targets.txt");
 
         // crear generators
         List<AgentsGenerator> generators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", targets);
