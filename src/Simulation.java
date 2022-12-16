@@ -2,6 +2,7 @@ import Agent.Agent;
 import Environment.Environment;
 import Environment.Wall;
 import GraphGenerator.Graph;
+import Agent.AgentStates;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -41,10 +42,13 @@ public class Simulation {
                 agent.updatePosition(this.dt);
                 StateMachine.updateAgent(this.graph, agent, this.time);
             }
+            List<Agent> leavingAgents = new ArrayList<>();
             for (Agent agent : this.agents) {
+                if(agent.getState() == AgentStates.LEAVING)
+                    leavingAgents.add(agent);
                 agent.updateVelocity();
             }
-
+            this.agents.removeAll(leavingAgents);
             CPM.updateAgents(agents, environment);
 
 

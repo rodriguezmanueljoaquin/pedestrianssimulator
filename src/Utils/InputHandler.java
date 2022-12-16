@@ -2,13 +2,32 @@ package Utils;
 
 import AgentsGenerator.AgentsGenerator;
 import AgentsGenerator.AgentsGeneratorZone;
+import Environment.Environment;
 import Environment.Target;
+import Environment.Exit;
 import Environment.Wall;
 
 import java.io.File;
 import java.util.*;
 
 public class InputHandler {
+    public static List<Exit> importExitsFromTxt(String filePath){
+        Scanner scanner = getCSVScanner(filePath);
+
+        List<Exit> result = new ArrayList<>();
+        List<Double> inputs = new ArrayList<>(Arrays.asList(0., 0., 0., 0., 0., 0.));
+        while (scanner.hasNextLine()) {
+            String[] tokens = scanner.nextLine().split(",");
+            for (int i = 0; i < inputs.size(); i++) {
+                inputs.set(i, Double.parseDouble(tokens[i]));
+            }
+            result.add(new Exit(new Wall(new Vector(inputs.get(0), inputs.get(1)), new Vector(inputs.get(3), inputs.get(4))))); // assume z is always 0
+        }
+
+        scanner.close();
+        return result;
+    }
+
     public static List<Wall> importWallsFromTxt(String filePath) {
         Scanner scanner = getCSVScanner(filePath);
 
@@ -26,17 +45,17 @@ public class InputHandler {
         return result;
     }
 
-    private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, List<Target> targets) {
+    private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, Environment environment) {
         // TODO: SHOULD RECEIVE BEHAVIOUR MODULE WITH AGENTS GENERATORS PARAMETERS AND POSSIBLE TARGETS, IT SHOULDNT RECEIVE IT AS A PARAMETER
         AgentsGeneratorZone zone = new AgentsGeneratorZone(
                 new Vector(Collections.min(xInputs), Collections.min(yInputs)),
                 new Vector(Collections.max(xInputs), Collections.max(yInputs))
         );
 
-        return new AgentsGenerator(zone, 2, 50, 1, 1, 2, targets);
+        return new AgentsGenerator(zone, 2, 50, 1, 1, 2, environment);
     }
 
-    public static List<AgentsGenerator> importAgentsGeneratorsFromTxt(String filePath, List<Target> targets) {
+    public static List<AgentsGenerator> importAgentsGeneratorsFromTxt(String filePath, Environment environment) {
         Scanner scanner = getCSVScanner(filePath);
 
         List<AgentsGenerator> result = new ArrayList<>();
@@ -56,7 +75,7 @@ public class InputHandler {
 
             if (sidesAnalyzed > 3) {
                 sidesAnalyzed = 0;
-                result.add(createAgentsGenerator(xInputs, yInputs, targets));
+                result.add(createAgentsGenerator(xInputs, yInputs, environment));
                 xInputs.clear();
                 yInputs.clear();
             }

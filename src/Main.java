@@ -3,6 +3,7 @@ import Environment.Environment;
 import Environment.Server;
 import Environment.Target;
 import Environment.Wall;
+import Environment.Exit;
 import GraphGenerator.Graph;
 import Utils.InputHandler;
 import Utils.Vector;
@@ -21,6 +22,9 @@ public class Main {
         if (!Files.exists(Paths.get(RESULTS_PATH))) {
             new File(RESULTS_PATH).mkdir();
         }
+        // crear environment -> Opte por crear el environment al principio e ir pasandole lo que vamos parseando
+        //La otra solucion era mandarle target y exits al generator pero esta me parece mas logica
+        Environment environment = new Environment();
 
         // crear walls
         List<Wall> walls = InputHandler.importWallsFromTxt("./input/PAREDES.csv");
@@ -33,11 +37,13 @@ public class Main {
 
         // BORRAR (TEST PARED DIAGONAL)
         walls.add(new Wall(new Vector(15, 0), new Vector(20, 5)));
+        environment.setWalls(walls);
 
+        List<Exit> exits = InputHandler.importExitsFromTxt("./input/SALIDAS.csv");
+        environment.setExits(exits);
 
         Graph graph = new Graph(walls);
         graph.generateGraph(new Vector(1, 1));
-
         // TESTING:
 //        graph.generateOutput(RESULTS_PATH);
 //        NodePath path = graph.AStar(graph.getNodes().get(new Vector(1,1)), new Vector(13,20));
@@ -45,17 +51,16 @@ public class Main {
 
         // crear servers
         List<Server> servers = new ArrayList<>(); // TODO
-
+        environment.setServers(servers);
         // crear targets
         // TODO: DEBERIA ESTAR EN INPUT Y VENIR DEL DXF
 //        List<Target> targets = InputHandler.importTargetFromTxt("./src/Utils/InputExamples/MarketTargets.txt");
         List<Target> targets = InputHandler.importTargetFromTxt("./src/Utils/InputExamples/Plano2Targets.txt");
-
+        environment.setTargets(targets);
         // crear generators
-        List<AgentsGenerator> generators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", targets);
+        List<AgentsGenerator> generators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", environment);
+        environment.setGenerators(generators);
 
-        // crear environment
-        Environment environment = new Environment(walls, servers, targets, generators);
 
         try {
             Simulation.createStaticFile(RESULTS_PATH, environment);

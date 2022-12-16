@@ -20,6 +20,19 @@ public class Agent {
     private NodePath currentPath;
     private Node currentIntermediateObjectiveNode;
 
+
+
+    /*
+            Tenemos un tema con Exits,
+            Como la idea no es pasarle las Exits a stateMachine (dado que no le pasamos ni walls)
+            Ni me parece bien pasarle a Graph las exits
+            Lo que se me ocurre hacer son dos opciones,
+            Cuando termino los objectives voy a LEAVING -> Seteo un objetivo que sea salir en base a la nearest exit y
+                camino hasta ahi
+            O desde agent ->  me fijo la posicion de mi ultimo objetivo al principio y hago Enviroment.getNearestExit(Vector position)
+               y voy ahi
+            Me gusta mas la segunda opcion
+     */
     public Agent(Vector x, double radius, List<? extends Objective> objectives) {
         this.position = x;
         this.velocity = new Vector(0, 0);

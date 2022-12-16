@@ -64,14 +64,18 @@ public class Graph {
         return bestNode;
     }
 
-    public NodePath getPathToObjective(Agent agent) {
+    public NodePath getPathToPosition(Vector position){
         // first try to get by current position, otherwise get the closest visible
-        Node fromNode = nodes.get(agent.getPosition());
+        Node fromNode = nodes.get(position);
         if (fromNode == null) {
-            fromNode = getClosestVisibleNode(agent.getPosition());
+            fromNode = getClosestVisibleNode(position);
         }
         //Checkear en la state machine de no mandarle null!
-        return AStar(fromNode, agent.getCurrentObjective().getPosition());
+        return AStar(fromNode, position);
+    }
+
+    public NodePath getPathToObjective(Agent agent) {
+        return getPathToPosition(agent.getPosition());
     }
 
     // initialPosition has to be a valid position, from this node the graph will expand
