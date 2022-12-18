@@ -1,6 +1,5 @@
 package GraphGenerator;
 
-import Agent.Agent;
 import Environment.Wall;
 import Utils.Vector;
 
@@ -37,16 +36,12 @@ public class Graph {
 
     private boolean isPositionVisible(Vector origin, Vector destiny) {
         for (Wall wall : this.walls)
-            if (wall.intersectsLine(origin, destiny))
+            if (wall.intersectsLine(origin, destiny) && !wall.contains(destiny))
+                // wall intersects the path from origin and destiny, and destiny is not in the wall
                 return false;
 
         return true;
     }
-
-    //Cambios que hice:
-    //El agente tiene un nodePath que sigue, el resto se hace desde
-    //el grafo, o sea la logica seria:
-    //  Desde Simulation/State machine le damos un objetivo y un nodePath al agente
 
     public Node getClosestVisibleNode(Vector position) {
         Node bestNode = null;
@@ -64,18 +59,14 @@ public class Graph {
         return bestNode;
     }
 
-    public NodePath getPathToPosition(Vector position){
+    public NodePath getPathToPosition(Vector fromPosition, Vector toPosition) {
         // first try to get by current position, otherwise get the closest visible
-        Node fromNode = nodes.get(position);
+        Node fromNode = nodes.get(fromPosition);
         if (fromNode == null) {
-            fromNode = getClosestVisibleNode(position);
+            fromNode = getClosestVisibleNode(fromPosition);
         }
         //Checkear en la state machine de no mandarle null!
-        return AStar(fromNode, position);
-    }
-
-    public NodePath getPathToObjective(Agent agent) {
-        return getPathToPosition(agent.getPosition());
+        return AStar(fromNode, toPosition);
     }
 
     // initialPosition has to be a valid position, from this node the graph will expand

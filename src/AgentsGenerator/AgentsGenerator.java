@@ -2,11 +2,9 @@ package AgentsGenerator;
 
 import Agent.Agent;
 import Agent.AgentConstants;
-import Environment.Environment;
-import Environment.Target;
-import Environment.Objective;
 import Environment.Exit;
-import Utils.Rectangle;
+import Environment.Objective;
+import Environment.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +20,8 @@ public class AgentsGenerator {
     // TODO: BEHAVIOUR MODULE
     private List<Target> targets;
     private List<Exit> exits;
-    private Environment environment;
 
-    public AgentsGenerator(AgentsGeneratorZone zone, double activeTime, double notActiveTime, double timeBetweenGenerations, int minGeneration, int maxGeneration, Environment environment) {
+    public AgentsGenerator(AgentsGeneratorZone zone, double activeTime, double notActiveTime, double timeBetweenGenerations, int minGeneration, int maxGeneration, List<Target> targets, List<Exit> exits) {
         if (minGeneration > maxGeneration || minGeneration < 0)
             throw new IllegalArgumentException("Bad arguments on generator agent creation limits");
 
@@ -34,9 +31,8 @@ public class AgentsGenerator {
         this.timeBetweenGenerations = timeBetweenGenerations;
         this.minGeneration = minGeneration;
         this.maxGeneration = maxGeneration;
-        this.environment = environment;
-        this.targets = environment.getTargets();
-        this.exits = environment.getExits();
+        this.targets = targets;
+        this.exits = exits;
 
         if (maxGeneration > zone.getZoneMatrixSize())
             this.maxGeneration = zone.getZoneMatrixSize();
@@ -59,15 +55,17 @@ public class AgentsGenerator {
                 } while (positionsUsed.contains(positionIndex));
                 positionsUsed.add(positionIndex);
 
-                int auxRandom = (int) (Math.random() * 10); // TODO: BORRAR cuando se haga el behaviour module
-  //              List<Objective> objectives = new ArrayList<>(this.targets.subList(i + auxRandom, 10 + i + auxRandom));
-                List<Objective> objectives = new ArrayList<>(this.targets.subList(0,1));
-                objectives.add(environment.getNearestExit(objectives.get(objectives.size() - 1).getPosition()));
+                // TODO: ------- BORRAR cuando se haga el behaviour module, que vendra con los objetivos y la salida
+                int auxRandom = (int) (Math.random() * 4);
+                List<Objective> objectives = new ArrayList<>(this.targets.subList(i + auxRandom, 2 + i + auxRandom));
+                objectives.add(exits.get(auxRandom));
+                // TODO: -------
+
                 agents.add(
                         new Agent(this.zone.getPositionByIndex(positionIndex),
                                 AgentConstants.MAX_RADIUS, objectives
-                            )
-                        );
+                        )
+                );
             }
         }
 

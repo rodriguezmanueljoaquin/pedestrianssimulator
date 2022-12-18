@@ -2,16 +2,15 @@ package Utils;
 
 import AgentsGenerator.AgentsGenerator;
 import AgentsGenerator.AgentsGeneratorZone;
-import Environment.Environment;
-import Environment.Target;
 import Environment.Exit;
+import Environment.Target;
 import Environment.Wall;
 
 import java.io.File;
 import java.util.*;
 
 public class InputHandler {
-    public static List<Exit> importExitsFromTxt(String filePath){
+    public static List<Exit> importExitsFromTxt(String filePath) {
         Scanner scanner = getCSVScanner(filePath);
 
         List<Exit> result = new ArrayList<>();
@@ -45,17 +44,17 @@ public class InputHandler {
         return result;
     }
 
-    private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, Environment environment) {
+    private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, List<Target> targets, List<Exit> exits) {
         // TODO: SHOULD RECEIVE BEHAVIOUR MODULE WITH AGENTS GENERATORS PARAMETERS AND POSSIBLE TARGETS, IT SHOULDNT RECEIVE IT AS A PARAMETER
         AgentsGeneratorZone zone = new AgentsGeneratorZone(
                 new Vector(Collections.min(xInputs), Collections.min(yInputs)),
                 new Vector(Collections.max(xInputs), Collections.max(yInputs))
         );
 
-        return new AgentsGenerator(zone, 2, 50, 1, 1, 2, environment);
+        return new AgentsGenerator(zone, 2, 50, 1, 1, 2, targets, exits);
     }
 
-    public static List<AgentsGenerator> importAgentsGeneratorsFromTxt(String filePath, Environment environment) {
+    public static List<AgentsGenerator> importAgentsGeneratorsFromTxt(String filePath, List<Target> targets, List<Exit> exits) {
         Scanner scanner = getCSVScanner(filePath);
 
         List<AgentsGenerator> result = new ArrayList<>();
@@ -75,7 +74,7 @@ public class InputHandler {
 
             if (sidesAnalyzed > 3) {
                 sidesAnalyzed = 0;
-                result.add(createAgentsGenerator(xInputs, yInputs, environment));
+                result.add(createAgentsGenerator(xInputs, yInputs, targets, exits));
                 xInputs.clear();
                 yInputs.clear();
             }

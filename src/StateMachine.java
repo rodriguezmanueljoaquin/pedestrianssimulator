@@ -5,9 +5,25 @@ import GraphGenerator.NodePath;
 import Utils.Constants;
 
 public class StateMachine {
-    public final Graph graph = new Graph(null);
-
     private StateMachine() {
+    }
+
+    private static void updateAgentCurrentObjective(Graph graph, Agent agent) {
+        if (agent.hasObjectives()) {
+            NodePath path = graph.getPathToPosition(agent.getPosition(), agent.getCurrentObjective().getPosition());
+
+            if (path == null) {
+                // FIXME! Checkear por que a veces da null
+                System.out.println("ERROR: NULL searching for path to objective, from: " + agent.getPosition() + " to: " + agent.getCurrentObjective().getPosition());
+                agent.setState(AgentStates.LEAVING);
+            } else {
+                agent.setCurrentPath(path);
+                agent.setState(AgentStates.MOVING);
+            }
+
+        } else {
+            agent.setState(AgentStates.LEAVING);
+        }
     }
 
     public static void updateAgent(Graph graph, Agent agent, double currentTime) {
@@ -24,34 +40,26 @@ public class StateMachine {
                         agent.setState(AgentStates.LEAVING);
                     }
                     return;
-                } else agent.setState(AgentStates.MOVING);
+                }
                 break;
+
             case ATTENDING:
-                if (currentTime - agent.getStartedAttendingAt() < agent.getCurrentObjective().getAttendingTime()) {
-                    agent.setState(AgentStates.ATTENDING);
-                    return;
+                if (currentTime - agent.getStartedAttendingAt() > agent.getCurrentObjective().getAttendingTime()) {
+                    agent.popNextObjective();
+                    StateMachine.updateAgentCurrentObjective(graph, agent);
                 }
-                agent.getNextObjective();
-            case STARTING:
-                if (agent.hasObjectives()) {
-                    NodePath path = graph.getPathToObjective(agent);
-                    if (path == null) {
-                        // FIXME! Checkear por que a veces da null
-                        agent.setState(AgentStates.LEAVING);
-                        return;
-                    }
-                    agent.setCurrentPath(path);
-                    agent.setState(AgentStates.MOVING);
-                    return;
-                }
-                agent.setState(AgentStates.LEAVING);
                 break;
-            case LEAVING:
-                //PROBLEMA TUVE QUE MATAR AL AGENTE DESDE SIMULATION
-                //NO SE PUEDE MATAR DESDE ACA YA QUE ESTA EN UNA LISTA Y VA A DAR NULL POINTER EXCEPTION
+
+            case STARTING:
+                StateMachine.updateAgentCurrentObjective(graph, agent);
+                break;
+
             case WAITING:
                 break;
 
+            case LEAVING:
+                // does nothing as agent will be removed in next iteration
+            default:
         }
     }
 }

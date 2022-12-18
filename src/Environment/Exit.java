@@ -2,7 +2,7 @@ package Environment;
 
 import Utils.Vector;
 
-public class Exit extends Objective{
+public class Exit extends Objective {
     private final Wall exit;
 
     public Exit(Wall exit) {

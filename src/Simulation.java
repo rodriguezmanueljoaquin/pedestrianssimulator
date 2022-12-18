@@ -1,8 +1,8 @@
 import Agent.Agent;
+import Agent.AgentStates;
 import Environment.Environment;
 import Environment.Wall;
 import GraphGenerator.Graph;
-import Agent.AgentStates;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -44,7 +44,7 @@ public class Simulation {
             }
             List<Agent> leavingAgents = new ArrayList<>();
             for (Agent agent : this.agents) {
-                if(agent.getState() == AgentStates.LEAVING)
+                if (agent.getState() == AgentStates.LEAVING)
                     leavingAgents.add(agent);
                 agent.updateVelocity();
             }

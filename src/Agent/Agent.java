@@ -20,19 +20,6 @@ public class Agent {
     private NodePath currentPath;
     private Node currentIntermediateObjectiveNode;
 
-
-
-    /*
-            Tenemos un tema con Exits,
-            Como la idea no es pasarle las Exits a stateMachine (dado que no le pasamos ni walls)
-            Ni me parece bien pasarle a Graph las exits
-            Lo que se me ocurre hacer son dos opciones,
-            Cuando termino los objectives voy a LEAVING -> Seteo un objetivo que sea salir en base a la nearest exit y
-                camino hasta ahi
-            O desde agent ->  me fijo la posicion de mi ultimo objetivo al principio y hago Enviroment.getNearestExit(Vector position)
-               y voy ahi
-            Me gusta mas la segunda opcion
-     */
     public Agent(Vector x, double radius, List<? extends Objective> objectives) {
         this.position = x;
         this.velocity = new Vector(0, 0);
@@ -44,7 +31,7 @@ public class Agent {
 
     public void updateVelocity() {
         if (state == AgentStates.LEAVING) {
-            //TODO: Logica de leaving, deberia ir a salida mas cercana
+            // will be destroyed next iteration
             this.setVelocity(new Vector(0, 0));
             return;
         }
@@ -88,10 +75,6 @@ public class Agent {
         return this.position;
     }
 
-    public void setPosition(Vector position) {
-        this.position = position;
-    }
-
     public Vector getVelocity() {
         return this.velocity;
     }
@@ -118,7 +101,7 @@ public class Agent {
         return null;
     }
 
-    public Objective getNextObjective() {
+    public Objective popNextObjective() {
         objectives.remove(0);
         return getCurrentObjective();
     }
@@ -142,10 +125,6 @@ public class Agent {
 
     public void setStartedAttendingAt(Double startedAttendingAt) {
         this.startedAttendingAt = startedAttendingAt;
-    }
-
-    public void setObjectives(List<Objective> objectives) {
-        this.objectives = objectives;
     }
 
     public double distance(Agent other) {

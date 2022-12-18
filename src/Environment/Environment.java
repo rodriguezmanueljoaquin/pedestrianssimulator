@@ -14,8 +14,6 @@ public class Environment {
     private List<AgentsGenerator> generators;
     private List<Exit> exits;
 
-    public Environment(){};
-
     public Environment(List<Wall> walls, List<Server> servers, List<Target> targets, List<AgentsGenerator> generators, List<Exit> exits) {
         this.walls = walls;
         this.servers = servers;
@@ -24,27 +22,7 @@ public class Environment {
         this.exits = exits;
     }
 
-    public void setWalls(List<Wall> walls) {
-        this.walls = walls;
-    }
-
-    public void setServers(List<Server> servers) {
-        this.servers = servers;
-    }
-
-    public void setTargets(List<Target> targets) {
-        this.targets = targets;
-    }
-
-    public void setGenerators(List<AgentsGenerator> generators) {
-        this.generators = generators;
-    }
-
-    public void setExits(List<Exit> exits) {
-        this.exits = exits;
-    }
-
-    public List<Exit> getExits(){
+    public List<Exit> getExits() {
         return exits;
     }
 
@@ -59,21 +37,20 @@ public class Environment {
     public List<Target> getTargets() {
         return targets;
     }
-
-    public Exit getNearestExit(Vector position){
+    
+    public Exit getNearestExit(Vector position) {
         Exit minExit = getExits().get(0);
         Double minDistance = position.distance(minExit.getPosition());
         Double currentDistance;
-        for(Exit currentExit : getExits()) {
+        for (Exit currentExit : getExits()) {
             currentDistance = position.distance(currentExit.getPosition());
-            if(currentDistance < minDistance){
+            if (currentDistance < minDistance) {
                 minExit = currentExit;
                 minDistance = currentDistance;
             }
         }
         return minExit;
     }
-
 
     public List<Agent> generateAgents(Double time) {
         List<Agent> newAgents = new ArrayList<>();
