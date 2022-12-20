@@ -8,45 +8,51 @@ import Environment.Wall;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class InputHandler {
-    public static List<Exit> importExitsFromTxt(String filePath) {
+    private static void readTxtWallsAndApplyFunction(String filePath, Function<Wall, Void> function) {
         Scanner scanner = getCSVScanner(filePath);
 
-        List<Exit> result = new ArrayList<>();
         List<Double> inputs = new ArrayList<>(Arrays.asList(0., 0., 0., 0., 0., 0.));
         while (scanner.hasNextLine()) {
             String[] tokens = scanner.nextLine().split(",");
             for (int i = 0; i < inputs.size(); i++) {
                 inputs.set(i, Double.parseDouble(tokens[i]));
             }
-            result.add(new Exit(new Wall(new Vector(inputs.get(0), inputs.get(1)), new Vector(inputs.get(3), inputs.get(4))))); // assume z is always 0
+
+            function.apply(new Wall(new Vector(inputs.get(0), inputs.get(1)), new Vector(inputs.get(3), inputs.get(4))));
         }
 
         scanner.close();
+    }
+
+    public static List<Exit> importExitsFromTxt(String filePath) {
+        List<Exit> result = new ArrayList<>();
+        InputHandler.readTxtWallsAndApplyFunction(filePath, (Wall wall) -> {
+            result.add(new Exit(wall));
+            return null;
+        });
+
         return result;
     }
 
     public static List<Wall> importWallsFromTxt(String filePath) {
-        Scanner scanner = getCSVScanner(filePath);
-
         List<Wall> result = new ArrayList<>();
-        List<Double> inputs = new ArrayList<>(Arrays.asList(0., 0., 0., 0., 0., 0.));
-        while (scanner.hasNextLine()) {
-            String[] tokens = scanner.nextLine().split(",");
-            for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Double.parseDouble(tokens[i]));
-            }
-            result.add(new Wall(new Vector(inputs.get(0), inputs.get(1)), new Vector(inputs.get(3), inputs.get(4)))); // assume z is always 0
-        }
+        InputHandler.readTxtWallsAndApplyFunction(filePath, (Wall wall) -> {
+            result.add(wall);
+            return null;
+        });
 
-        scanner.close();
         return result;
     }
 
     private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, List<Target> targets, List<Exit> exits) {
         // TODO: SHOULD RECEIVE BEHAVIOUR MODULE WITH AGENTS GENERATORS PARAMETERS AND POSSIBLE TARGETS, IT SHOULDNT RECEIVE IT AS A PARAMETER
         AgentsGeneratorZone zone = new AgentsGeneratorZone(
+                // rectangle is defined by its lowest and leftest point and highest and rightest point, data is assured to provide rectangles as generators zones
                 new Vector(Collections.min(xInputs), Collections.min(yInputs)),
                 new Vector(Collections.max(xInputs), Collections.max(yInputs))
         );
@@ -63,6 +69,7 @@ public class InputHandler {
         int sidesAnalyzed = 0;
         while (scanner.hasNextLine()) {
             String[] tokens = scanner.nextLine().split(",");
+            // save all x inputs and y inputs separately
             for (int i = 0; i < 6; i++) {
                 if (i % 3 == 0)
                     xInputs.add(Double.parseDouble(tokens[i]));
