@@ -107,6 +107,37 @@ public class Graph {
         }
     }
 
+    private NodePath pathReducer(NodePath path) {
+        Node initialNode,currentNode;
+        Node lastVisibleNode = path.getFirstNode();
+        initialNode = lastVisibleNode;
+        currentNode = lastVisibleNode;
+        boolean nodeIsVisible;
+        NodePath reducedPath = new NodePath();
+        while(currentNode != null) {
+            initialNode = lastVisibleNode;
+            currentNode = lastVisibleNode;
+            nodeIsVisible = true;
+            reducedPath.add(initialNode); //Entonces, siempre agrego el initial y el lastVisible, despues arranco de nuevo desde lastVisible.
+            while (nodeIsVisible) {
+                if(currentNode == null){
+                    //Si me devuelve null significa que termine el camino. Agrego el ultimo que necesito pq despues ya es visible.
+                    if(initialNode != lastVisibleNode)
+                        reducedPath.add(lastVisibleNode);
+                    return reducedPath;
+                }
+                //Si desde el nodo inicial del segmente, veo la proximo nodo, avanzo last visible ndoe.
+                nodeIsVisible = isPositionVisible(initialNode.getPosition(), currentNode.getPosition());
+                if(nodeIsVisible) {
+                    lastVisibleNode = currentNode;
+                }
+                currentNode = path.getNodeAfter(lastVisibleNode);
+            }
+        }
+        if(initialNode != lastVisibleNode)
+            reducedPath.add(lastVisibleNode);
+        return reducedPath;
+    }
 
     public NodePath AStar(Node from, Vector to) {
         PriorityQueue<NodePath> frontierPaths = new PriorityQueue<>(Comparator.comparingDouble(NodePath::getFunctionValue));
@@ -133,7 +164,7 @@ public class Graph {
             currentNode = currentPath.getLastNode();
         }
 
-        return currentPath;
+        return pathReducer(currentPath);
     }
 
     public void generateOutput(String outputPath) {

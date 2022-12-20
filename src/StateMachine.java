@@ -30,7 +30,7 @@ public class StateMachine {
         switch (agent.getState()) {
             case MOVING:
                 if (agent.getPosition().distance(agent.getCurrentObjective().getPosition()) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
-                    //FixMe: Esto hay que diseñarlo mejor pq sino no podemmos meter el leaving aca tmbn
+                    //FixMe: Esto hay que disenarlo mejor pq sino no podemmos meter el leaving aca tmbn
                     if (agent.getCurrentObjective().hasAttendingTime()) {
                         agent.setStartedAttendingAt(currentTime);
                         agent.setState(AgentStates.ATTENDING);
