@@ -39,6 +39,8 @@ public class Environment {
     }
     
     public Exit getNearestExit(Vector position) {
+        //TODO: Update with Graph function getPathLengthToObjective(Vector fromPostion, Vector toPosition)
+        //Once we have behaviour module
         Exit minExit = getExits().get(0);
         Double minDistance = position.distance(minExit.getPosition());
         Double currentDistance;

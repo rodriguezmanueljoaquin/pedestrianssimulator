@@ -59,6 +59,20 @@ public class Graph {
         return bestNode;
     }
 
+    public double getPathLengthToObjective(Vector fromPostion, Vector toPosition) {
+        NodePath path = getPathToPosition(fromPostion, toPosition);
+        Node currentNode = path.getFirstNode();
+        Node lastNode = path.getLastNode();
+        Node previousNode;
+        double sum = 0.0;
+        while(currentNode != lastNode){
+            previousNode = currentNode;
+            currentNode = path.getNodeAfter(currentNode);
+            sum += previousNode.getPosition().distance(currentNode.getPosition());
+        }
+        return sum;
+    }
+
     public NodePath getPathToPosition(Vector fromPosition, Vector toPosition) {
         // first try to get by current position, otherwise get the closest visible
         Node fromNode = nodes.get(fromPosition);
@@ -66,7 +80,7 @@ public class Graph {
             fromNode = getClosestVisibleNode(fromPosition);
         }
         //Checkear en la state machine de no mandarle null!
-        return AStar(fromNode, toPosition);
+        return pathReducer(AStar(fromNode, toPosition));
     }
 
     // initialPosition has to be a valid position, from this node the graph will expand
@@ -164,7 +178,7 @@ public class Graph {
             currentNode = currentPath.getLastNode();
         }
 
-        return pathReducer(currentPath);
+        return currentPath;
     }
 
     public void generateOutput(String outputPath) {
