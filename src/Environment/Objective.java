@@ -3,9 +3,9 @@ package Environment;
 import Utils.Vector;
 
 public interface Objective {
-    public abstract Vector getPosition();
+    Vector getPosition();
 
-    public abstract Double getAttendingTime();
+    Double getAttendingTime();
 
-    public abstract Boolean hasAttendingTime();
+    Boolean hasAttendingTime();
 }
