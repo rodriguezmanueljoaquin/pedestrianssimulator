@@ -79,8 +79,14 @@ public class Graph {
         if (fromNode == null) {
             fromNode = getClosestVisibleNode(fromPosition);
         }
-        //Checkear en la state machine de no mandarle null!
-        return pathReducer(AStar(fromNode, toPosition));
+
+        NodePath fullPath = AStar(fromNode, toPosition);
+        if(fullPath == null) {
+            // none path found
+            return null;
+        }
+
+        return pathReducer(fromPosition, toPosition, fullPath);
     }
 
     // initialPosition has to be a valid position, from this node the graph will expand
@@ -121,35 +127,36 @@ public class Graph {
         }
     }
 
-    private NodePath pathReducer(NodePath path) {
-        Node initialNode,currentNode;
-        Node lastVisibleNode = path.getFirstNode();
-        initialNode = lastVisibleNode;
-        currentNode = lastVisibleNode;
-        boolean nodeIsVisible;
+    private NodePath pathReducer(Vector fromPosition, Vector toPosition, NodePath path) {
+        Node currentNode = path.getFirstNode();
+        if(currentNode == null)
+            // path has 0 nodes between ends
+            return path;
+
+        Node prevNode = currentNode;
         NodePath reducedPath = new NodePath();
-        while(currentNode != null) {
-            initialNode = lastVisibleNode;
-            currentNode = lastVisibleNode;
-            nodeIsVisible = true;
-            reducedPath.add(initialNode); //Entonces, siempre agrego el initial y el lastVisible, despues arranco de nuevo desde lastVisible.
-            while (nodeIsVisible) {
-                if(currentNode == null){
-                    //Si me devuelve null significa que termine el camino. Agrego el ultimo que necesito pq despues ya es visible.
-                    if(initialNode != lastVisibleNode)
-                        reducedPath.add(lastVisibleNode);
-                    return reducedPath;
-                }
-                //Si desde el nodo inicial del segmente, veo la proximo nodo, avanzo last visible ndoe.
-                nodeIsVisible = isPositionVisible(initialNode.getPosition(), currentNode.getPosition());
-                if(nodeIsVisible) {
-                    lastVisibleNode = currentNode;
-                }
-                currentNode = path.getNodeAfter(lastVisibleNode);
-            }
+
+        // keep last visible node from fromPosition
+        while (currentNode != null && isPositionVisible(fromPosition, currentNode.getPosition())) {
+            prevNode = currentNode;
+            currentNode = path.getNodeAfter(prevNode);
         }
-        if(initialNode != lastVisibleNode)
-            reducedPath.add(lastVisibleNode);
+        reducedPath.add(prevNode);
+
+        currentNode = prevNode; // reset current
+        // keep only essential in between nodes  (erase those that are between nodes (and toPosition) that can see each other)
+        while (!isPositionVisible(currentNode.getPosition(), toPosition)) {
+            prevNode = currentNode;
+            currentNode = path.getNodeAfter(currentNode);
+
+            // current node is not visible from last saved node, save the previous one that is neighbour of current so it can see it
+            if(!isPositionVisible(reducedPath.getLastNode().getPosition(), currentNode.getPosition()))
+                reducedPath.add(prevNode);
+        }
+        // case where last visible node from fromPosition is the first node that is visible from toPosition
+        if(!reducedPath.getLastNode().equals(currentNode))
+            reducedPath.add(currentNode);
+
         return reducedPath;
     }
 
@@ -171,8 +178,10 @@ public class Graph {
                 }
             }
 
-            if (frontierPaths.size() == 0)
-                return null;
+            if (frontierPaths.size() == 0) {
+                System.err.println("NO PATH FOUND BETWEEN "+ from.getPosition() + " and " + to);
+                return null; // no path found
+            }
 
             currentPath = frontierPaths.poll();
             currentNode = currentPath.getLastNode();
