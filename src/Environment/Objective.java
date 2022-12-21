@@ -2,7 +2,7 @@ package Environment;
 
 import Utils.Vector;
 
-public abstract class Objective {
+public interface Objective {
     public abstract Vector getPosition();
 
     public abstract Double getAttendingTime();

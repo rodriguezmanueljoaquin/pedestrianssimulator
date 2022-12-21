@@ -1,3 +1,4 @@
+import Agent.BehaviourScheme;
 import AgentsGenerator.AgentsGenerator;
 import Environment.*;
 import GraphGenerator.Graph;
@@ -19,7 +20,7 @@ public class Main {
             new File(RESULTS_PATH).mkdir();
         }
 
-        // crear walls
+        // -------- WALLS --------
         List<Wall> walls = InputHandler.importWallsFromTxt("./input/PAREDES.csv");
 
         // FIXME: CERRAMOS EL CONTORNO PERO DEBERIA SER UN REQUISITO DEL DXF
@@ -33,22 +34,32 @@ public class Main {
 
         List<Exit> exits = InputHandler.importExitsFromTxt("./input/SALIDAS.csv");
 
-        // crear servers
+        // -------- SERVERS --------
         List<Server> servers = new ArrayList<>(); // TODO
 
-        // crear targets
+        // -------- TARGETS --------
         // TODO: DEBERIA ESTAR EN INPUT Y VENIR DEL DXF
+        // TODO: Y DEBERIA SER UN MAP<Integer, List<Objective>> PARA DIFERENCIAR LOS DISTINTOS GRUPOS DE TARGETS
 //        List<Target> targets = InputHandler.importTargetFromTxt("./src/Utils/InputExamples/MarketTargets.txt");
-        List<Target> targets = InputHandler.importTargetFromTxt("./src/Utils/InputExamples/Plano2Targets.txt");
+        List<Objective> targets = InputHandler.importTargetsFromTxt("./src/Utils/InputExamples/Plano2Targets.txt");
 
-        // crear generators
-        List<AgentsGenerator> generators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", targets, exits);
+        // -------- BEHAVIOUR --------
+        BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(exits);
 
-        Environment environment = new Environment(walls, servers, targets, generators, exits);
+        // SEARCH FOR PRODUCTS
+        marketClientBehaviourScheme.addObjectiveGroupToScheme(targets, 5, 10);
 
+        // -------- AGENT GENERATORS --------
+        List<AgentsGenerator> generators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", marketClientBehaviourScheme);
+
+        // -------- ENVIRONMENT --------
+        Environment environment = new Environment(walls, servers, generators, exits);
+
+        // -------- GRAPH --------
         Graph graph = new Graph(environment.getWalls());
         graph.generateGraph(new Vector(1, 1));
-        // TESTING:
+
+        // FOR GRAPH NODES PLOT:
 //        graph.generateOutput(RESULTS_PATH);
 //        NodePath path = graph.AStar(graph.getNodes().get(new Vector(1,3)), new Vector(25,1));
 //        System.out.println(path);

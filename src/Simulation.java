@@ -30,12 +30,15 @@ public class Simulation {
     }
 
     public void run() {
+        System.out.println("\t\tSimulation started...");
         // first iteration
         this.writeOutput();
 
         while (this.time < this.maxTime) {
             // create new agents
             this.agents.addAll(this.environment.generateAgents(this.time));
+
+            // TODO: make environment check servers and free its users if necessary?¿
 
             // update positions
             for (Agent agent : this.agents) {
@@ -57,6 +60,8 @@ public class Simulation {
             this.time += this.dt;
         }
         this.writer.close();
+        System.out.println("\t\tSimulation ended");
+        System.out.println("\tSuccesfully created dynamic file");
     }
 
     public static void createStaticFile(String outputPath, Environment environment) throws FileNotFoundException, UnsupportedEncodingException {
@@ -85,8 +90,7 @@ public class Simulation {
     }
 
     private void createDynamicFile(String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {
-        System.out.println("\tCreating dynamic file...");
+        System.out.println("\tCreating dynamic file. . .");
         this.writer = new PrintWriter(outputDirectoryPath + "/dynamic.txt", "UTF-8");
-        System.out.println("\tSuccesfully created dynamic file...");
     }
 }

@@ -65,7 +65,7 @@ public class Graph {
         Node lastNode = path.getLastNode();
         Node previousNode;
         double sum = 0.0;
-        while(currentNode != lastNode){
+        while (currentNode != lastNode) {
             previousNode = currentNode;
             currentNode = path.getNodeAfter(currentNode);
             sum += previousNode.getPosition().distance(currentNode.getPosition());
@@ -81,7 +81,7 @@ public class Graph {
         }
 
         NodePath fullPath = AStar(fromNode, toPosition);
-        if(fullPath == null) {
+        if (fullPath == null) {
             // none path found
             return null;
         }
@@ -129,7 +129,7 @@ public class Graph {
 
     private NodePath pathReducer(Vector fromPosition, Vector toPosition, NodePath path) {
         Node currentNode = path.getFirstNode();
-        if(currentNode == null)
+        if (currentNode == null)
             // path has 0 nodes between ends
             return path;
 
@@ -150,11 +150,11 @@ public class Graph {
             currentNode = path.getNodeAfter(currentNode);
 
             // current node is not visible from last saved node, save the previous one that is neighbour of current so it can see it
-            if(!isPositionVisible(reducedPath.getLastNode().getPosition(), currentNode.getPosition()))
+            if (!isPositionVisible(reducedPath.getLastNode().getPosition(), currentNode.getPosition()))
                 reducedPath.add(prevNode);
         }
         // case where last visible node from fromPosition is the first node that is visible from toPosition
-        if(!reducedPath.getLastNode().equals(currentNode))
+        if (!reducedPath.getLastNode().equals(currentNode))
             reducedPath.add(currentNode);
 
         return reducedPath;
@@ -179,7 +179,7 @@ public class Graph {
             }
 
             if (frontierPaths.size() == 0) {
-                System.err.println("NO PATH FOUND BETWEEN "+ from.getPosition() + " and " + to);
+                System.err.println("NO PATH FOUND BETWEEN " + from.getPosition() + " and " + to);
                 return null; // no path found
             }
 

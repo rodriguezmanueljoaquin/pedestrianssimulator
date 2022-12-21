@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class Server extends Objective {
+public class Server implements Objective {
     //TODO: IMPLEMENT SERVERS
     private final int maxAttendants;
     private int currentAttendants;

@@ -1,16 +1,16 @@
 package Utils;
 
+import Agent.BehaviourScheme;
 import AgentsGenerator.AgentsGenerator;
 import AgentsGenerator.AgentsGeneratorZone;
 import Environment.Exit;
+import Environment.Objective;
 import Environment.Target;
 import Environment.Wall;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class InputHandler {
     private static void readTxtWallsAndApplyFunction(String filePath, Function<Wall, Void> function) {
@@ -49,7 +49,7 @@ public class InputHandler {
         return result;
     }
 
-    private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, List<Target> targets, List<Exit> exits) {
+    private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, BehaviourScheme behaviourScheme) {
         // TODO: SHOULD RECEIVE BEHAVIOUR MODULE WITH AGENTS GENERATORS PARAMETERS AND POSSIBLE TARGETS, IT SHOULDNT RECEIVE IT AS A PARAMETER
         AgentsGeneratorZone zone = new AgentsGeneratorZone(
                 // rectangle is defined by its lowest and leftest point and highest and rightest point, data is assured to provide rectangles as generators zones
@@ -57,10 +57,10 @@ public class InputHandler {
                 new Vector(Collections.max(xInputs), Collections.max(yInputs))
         );
 
-        return new AgentsGenerator(zone, 2, 50, 1, 1, 2, targets, exits);
+        return new AgentsGenerator(zone, 2, 50, 1, 1, 2, behaviourScheme);
     }
 
-    public static List<AgentsGenerator> importAgentsGeneratorsFromTxt(String filePath, List<Target> targets, List<Exit> exits) {
+    public static List<AgentsGenerator> importAgentsGeneratorsFromTxt(String filePath, BehaviourScheme behaviourScheme) {
         Scanner scanner = getCSVScanner(filePath);
 
         List<AgentsGenerator> result = new ArrayList<>();
@@ -81,7 +81,7 @@ public class InputHandler {
 
             if (sidesAnalyzed > 3) {
                 sidesAnalyzed = 0;
-                result.add(createAgentsGenerator(xInputs, yInputs, targets, exits));
+                result.add(createAgentsGenerator(xInputs, yInputs, behaviourScheme));
                 xInputs.clear();
                 yInputs.clear();
             }
@@ -95,7 +95,7 @@ public class InputHandler {
         return result;
     }
 
-    public static List<Target> importTargetFromTxt(String filePath) {
+    public static List<Objective> importTargetsFromTxt(String filePath) {
         //TODO: Ver cuanto le pones de attending time, que tipo de distribucion?
         Double attendingTime = 5.;
         File targetFile;
@@ -109,7 +109,7 @@ public class InputHandler {
             return null;
         }
 
-        List<Target> targets = new ArrayList<>();
+        List<Objective> targets = new ArrayList<>();
         while (targetScanner.hasNextLine()) {
             targets.add(new Target(Integer.valueOf(targetScanner.next()),
                     new Vector(Double.valueOf(targetScanner.next()), Double.valueOf(targetScanner.next())),

@@ -3,7 +3,7 @@ package Environment;
 
 import Utils.Vector;
 
-public class Target extends Objective {
+public class Target implements Objective {
     private final Vector position;
     private final Integer id;
     private final Double attendingTime; //milliseconds needed to complete task

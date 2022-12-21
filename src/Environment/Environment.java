@@ -10,14 +10,12 @@ import java.util.List;
 public class Environment {
     private List<Wall> walls;
     private List<Server> servers;
-    private List<Target> targets;
     private List<AgentsGenerator> generators;
     private List<Exit> exits;
 
-    public Environment(List<Wall> walls, List<Server> servers, List<Target> targets, List<AgentsGenerator> generators, List<Exit> exits) {
+    public Environment(List<Wall> walls, List<Server> servers, List<AgentsGenerator> generators, List<Exit> exits) {
         this.walls = walls;
         this.servers = servers;
-        this.targets = targets;
         this.generators = generators;
         this.exits = exits;
     }
@@ -34,10 +32,6 @@ public class Environment {
         return servers;
     }
 
-    public List<Target> getTargets() {
-        return targets;
-    }
-    
     public Exit getNearestExit(Vector position) {
         //TODO: Update with Graph function getPathLengthToObjective(Vector fromPostion, Vector toPosition)
         //Once we have behaviour module
