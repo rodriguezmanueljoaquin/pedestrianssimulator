@@ -1,6 +1,7 @@
 import Agent.BehaviourScheme;
 import AgentsGenerator.AgentsGenerator;
 import Environment.*;
+import Environment.Server.Server;
 import GraphGenerator.Graph;
 import Utils.InputHandler;
 import Utils.Vector;

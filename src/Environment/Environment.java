@@ -2,6 +2,7 @@ package Environment;
 
 import Agent.Agent;
 import AgentsGenerator.AgentsGenerator;
+import Environment.Server.Server;
 import Utils.Vector;
 
 import java.util.ArrayList;

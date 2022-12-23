@@ -4,8 +4,9 @@ import Utils.Vector;
 
 public interface Objective {
     Vector getPosition();
-
-    Double getAttendingTime();
-
-    Boolean hasAttendingTime();
+    Boolean hasToAttend();
+    Boolean hasFinishedAttending(int id, double startedAttendingTime, double currentTime);
+    default Boolean isServer() {
+        return false;
+    }
 }

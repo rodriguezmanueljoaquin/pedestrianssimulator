@@ -24,4 +24,5 @@ public class Rectangle {
     public Vector getRandomPointInside() {
         return new Vector(getRandomDoubleInRange(x1.getX(), x2.getX()), getRandomDoubleInRange(x1.getY(), x2.getY()));
     }
+
 }

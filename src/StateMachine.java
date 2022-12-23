@@ -31,7 +31,7 @@ public class StateMachine {
             case MOVING:
                 if (agent.getPosition().distance(agent.getCurrentObjective().getPosition()) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
                     //FixMe: Esto hay que disenarlo mejor pq sino no podemmos meter el leaving aca tmbn
-                    if (agent.getCurrentObjective().hasAttendingTime()) {
+                    if (agent.getCurrentObjective().hasToAttend()) {
                         agent.setStartedAttendingAt(currentTime);
                         agent.setState(AgentStates.ATTENDING);
                     } else {
@@ -44,12 +44,11 @@ public class StateMachine {
                 break;
 
             case ATTENDING:
-                if (currentTime - agent.getStartedAttendingAt() > agent.getCurrentObjective().getAttendingTime()) {
+                if (agent.getCurrentObjective().hasFinishedAttending(agent.getId(),agent.getStartedAttendingAt(),currentTime)) {
                     agent.popNextObjective();
                     StateMachine.updateAgentCurrentObjective(graph, agent);
                 }
                 break;
-
             case STARTING:
                 StateMachine.updateAgentCurrentObjective(graph, agent);
                 break;

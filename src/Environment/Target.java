@@ -21,12 +21,13 @@ public class Target implements Objective {
         return position;
     }
 
-    public Double getAttendingTime() {
-        return attendingTime;
+    @Override
+    public Boolean hasFinishedAttending(int id, double startedAttendingTime, double currentTime) {
+        return currentTime - startedAttendingTime >= this.attendingTime;
     }
 
     @Override
-    public Boolean hasAttendingTime() {
+    public Boolean hasToAttend() {
         return true;
     }
 

@@ -15,12 +15,12 @@ public class Exit implements Objective {
     }
 
     @Override
-    public Double getAttendingTime() {
-        return null;
+    public Boolean hasToAttend() {
+        return false;
     }
 
     @Override
-    public Boolean hasAttendingTime() {
-        return false;
+    public Boolean hasFinishedAttending(int id, double startedAttendingTime, double currentTime) {
+        return true;
     }
 }
