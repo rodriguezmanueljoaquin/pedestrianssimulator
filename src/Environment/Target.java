@@ -22,7 +22,7 @@ public class Target implements Objective {
     }
 
     @Override
-    public Boolean hasFinishedAttending(int id, double startedAttendingTime, double currentTime) {
+    public Boolean hasFinishedAttending(int agentId, double startedAttendingTime, double currentTime) {
         return currentTime - startedAttendingTime >= this.attendingTime;
     }
 

@@ -1,4 +1,6 @@
-import Agent.BehaviourScheme;
+import AgentsBehaviour.BehaviourScheme;
+import AgentsBehaviour.StateMachine.StateMachine;
+import AgentsBehaviour.StateMachine.StudentSM;
 import AgentsGenerator.AgentsGenerator;
 import Environment.*;
 import Environment.Server.Server;
@@ -44,26 +46,30 @@ public class Main {
 //        List<Target> targets = InputHandler.importTargetFromTxt("./src/Utils/InputExamples/MarketTargets.txt");
         List<Objective> targets = InputHandler.importTargetsFromTxt("./src/Utils/InputExamples/Plano2Targets.txt");
 
-        // -------- BEHAVIOUR --------
-        BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(exits);
-
-        // SEARCH FOR PRODUCTS
-        marketClientBehaviourScheme.addObjectiveGroupToScheme(targets, 5, 10);
-
-        // -------- AGENT GENERATORS --------
-        List<AgentsGenerator> generators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", marketClientBehaviourScheme);
-
-        // -------- ENVIRONMENT --------
-        Environment environment = new Environment(walls, servers, generators, exits);
-
         // -------- GRAPH --------
-        Graph graph = new Graph(environment.getWalls());
+        Graph graph = new Graph(walls);
         graph.generateGraph(new Vector(1, 1));
 
         // FOR GRAPH NODES PLOT:
 //        graph.generateOutput(RESULTS_PATH);
 //        NodePath path = graph.AStar(graph.getNodes().get(new Vector(1,3)), new Vector(25,1));
 //        System.out.println(path);
+
+        // -------- BEHAVIOUR --------
+        // ---- STATE MACHINE ----
+        StateMachine studentStateMachine = new StudentSM(graph);
+
+        BehaviourScheme studentBehaviourScheme = new BehaviourScheme(studentStateMachine, exits);
+
+        // SEARCH FOR PRODUCTS
+        studentBehaviourScheme.addObjectiveGroupToScheme(targets, 5, 10);
+
+        // -------- AGENT GENERATORS --------
+        List<AgentsGenerator> studentsGenerators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", studentBehaviourScheme);
+
+        // -------- ENVIRONMENT --------
+        Environment environment = new Environment(walls, servers, studentsGenerators, exits);
+
 
         try {
             Simulation.createStaticFile(RESULTS_PATH, environment);

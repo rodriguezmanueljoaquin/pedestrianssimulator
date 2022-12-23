@@ -1,5 +1,6 @@
 package Agent;
 
+import AgentsBehaviour.StateMachine.StateMachine;
 import Environment.Objective;
 import GraphGenerator.Node;
 import GraphGenerator.NodePath;
@@ -11,6 +12,7 @@ import java.util.List;
 public class Agent {
     private Vector position;
     private Vector velocity;
+    private final StateMachine stateMachine;
     private static Integer count = 1;
     private final Integer id;
     private double radius;
@@ -20,10 +22,11 @@ public class Agent {
     private NodePath currentPath;
     private Node currentIntermediateObjectiveNode;
 
-    public Agent(Vector x, double radius, List<? extends Objective> objectives) {
+    public Agent(Vector x, double radius, StateMachine stateMachine, List<? extends Objective> objectives) {
         this.position = x;
         this.velocity = new Vector(0, 0);
         this.radius = radius;
+        this.stateMachine = stateMachine;
         this.state = AgentStates.STARTING; //just started
         this.id = count++;
         this.objectives = objectives;
@@ -125,6 +128,10 @@ public class Agent {
 
     public void setStartedAttendingAt(Double startedAttendingAt) {
         this.startedAttendingAt = startedAttendingAt;
+    }
+
+    public StateMachine getStateMachine() {
+        return stateMachine;
     }
 
     public double distance(Agent other) {

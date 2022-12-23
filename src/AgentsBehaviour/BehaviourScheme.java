@@ -1,5 +1,6 @@
-package Agent;
+package AgentsBehaviour;
 
+import AgentsBehaviour.StateMachine.StateMachine;
 import Environment.Exit;
 import Environment.Objective;
 
@@ -8,17 +9,20 @@ import java.util.List;
 import java.util.Random;
 
 public class BehaviourScheme {
-    // BehaviourScheme defines how agents will act, it is an ordered list detailing the structure of the sequence of actions they will make
+    // BehaviourScheme defines how agents will act, it is an ordered list detailing the structure of the sequence of actions they will make.
+    // Also, it has the state machine that the agents it creates will use, which defines how the transition between states is done.
     /* Example:
         1. Go to the entrance
         2. Search for N products in the market, where 3<N<5
         3. Go to the cashier to pay the products
      */
+    private final StateMachine stateMachine;
     private final List<ObjectiveGroup> scheme;
     private final List<Exit> exits;
     private final Random random;
 
-    public BehaviourScheme(List<Exit> exits) {
+    public BehaviourScheme(StateMachine stateMachine, List<Exit> exits) {
+        this.stateMachine = stateMachine;
         this.scheme = new ArrayList<>();
         this.exits = exits;
         this.random = new Random(1);
@@ -45,6 +49,10 @@ public class BehaviourScheme {
 
 
         return objectives;
+    }
+
+    public StateMachine getStateMachine() {
+        return stateMachine;
     }
 
     private class ObjectiveGroup {

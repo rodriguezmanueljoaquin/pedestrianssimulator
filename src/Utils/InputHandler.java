@@ -1,6 +1,6 @@
 package Utils;
 
-import Agent.BehaviourScheme;
+import AgentsBehaviour.BehaviourScheme;
 import AgentsGenerator.AgentsGenerator;
 import AgentsGenerator.AgentsGeneratorZone;
 import Environment.Exit;

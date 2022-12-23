@@ -2,7 +2,7 @@ package AgentsGenerator;
 
 import Agent.Agent;
 import Agent.AgentConstants;
-import Agent.BehaviourScheme;
+import AgentsBehaviour.BehaviourScheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,8 @@ public class AgentsGenerator {
 
                 agents.add(
                         new Agent(this.zone.getPositionByIndex(positionIndex),
-                                AgentConstants.MAX_RADIUS, this.behaviourScheme.getObjectivesSample()
+                                AgentConstants.MAX_RADIUS, this.behaviourScheme.getStateMachine(),
+                                this.behaviourScheme.getObjectivesSample()
                         )
                 );
             }

@@ -11,12 +11,11 @@ import java.util.List;
 import java.util.Queue;
 
 public class Server implements Objective {
-    //TODO: IMPLEMENT SERVERS
     private final int maxAttendants;
     private final Queue<Agent> queue;
     private final List<Agent> servingAgents;
     private final ServerPositionHandler serverPositionHandler;
-    private final ServingModel servingModel; //TODO: Cambiar esto a enum
+    private final ServingModel servingModel;
     private Double startTime = null;
     private final double attendingTime;
 
@@ -63,12 +62,12 @@ public class Server implements Objective {
     }
 
     @Override
-    public Boolean hasFinishedAttending(int id, double startedAttendingTime, double currentTime) {
+    public Boolean hasFinishedAttending(int agentId, double startedAttendingTime, double currentTime) {
         if(this.servingModel == ServingModel.ALL_AT_ONCE
                 && startTime + attendingTime > currentTime)
             return true;
         else if(this.servingModel == ServingModel.ATTENDING_TIME
-                && servingAgents.get(0).getId() == id && startedAttendingTime + attendingTime > currentTime){
+                && servingAgents.get(0).getId() == agentId && startedAttendingTime + attendingTime > currentTime){
             servingAgents.remove(0);
             if(servingAgents.size() > 0)
                 servingAgents.get(0).setStartedAttendingAt(currentTime);

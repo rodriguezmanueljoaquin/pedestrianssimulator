@@ -1,16 +1,21 @@
+package AgentsBehaviour.StateMachine;
+
 import Agent.Agent;
 import Agent.AgentStates;
 import GraphGenerator.Graph;
 import GraphGenerator.NodePath;
 import Utils.Constants;
 
-public class StateMachine {
-    private StateMachine() {
+public class StudentSM implements StateMachine{
+    private final Graph graph;
+
+    public StudentSM(Graph graph) {
+        this.graph = graph;
     }
 
-    private static void updateAgentCurrentObjective(Graph graph, Agent agent) {
+    private void updateAgentCurrentObjective(Agent agent) {
         if (agent.hasObjectives()) {
-            NodePath path = graph.getPathToPosition(agent.getPosition(), agent.getCurrentObjective().getPosition());
+            NodePath path = this.graph.getPathToPosition(agent.getPosition(), agent.getCurrentObjective().getPosition());
 
             if (path == null) {
                 // FIXME! Checkear por que a veces da null
@@ -26,7 +31,8 @@ public class StateMachine {
         }
     }
 
-    public static void updateAgent(Graph graph, Agent agent, double currentTime) {
+    @Override
+    public void updateAgent(Agent agent, double currentTime) {
         switch (agent.getState()) {
             case MOVING:
                 if (agent.getPosition().distance(agent.getCurrentObjective().getPosition()) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
@@ -46,11 +52,11 @@ public class StateMachine {
             case ATTENDING:
                 if (agent.getCurrentObjective().hasFinishedAttending(agent.getId(),agent.getStartedAttendingAt(),currentTime)) {
                     agent.popNextObjective();
-                    StateMachine.updateAgentCurrentObjective(graph, agent);
+                    this.updateAgentCurrentObjective(agent);
                 }
                 break;
             case STARTING:
-                StateMachine.updateAgentCurrentObjective(graph, agent);
+                this.updateAgentCurrentObjective(agent);
                 break;
 
             case WAITING:
