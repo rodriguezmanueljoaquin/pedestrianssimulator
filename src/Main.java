@@ -2,9 +2,12 @@ import AgentsBehaviour.BehaviourScheme;
 import AgentsBehaviour.StateMachine.StateMachine;
 import AgentsBehaviour.StateMachine.StudentSM;
 import AgentsGenerator.AgentsGenerator;
-import Environment.*;
+import Environment.Environment;
+import Environment.Exit;
+import Environment.Objective;
+import Environment.Server.DynamicServer;
 import Environment.Server.Server;
-import Environment.Server.ServingModel;
+import Environment.Wall;
 import GraphGenerator.Graph;
 import Utils.InputHandler;
 import Utils.Rectangle;
@@ -42,9 +45,9 @@ public class Main {
         // -------- SERVERS --------
         List<Server> servers = new ArrayList<>(); // TODO
 
-        servers.add(new Server(1,
-                new Rectangle(new Vector(0.5,8.0),new Vector(10,15)),
-                        ServingModel.ATTENDING_TIME,200,20,new Vector(5,6),new Vector(8,6)));
+        servers.add(new DynamicServer(1,
+                new Rectangle(new Vector(0.5, 8.0), new Vector(10, 15)),
+                200, 20, new Vector(5, 6), new Vector(8, 6)));
 
 
         // -------- TARGETS --------

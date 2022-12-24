@@ -48,7 +48,7 @@ public class BehaviourScheme {
 //        }
 
         // TODO: add nearest exit from last objective instead of exits.get(0) y lo mismo con servers
-        objectives.add(0,servers.get(0));
+        objectives.add(0, servers.get(0));
         objectives.add(exits.get(0));
 
 

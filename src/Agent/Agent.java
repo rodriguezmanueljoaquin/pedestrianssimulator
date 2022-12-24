@@ -8,6 +8,7 @@ import Utils.Constants;
 import Utils.Vector;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Agent {
     private Vector position;
@@ -136,6 +137,19 @@ public class Agent {
 
     public double distance(Agent other) {
         return this.getPosition().distance(other.position) - this.radius - other.radius;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Agent agent = (Agent) o;
+        return Objects.equals(id, agent.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
 

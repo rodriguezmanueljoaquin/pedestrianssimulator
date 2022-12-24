@@ -1,7 +1,7 @@
 import Agent.Agent;
 import Agent.AgentStates;
-import AgentsBehaviour.StateMachine.StudentSM;
 import Environment.Environment;
+import Environment.Server.Server;
 import Environment.Wall;
 import GraphGenerator.Graph;
 
@@ -46,7 +46,10 @@ public class Simulation {
                 agent.updatePosition(this.dt);
                 agent.getStateMachine().updateAgent(agent, this.time);
             }
-
+            // update servers
+            for (Server server : this.environment.getServers()) {
+                server.updateServer();
+            }
             // remove agents that left
             List<Agent> leavingAgents = new ArrayList<>();
             for (Agent agent : this.agents) {

@@ -1,12 +1,15 @@
 package Environment;
 
-import Utils.Vector;
 import Agent.Agent;
+import Utils.Vector;
 
 public interface Objective {
     Vector getPosition(Agent agent);
-    Boolean hasToAttend(Agent agent);
-    Boolean hasFinishedAttending(Agent agent, double startedAttendingTime, double currentTime);
+
+    Boolean needsAttending(Agent agent);
+
+    Boolean hasFinishedAttending(Agent agent, double currentTime);
+
     default Boolean isServer() {
         return false;
     }

@@ -20,31 +20,31 @@ class ServerPositionHandler {
     //con la posicion, tipo crear una grilla y poner las posiciones ahi o cosas asi.
     private final Rectangle zone;
     private final Map<Integer, Vector> occupiedPositions;
+
     public ServerPositionHandler(Rectangle zone) {
         this.zone = zone;
         occupiedPositions = new HashMap<>();
     }
 
-    public Vector getPoint() {
-        return zone.getRandomPointInside();
-    }
     public Vector setNewPosition(int id) {
         Vector newPosition;
         do {
             newPosition = zone.getRandomPointInside();
-        } while(occupiedPositions.containsValue(newPosition));
+        } while (occupiedPositions.containsValue(newPosition));
 
-        occupiedPositions.put(id,newPosition);
+        occupiedPositions.put(id, newPosition);
         return newPosition;
     }
 
-    public Vector getOccupiedPosition(int id){
+    public Vector getOccupiedPosition(int id) {
         return occupiedPositions.get(id);
     }
+
     public Boolean isInServer(int id) {
         return occupiedPositions.get(id) != null;
     }
-    public void removeAgent(int id){
+
+    public void removeAgent(int id) {
         occupiedPositions.remove(id);
     }
 }

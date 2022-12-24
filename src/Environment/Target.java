@@ -23,12 +23,12 @@ public class Target implements Objective {
     }
 
     @Override
-    public Boolean hasFinishedAttending(Agent agent, double startedAttendingTime, double currentTime) {
-        return currentTime - startedAttendingTime >= this.attendingTime;
+    public Boolean hasFinishedAttending(Agent agent, double currentTime) {
+        return currentTime - agent.getStartedAttendingAt() >= this.attendingTime;
     }
 
     @Override
-    public Boolean hasToAttend(Agent agent) {
+    public Boolean needsAttending(Agent agent) {
         return true;
     }
 

@@ -16,12 +16,12 @@ public class Exit implements Objective {
     }
 
     @Override
-    public Boolean hasToAttend(Agent agent) {
+    public Boolean needsAttending(Agent agent) {
         return false;
     }
 
     @Override
-    public Boolean hasFinishedAttending(Agent agent, double startedAttendingTime, double currentTime) {
+    public Boolean hasFinishedAttending(Agent agent, double currentTime) {
         return true;
     }
 }

@@ -6,7 +6,7 @@ import GraphGenerator.Graph;
 import GraphGenerator.NodePath;
 import Utils.Constants;
 
-public class StudentSM implements StateMachine{
+public class StudentSM implements StateMachine {
     private final Graph graph;
 
     public StudentSM(Graph graph) {
@@ -36,22 +36,18 @@ public class StudentSM implements StateMachine{
             case MOVING:
                 if (agent.getPosition().distance(agent.getCurrentObjective().getPosition(agent)) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
                     //FixMe: Esto hay que disenarlo mejor pq sino no podemmos meter el leaving aca tmbn
-                    if (agent.getCurrentObjective().hasToAttend(agent)) {
+                    if (agent.getCurrentObjective().needsAttending(agent)) {
                         agent.setStartedAttendingAt(currentTime);
                         agent.setState(AgentStates.ATTENDING);
                     } else {
-                        //aca tenemos un tema pq puede ser un server o puede ser leaving, como todavia no hay server
-                        //lo dejo en LEAVING
-                        if(agent.getCurrentObjective().isServer())
-                            agent.setState(AgentStates.MOVING);
-                        else agent.setState(AgentStates.LEAVING);
+                        agent.setState(AgentStates.LEAVING);
                     }
                     return;
                 }
                 break;
 
             case ATTENDING:
-                if (agent.getCurrentObjective().hasFinishedAttending(agent,agent.getStartedAttendingAt(),currentTime)) {
+                if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
                     agent.popNextObjective();
                     this.updateAgentCurrentObjective(agent);
                 }
@@ -61,9 +57,10 @@ public class StudentSM implements StateMachine{
                 break;
 
             case WAITING:
-                if (agent.getCurrentObjective().hasToAttend(agent)) {
+                if (agent.getCurrentObjective().needsAttending(agent)) {
+                    this.updateAgentCurrentObjective(agent);
                     agent.setStartedAttendingAt(currentTime);
-                    agent.setState(AgentStates.ATTENDING);
+                    agent.setState(AgentStates.MOVING);
                 }
                 break;
 
