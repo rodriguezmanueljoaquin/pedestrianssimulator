@@ -22,24 +22,32 @@ public abstract class Server implements Objective {
         this.queueHandler = new QueueHandler(queueLine);
         this.maxAttendants = maxCapacity;
         this.attendingTime = attendingTime;
-        // assign
         this.servingAgents = new ArrayList<>();
     }
 
     public void updateServer() {
         Agent agent;
-        while (this.servingAgents.size() <= this.maxAttendants && this.queueHandler.size() > 0) {
+        while (this.servingAgents.size() < this.maxAttendants && this.queueHandler.size() > 0) {
             agent = queueHandler.removeFromQueue();
-            this.servingAgents.add(agent);
-            this.serverPositionHandler.setNewPosition(agent.getId());
+            this.startAttendingAgent(agent);
         }
+    }
+
+    private Vector startAttendingAgent(Agent agent) {
+        this.servingAgents.add(agent);
+        return this.serverPositionHandler.setNewPosition(agent.getId());
+    }
+
+    protected void freeAgent(Agent agent) {
+        this.serverPositionHandler.removeAgent(agent.getId());
+        this.servingAgents.remove(agent);
     }
 
     @Override
     public Vector getPosition(Agent agent) {
-        // server positions vary per agent, as the server may command agent to go to a specific place  in the queue,
+        // server positions vary per agent, as the server may command agent to go to a specific place in the queue,
         // or in the server when attending it
-        if (this.serverPositionHandler.isInServer(agent.getId()))
+        if (this.servingAgents.contains(agent))
             return this.serverPositionHandler.getOccupiedPosition(agent.getId());
 
         if (this.queueHandler.isInQueue(agent))
@@ -50,8 +58,7 @@ public abstract class Server implements Objective {
             return this.queueHandler.getPosition(agent);
         }
 
-        this.servingAgents.add(agent);
-        return this.serverPositionHandler.setNewPosition(agent.getId());
+        return this.startAttendingAgent(agent);
     }
 
     @Override

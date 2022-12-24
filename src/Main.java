@@ -49,7 +49,7 @@ public class Main {
         servers.add(new DynamicServer(1,
                 new Rectangle(new Vector(45, 10), new Vector(50, 20)),
                 20,
-                new Line(new Vector(45, 4), new Vector(35, 4)))
+                new Line(new Vector(45, 4), new Vector(25, 4)))
         );
 
 
