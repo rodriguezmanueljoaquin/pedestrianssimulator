@@ -10,6 +10,7 @@ import Environment.Server.Server;
 import Environment.Wall;
 import GraphGenerator.Graph;
 import Utils.InputHandler;
+import Utils.Line;
 import Utils.Rectangle;
 import Utils.Vector;
 
@@ -47,7 +48,9 @@ public class Main {
 
         servers.add(new DynamicServer(1,
                 new Rectangle(new Vector(0.5, 8.0), new Vector(10, 15)),
-                200, 20, new Vector(5, 6), new Vector(8, 6)));
+                200, 20,
+                new Line(new Vector(5, 4), new Vector(8, 4)))
+        );
 
 
         // -------- TARGETS --------

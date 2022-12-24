@@ -1,14 +1,15 @@
 package Environment.Server;
 
 import Agent.Agent;
+import Utils.Line;
 import Utils.Rectangle;
 import Utils.Vector;
 
 public class DynamicServer extends Server {
 
     //Dynamic event is for an event that happens continuously.
-    public DynamicServer(int maxCapacity, Rectangle zone, double startTime, double attendingTime, Vector A, Vector B) {
-        super(maxCapacity, zone, startTime, attendingTime, A, B);
+    public DynamicServer(int maxCapacity, Rectangle zone, double startTime, double attendingTime, Line queueLine) {
+        super(maxCapacity, zone, startTime, attendingTime, queueLine);
     }
 
     @Override
@@ -19,9 +20,9 @@ public class DynamicServer extends Server {
 
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
-        if (servingAgents.contains(agent) && currentTime - agent.getStartedAttendingAt() > attendingTime) {
-            serverPositionHandler.removeAgent(agent.getId());
-            servingAgents.remove(agent);
+        if (this.servingAgents.contains(agent) && currentTime - agent.getStartedAttendingAt() > this.attendingTime) {
+            this.serverPositionHandler.removeAgent(agent.getId());
+            this.servingAgents.remove(agent);
             return true;
         }
         return false;

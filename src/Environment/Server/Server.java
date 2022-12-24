@@ -2,6 +2,7 @@ package Environment.Server;
 
 import Agent.Agent;
 import Environment.Objective;
+import Utils.Line;
 import Utils.Rectangle;
 import Utils.Vector;
 
@@ -16,9 +17,9 @@ public abstract class Server implements Objective {
     protected Double startTime = null;
     protected final double attendingTime;
 
-    public Server(int maxCapacity, Rectangle zone, double startTime, double attendingTime, Vector A, Vector B) {
+    public Server(int maxCapacity, Rectangle zone, double startTime, double attendingTime, Line queueLine) {
         this.serverPositionHandler = new ServerPositionHandler(zone);
-        this.queueHandler = new QueueHandler(A, B);
+        this.queueHandler = new QueueHandler(queueLine);
         this.maxAttendants = maxCapacity;
         this.attendingTime = attendingTime;
         // assign
@@ -27,10 +28,10 @@ public abstract class Server implements Objective {
 
     public void updateServer() {
         Agent agent;
-        while (servingAgents.size() <= maxAttendants && queueHandler.size() > 0) {
+        while (this.servingAgents.size() <= this.maxAttendants && this.queueHandler.size() > 0) {
             agent = queueHandler.removeFromQueue();
-            servingAgents.add(agent);
-            serverPositionHandler.setNewPosition(agent.getId());
+            this.servingAgents.add(agent);
+            this.serverPositionHandler.setNewPosition(agent.getId());
         }
     }
 
@@ -38,19 +39,19 @@ public abstract class Server implements Objective {
     public Vector getPosition(Agent agent) {
         // server positions vary per agent, as the server may command agent to go to a specific place  in the queue,
         // or in the server when attending it
-        if (serverPositionHandler.isInServer(agent.getId()))
-            return serverPositionHandler.getOccupiedPosition(agent.getId());
+        if (this.serverPositionHandler.isInServer(agent.getId()))
+            return this.serverPositionHandler.getOccupiedPosition(agent.getId());
 
-        if (queueHandler.isInQueue(agent))
-            return queueHandler.getPosition(agent);
+        if (this.queueHandler.isInQueue(agent))
+            return this.queueHandler.getPosition(agent);
 
-        if (queueHandler.size() != 0 || servingAgents.size() >= maxAttendants) {
-            queueHandler.addToQueue(agent);
-            return queueHandler.getPosition(agent);
+        if (this.queueHandler.size() != 0 || this.servingAgents.size() >= this.maxAttendants) {
+            this.queueHandler.addToQueue(agent);
+            return this.queueHandler.getPosition(agent);
         }
 
-        servingAgents.add(agent);
-        return serverPositionHandler.setNewPosition(agent.getId());
+        this.servingAgents.add(agent);
+        return this.serverPositionHandler.setNewPosition(agent.getId());
     }
 
     @Override

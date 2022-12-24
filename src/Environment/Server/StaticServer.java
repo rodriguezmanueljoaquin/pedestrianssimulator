@@ -1,13 +1,14 @@
 package Environment.Server;
 
 import Agent.Agent;
+import Utils.Line;
 import Utils.Rectangle;
 import Utils.Vector;
 
 public class StaticServer extends Server {
     //Static event is for an event that has a fixed schedule
-    public StaticServer(int maxCapacity, Rectangle zone, double startTime, double attendingTime, Vector A, Vector B) {
-        super(maxCapacity, zone, startTime, attendingTime, A, B);
+    public StaticServer(int maxCapacity, Rectangle zone, double startTime, double attendingTime, Line queueLine) {
+        super(maxCapacity, zone, startTime, attendingTime, queueLine);
         this.startTime = startTime;
     }
 
@@ -20,7 +21,7 @@ public class StaticServer extends Server {
 
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
-        return currentTime - startTime > attendingTime;
+        return currentTime - this.startTime > this.attendingTime;
     }
 
 

@@ -38,6 +38,7 @@ public class StudentSM implements StateMachine {
                         !graph.isPositionVisible(agent.getCurrentPath().getLastNode().getPosition(),agent.getCurrentObjective().getPosition(agent)))
                     // Server may change the position the agent has to go to, therefore agent should update its path accordingly
                     updateAgentCurrentObjective(agent);
+
                 if (agent.getPosition().distance(agent.getCurrentObjective().getPosition(agent)) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
                     if (agent.getCurrentObjective().canAttend(agent)) {
                         agent.setStartedAttendingAt(currentTime);
