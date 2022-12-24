@@ -33,14 +33,21 @@ public class StudentSM implements StateMachine {
     @Override
     public void updateAgent(Agent agent, double currentTime) {
         switch (agent.getState()) {
+            //Como desde StateMachine no sabemos si es un server o no, no podemos actualizar el path
+            //solo para los servers
             case MOVING:
+                if(!graph.isPositionVisible(agent.getCurrentPath().getLastNode().getPosition(),agent.getCurrentObjective().getPosition(agent)))
+                    updateAgentCurrentObjective(agent);
                 if (agent.getPosition().distance(agent.getCurrentObjective().getPosition(agent)) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
                     //FixMe: Esto hay que disenarlo mejor pq sino no podemmos meter el leaving aca tmbn
                     if (agent.getCurrentObjective().needsAttending(agent)) {
                         agent.setStartedAttendingAt(currentTime);
                         agent.setState(AgentStates.ATTENDING);
                     } else {
-                        agent.setState(AgentStates.LEAVING);
+                        if(agent.getCurrentObjective().isServer()) {
+                            agent.setState(AgentStates.WAITING);
+                        }
+                        else agent.setState(AgentStates.LEAVING);
                     }
                     return;
                 }

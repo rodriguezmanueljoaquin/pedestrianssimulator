@@ -34,7 +34,7 @@ public class Graph {
         return nodes;
     }
 
-    private boolean isPositionVisible(Vector origin, Vector destiny) {
+    public boolean isPositionVisible(Vector origin, Vector destiny) {
         for (Wall wall : this.walls)
             if (wall.intersectsLine(origin, destiny) && !wall.contains(destiny))
                 // wall intersects the path from origin and destiny, and destiny is not in the wall
