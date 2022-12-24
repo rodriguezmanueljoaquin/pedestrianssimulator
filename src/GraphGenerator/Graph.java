@@ -79,7 +79,6 @@ public class Graph {
         if (fromNode == null) {
             fromNode = getClosestVisibleNode(fromPosition);
         }
-
         NodePath fullPath = AStar(fromNode, toPosition);
         if (fullPath == null) {
             // none path found

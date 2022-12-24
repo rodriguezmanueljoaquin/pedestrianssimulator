@@ -48,7 +48,6 @@ public class AgentsGenerator {
                     positionIndex = (int) (Math.random() * this.zone.getZoneMatrixSize());
                 } while (positionsUsed.contains(positionIndex));
                 positionsUsed.add(positionIndex);
-
                 agents.add(
                         new Agent(this.zone.getPositionByIndex(positionIndex),
                                 AgentConstants.MAX_RADIUS, this.behaviourScheme.getStateMachine(),

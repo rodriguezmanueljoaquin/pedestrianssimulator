@@ -17,9 +17,9 @@ public class Server implements Objective {
     private Double startTime = null;
     private final double attendingTime;
 
-    public Server(int maxCapacity, Rectangle zone, ServingModel servingModel, double startTime, double attendingTime,Vector A, Vector B,Double spaceBetweenAgents) {
+    public Server(int maxCapacity, Rectangle zone, ServingModel servingModel, double startTime, double attendingTime,Vector A, Vector B) {
         this.serverPositionHandler = new ServerPositionHandler(zone);
-        this.queueHandler = new QueueHandler(A,B,spaceBetweenAgents);
+        this.queueHandler = new QueueHandler(A,B);
         this.maxAttendants = maxCapacity;
         this.servingModel = servingModel;
         if(servingModel == ServingModel.ALL_AT_ONCE)
@@ -28,15 +28,13 @@ public class Server implements Objective {
         // assign
         this.servingAgents = new ArrayList<>();
     }
-
-    private void serveNewAgent(){
-        if(servingAgents.size() >= maxAttendants) {
-            System.out.println("Capacity is full");
-            return;
+    private void serveAgentsInQueue(){
+        Agent agent;
+        while(servingAgents.size() <= maxAttendants && queueHandler.size() > 0) {
+            agent = queueHandler.removeFromQueue();
+            servingAgents.add(agent);
+            serverPositionHandler.setNewPosition(agent.getId());
         }
-        Agent agent = queueHandler.removeFromQueue();
-        servingAgents.add(agent);
-        serverPositionHandler.setNewPosition(agent.getId());
     }
     @Override
     public Vector getPosition(Agent agent) {
@@ -49,6 +47,7 @@ public class Server implements Objective {
             return serverPositionHandler.getOccupiedPosition(agent.getId());
         if(queueHandler.isInQueue(agent))
             return queueHandler.getPosition(agent);
+        serveAgentsInQueue();
         if(servingAgents.size() > maxAttendants){
             queueHandler.addToQueue(agent);
             return queueHandler.getPosition(agent);
@@ -60,26 +59,28 @@ public class Server implements Objective {
     @Override
     public Boolean hasFinishedAttending(Agent agent, double startedAttendingTime, double currentTime) {
         if(this.servingModel == ServingModel.ALL_AT_ONCE
-                && startTime + attendingTime > currentTime)
+                && currentTime -  startTime > attendingTime) {
             return true;
+        }
         else if(this.servingModel == ServingModel.ATTENDING_TIME
-                && servingAgents.get(0).getId() == agent.getId() && startedAttendingTime + attendingTime > currentTime){
+                && servingAgents.get(0).getId() == agent.getId() && currentTime - startedAttendingTime > attendingTime){
             servingAgents.remove(0);
             serverPositionHandler.removeAgent(0);
             return true;
         }
-
         return false;
     }
 
     @Override
     public Boolean hasToAttend(Agent agent) {
-        if(servingAgents.size() == 0)
+        if(servingAgents.size() == 0 && queueHandler.size() == 0) {
+            System.out.println("No agents in queue or in server, however an agent has the server objective");
             return false;
-
+        }
         if(this.servingModel == ServingModel.ALL_AT_ONCE) {
             return true;
         }
+        serveAgentsInQueue();
         return this.servingAgents.get(0).getId() == agent.getId();
         //Lo inicializo en hasFinishedAttending asi no me tienen que pasar el currentTime aca tmbn.
     }

@@ -1,6 +1,7 @@
 package Environment.Server;
 
 import Agent.Agent;
+import Utils.Constants;
 import Utils.Vector;
 
 import java.util.ArrayList;
@@ -9,15 +10,15 @@ import java.util.List;
 class QueueHandler {
     //TODO: Esta clase, mi idea era hacer que reciba puntos de A a B donde puede crear posiciones, con la dist entre ellas.
     private final Vector A, B;
-    private final double spaceBetweenAgents;
     private final int capacity;
     private final List<Agent> queueingAgents;
 
-    public QueueHandler(Vector A, Vector B, double spaceBetweenAgents){
+    public QueueHandler(Vector A, Vector B){
         this.A = A;
         this.B = B;
-        this.capacity = (int) (B.distance(A)/spaceBetweenAgents);
-        this.spaceBetweenAgents = spaceBetweenAgents;
+        this.capacity = (int) (this.B.distance(this.A)/Constants.SPACE_IN_QUEUE);
+        System.out.println(this.B.distance(this.A));
+        System.out.println(capacity);
         queueingAgents = new ArrayList<>();
     }
 
@@ -32,6 +33,7 @@ class QueueHandler {
     public boolean hasCapacity(){
         return queueingAgents.size() < capacity;
     }
+
     public Vector getPosition(Agent agent) {
         Agent queueingAgent = null;
         int position = 0;
@@ -46,14 +48,16 @@ class QueueHandler {
             System.out.println("Agent is not in queue");
             return null;
         }
-        return A.scalarMultiply(position * this.spaceBetweenAgents);
+        if(position > capacity)
+            return B;
+        return this.A.scalarMultiply(Constants.SPACE_IN_QUEUE*(capacity - position)).add(B.scalarMultiply(Constants.SPACE_IN_QUEUE*(position)));
 
     }
     public void addToQueue(Agent agent) {
         if(!hasCapacity()) {
             System.out.println("No capacity in queue");
-            return;
         }
+        //Lo agrego igual, pero lo mando a amontonarse a B;
         queueingAgents.add(agent);
     }
     public Agent removeFromQueue() {
@@ -61,7 +65,9 @@ class QueueHandler {
             System.out.println("No agents in queue");
             return null;
         }
-        return queueingAgents.get(0);
+        return queueingAgents.remove(0);
     }
-
+    public int size(){
+        return queueingAgents.size();
+    }
 }

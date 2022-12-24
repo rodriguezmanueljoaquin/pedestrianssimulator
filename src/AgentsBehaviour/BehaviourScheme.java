@@ -39,13 +39,13 @@ public class BehaviourScheme {
 
     public List<Objective> getObjectivesSample() {
         List<Objective> objectives = new ArrayList<>();
-        for (ObjectiveGroup group : this.scheme) {
-            int objectivesQuantity = (int) (this.random.nextDouble() * (group.getMaxOccurrences() - group.getMinOccurrences())) + group.getMinOccurrences();
-
-            for (int i = 0; i < objectivesQuantity; i++) {
-                objectives.add(group.getRandomObjective());
-            }
-        }
+//        for (ObjectiveGroup group : this.scheme) {
+//            int objectivesQuantity = (int) (this.random.nextDouble() * (group.getMaxOccurrences() - group.getMinOccurrences())) + group.getMinOccurrences();
+//
+//            for (int i = 0; i < objectivesQuantity; i++) {
+//                objectives.add(group.getRandomObjective());
+//            }
+//        }
 
         // TODO: add nearest exit from last objective instead of exits.get(0) y lo mismo con servers
         objectives.add(0,servers.get(0));

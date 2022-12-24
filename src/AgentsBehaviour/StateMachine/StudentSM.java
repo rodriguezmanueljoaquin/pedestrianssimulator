@@ -25,7 +25,6 @@ public class StudentSM implements StateMachine{
                 agent.setCurrentPath(path);
                 agent.setState(AgentStates.MOVING);
             }
-
         } else {
             agent.setState(AgentStates.LEAVING);
         }

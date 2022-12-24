@@ -20,7 +20,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        String RESULTS_PATH = "results/";
+        String RESULTS_PATH = "./visualization/results/";
         if (!Files.exists(Paths.get(RESULTS_PATH))) {
             new File(RESULTS_PATH).mkdir();
         }
@@ -42,9 +42,9 @@ public class Main {
         // -------- SERVERS --------
         List<Server> servers = new ArrayList<>(); // TODO
 
-        servers.add(new Server(50,
-                new Rectangle(new Vector(0.1,8.0),new Vector(10,19)),
-                        ServingModel.ATTENDING_TIME,200,20,new Vector(5,6),new Vector(8,6),0.2));
+        servers.add(new Server(1,
+                new Rectangle(new Vector(0.5,8.0),new Vector(10,15)),
+                        ServingModel.ATTENDING_TIME,200,20,new Vector(5,6),new Vector(8,6)));
 
 
         // -------- TARGETS --------
