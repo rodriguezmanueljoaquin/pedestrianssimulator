@@ -1,6 +1,7 @@
 package Environment;
 
 
+import Agent.Agent;
 import Utils.Vector;
 
 public class Target implements Objective {
@@ -17,17 +18,17 @@ public class Target implements Objective {
     }
 
     @Override
-    public Vector getPosition() {
+    public Vector getPosition(Agent agent) {
         return position;
     }
 
     @Override
-    public Boolean hasFinishedAttending(int agentId, double startedAttendingTime, double currentTime) {
+    public Boolean hasFinishedAttending(Agent agent, double startedAttendingTime, double currentTime) {
         return currentTime - startedAttendingTime >= this.attendingTime;
     }
 
     @Override
-    public Boolean hasToAttend() {
+    public Boolean hasToAttend(Agent agent) {
         return true;
     }
 

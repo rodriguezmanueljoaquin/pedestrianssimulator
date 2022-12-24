@@ -6,72 +6,66 @@ import Utils.Rectangle;
 import Utils.Vector;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 public class Server implements Objective {
     private final int maxAttendants;
-    private final Queue<Agent> queue;
     private final List<Agent> servingAgents;
     private final ServerPositionHandler serverPositionHandler;
+    private final QueueHandler queueHandler;
     private final ServingModel servingModel;
     private Double startTime = null;
     private final double attendingTime;
 
-    public Server(int maxCapacity, Rectangle zone, ServingModel servingModel, double startTime, double attendingTime) {
+    public Server(int maxCapacity, Rectangle zone, ServingModel servingModel, double startTime, double attendingTime,Vector A, Vector B,Double spaceBetweenAgents) {
         this.serverPositionHandler = new ServerPositionHandler(zone);
+        this.queueHandler = new QueueHandler(A,B,spaceBetweenAgents);
         this.maxAttendants = maxCapacity;
         this.servingModel = servingModel;
         if(servingModel == ServingModel.ALL_AT_ONCE)
             this.startTime = startTime;
         this.attendingTime = attendingTime;
         // assign
-        this.queue = new LinkedList<>();
         this.servingAgents = new ArrayList<>();
     }
 
-
-    public void addToQueue(Agent agent) {
-        this.queue.add(agent);
-    }
-
-    public Agent freeNextInQueue() {
-        return queue.remove();
-    }
-
-    private Vector serveNewAgent(){
-        if(queue.size() == 0 || servingAgents.size() >= maxAttendants) {
-            System.out.println("Queue is empty or capacity is full");
-            return null;
+    private void serveNewAgent(){
+        if(servingAgents.size() >= maxAttendants) {
+            System.out.println("Capacity is full");
+            return;
         }
-        servingAgents.add(freeNextInQueue());
-        return serverPositionHandler.getNewPosition();
+        Agent agent = queueHandler.removeFromQueue();
+        servingAgents.add(agent);
+        serverPositionHandler.setNewPosition(agent.getId());
     }
-
-    private class QueuePositionHandler {
-        //TODO: Esta clase, mi idea era hacer que reciba puntos de A a B donde puede crear posiciones, con la dist entre ellas.
+    @Override
+    public Vector getPosition(Agent agent) {
+        //Cuando me llaman al getPosition, basicamente estoy en esta situaccion:
+        //Tengo el objetivo del server y tengo que ir a algun lugar, ahora...
+        //adonde voy? -> Primero me fijo, ya estoy en el sistema?
+        //sino: me fijo, hay capacidad? si la hay -> me voy al server directo
+        //sino me agrego a la queue
+        if(serverPositionHandler.isInServer(agent.getId()))
+            return serverPositionHandler.getOccupiedPosition(agent.getId());
+        if(queueHandler.isInQueue(agent))
+            return queueHandler.getPosition(agent);
+        if(servingAgents.size() > maxAttendants){
+            queueHandler.addToQueue(agent);
+            return queueHandler.getPosition(agent);
+        }
+        servingAgents.add(agent);
+        return serverPositionHandler.setNewPosition(agent.getId());
     }
-
-
-
 
     @Override
-    public Vector getPosition() {
-        return null;
-    }
-
-    @Override
-    public Boolean hasFinishedAttending(int agentId, double startedAttendingTime, double currentTime) {
+    public Boolean hasFinishedAttending(Agent agent, double startedAttendingTime, double currentTime) {
         if(this.servingModel == ServingModel.ALL_AT_ONCE
                 && startTime + attendingTime > currentTime)
             return true;
         else if(this.servingModel == ServingModel.ATTENDING_TIME
-                && servingAgents.get(0).getId() == agentId && startedAttendingTime + attendingTime > currentTime){
+                && servingAgents.get(0).getId() == agent.getId() && startedAttendingTime + attendingTime > currentTime){
             servingAgents.remove(0);
-            if(servingAgents.size() > 0)
-                servingAgents.get(0).setStartedAttendingAt(currentTime);
-
+            serverPositionHandler.removeAgent(0);
             return true;
         }
 
@@ -79,8 +73,15 @@ public class Server implements Objective {
     }
 
     @Override
-    public Boolean hasToAttend() {
-        return false;
+    public Boolean hasToAttend(Agent agent) {
+        if(servingAgents.size() == 0)
+            return false;
+
+        if(this.servingModel == ServingModel.ALL_AT_ONCE) {
+            return true;
+        }
+        return this.servingAgents.get(0).getId() == agent.getId();
+        //Lo inicializo en hasFinishedAttending asi no me tienen que pasar el currentTime aca tmbn.
     }
 
     @Override

@@ -4,8 +4,10 @@ import AgentsBehaviour.StateMachine.StudentSM;
 import AgentsGenerator.AgentsGenerator;
 import Environment.*;
 import Environment.Server.Server;
+import Environment.Server.ServingModel;
 import GraphGenerator.Graph;
 import Utils.InputHandler;
+import Utils.Rectangle;
 import Utils.Vector;
 
 import java.io.File;
@@ -40,6 +42,11 @@ public class Main {
         // -------- SERVERS --------
         List<Server> servers = new ArrayList<>(); // TODO
 
+        servers.add(new Server(50,
+                new Rectangle(new Vector(0.1,8.0),new Vector(10,19)),
+                        ServingModel.ATTENDING_TIME,200,20,new Vector(5,6),new Vector(8,6),0.2));
+
+
         // -------- TARGETS --------
         // TODO: DEBERIA ESTAR EN INPUT Y VENIR DEL DXF
         // TODO: Y DEBERIA SER UN MAP<Integer, List<Objective>> PARA DIFERENCIAR LOS DISTINTOS GRUPOS DE TARGETS
@@ -59,7 +66,7 @@ public class Main {
         // ---- STATE MACHINE ----
         StateMachine studentStateMachine = new StudentSM(graph);
 
-        BehaviourScheme studentBehaviourScheme = new BehaviourScheme(studentStateMachine, exits);
+        BehaviourScheme studentBehaviourScheme = new BehaviourScheme(studentStateMachine, exits, servers);
 
         // SEARCH FOR PRODUCTS
         studentBehaviourScheme.addObjectiveGroupToScheme(targets, 5, 10);

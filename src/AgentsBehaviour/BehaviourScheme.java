@@ -3,6 +3,7 @@ package AgentsBehaviour;
 import AgentsBehaviour.StateMachine.StateMachine;
 import Environment.Exit;
 import Environment.Objective;
+import Environment.Server.Server;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,14 @@ public class BehaviourScheme {
     private final StateMachine stateMachine;
     private final List<ObjectiveGroup> scheme;
     private final List<Exit> exits;
+    private final List<Server> servers;
     private final Random random;
 
-    public BehaviourScheme(StateMachine stateMachine, List<Exit> exits) {
+    public BehaviourScheme(StateMachine stateMachine, List<Exit> exits, List<Server> servers) {
         this.stateMachine = stateMachine;
         this.scheme = new ArrayList<>();
         this.exits = exits;
+        this.servers = servers;
         this.random = new Random(1);
     }
 
@@ -44,7 +47,8 @@ public class BehaviourScheme {
             }
         }
 
-        // TODO: add nearest exit from last objective instead of exits.get(0)
+        // TODO: add nearest exit from last objective instead of exits.get(0) y lo mismo con servers
+        objectives.add(0,servers.get(0));
         objectives.add(exits.get(0));
 
 

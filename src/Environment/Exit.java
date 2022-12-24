@@ -1,5 +1,6 @@
 package Environment;
 
+import Agent.Agent;
 import Utils.Vector;
 
 public class Exit implements Objective {
@@ -10,17 +11,17 @@ public class Exit implements Objective {
     }
 
     @Override
-    public Vector getPosition() {//Devuelvo el punto del medio, esto para tratr que extienda de objective
+    public Vector getPosition(Agent agent) {//Devuelvo el punto del medio, esto para tratr que extienda de objective
         return this.exit.getA().add(this.exit.getB()).scalarMultiply(0.5);
     }
 
     @Override
-    public Boolean hasToAttend() {
+    public Boolean hasToAttend(Agent agent) {
         return false;
     }
 
     @Override
-    public Boolean hasFinishedAttending(int agentId, double startedAttendingTime, double currentTime) {
+    public Boolean hasFinishedAttending(Agent agent, double startedAttendingTime, double currentTime) {
         return true;
     }
 }

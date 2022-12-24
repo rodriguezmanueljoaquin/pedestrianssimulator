@@ -49,7 +49,7 @@ public class Agent {
         Vector objectivePosition;
         if (currentIntermediateObjectiveNode == null)
             // go to objective because it is visible, there are no remaining intermediate objectives
-            objectivePosition = this.getCurrentObjective().getPosition();
+            objectivePosition = this.getCurrentObjective().getPosition(this);
         else {
             objectivePosition = this.currentIntermediateObjectiveNode.getPosition();
         }
