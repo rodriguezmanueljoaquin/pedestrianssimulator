@@ -16,8 +16,8 @@ public class Exit implements Objective {
     }
 
     @Override
-    public Boolean needsAttending(Agent agent) {
-        return false;
+    public Boolean canAttend(Agent agent) {
+        return true;
     }
 
     @Override

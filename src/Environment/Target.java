@@ -9,8 +9,6 @@ public class Target implements Objective {
     private final Integer id;
     private final Double attendingTime; //milliseconds needed to complete task
 
-    // should have information about if it is occupied?
-
     public Target(Integer id, Vector position, Double attendingTime) {
         this.position = position;
         this.attendingTime = attendingTime;
@@ -28,7 +26,7 @@ public class Target implements Objective {
     }
 
     @Override
-    public Boolean needsAttending(Agent agent) {
+    public Boolean canAttend(Agent agent) {
         return true;
     }
 

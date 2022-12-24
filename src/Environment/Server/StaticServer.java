@@ -13,7 +13,7 @@ public class StaticServer extends Server {
 
 
     @Override
-    public Boolean needsAttending(Agent agent) {
+    public Boolean canAttend(Agent agent) {
         //If event has finished, agent will be freed on next frame.
         return true;
     }

@@ -33,21 +33,18 @@ public class StudentSM implements StateMachine {
     @Override
     public void updateAgent(Agent agent, double currentTime) {
         switch (agent.getState()) {
-            //Como desde StateMachine no sabemos si es un server o no, no podemos actualizar el path
-            //solo para los servers
             case MOVING:
-                if(!graph.isPositionVisible(agent.getCurrentPath().getLastNode().getPosition(),agent.getCurrentObjective().getPosition(agent)))
+                if(agent.getCurrentObjective().isServer() &&
+                        !graph.isPositionVisible(agent.getCurrentPath().getLastNode().getPosition(),agent.getCurrentObjective().getPosition(agent)))
+                    // Server may change the position the agent has to go to, therefore agent should update its path accordingly
                     updateAgentCurrentObjective(agent);
                 if (agent.getPosition().distance(agent.getCurrentObjective().getPosition(agent)) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
-                    //FixMe: Esto hay que disenarlo mejor pq sino no podemmos meter el leaving aca tmbn
-                    if (agent.getCurrentObjective().needsAttending(agent)) {
+                    if (agent.getCurrentObjective().canAttend(agent)) {
                         agent.setStartedAttendingAt(currentTime);
                         agent.setState(AgentStates.ATTENDING);
                     } else {
-                        if(agent.getCurrentObjective().isServer()) {
-                            agent.setState(AgentStates.WAITING);
-                        }
-                        else agent.setState(AgentStates.LEAVING);
+                        // agent has to wait until objective can attend him
+                        agent.setState(AgentStates.WAITING);
                     }
                     return;
                 }
@@ -64,7 +61,7 @@ public class StudentSM implements StateMachine {
                 break;
 
             case WAITING:
-                if (agent.getCurrentObjective().needsAttending(agent)) {
+                if (agent.getCurrentObjective().canAttend(agent)) {
                     this.updateAgentCurrentObjective(agent);
                     agent.setStartedAttendingAt(currentTime);
                     agent.setState(AgentStates.MOVING);

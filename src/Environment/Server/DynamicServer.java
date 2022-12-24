@@ -12,11 +12,10 @@ public class DynamicServer extends Server {
     }
 
     @Override
-    public Boolean needsAttending(Agent agent) {
-        //If event has finished, agent will be freed on next frame.
+    public Boolean canAttend(Agent agent) {
+        // if event has finished, agent will be freed on next frame.
         return this.servingAgents.contains(agent);
     }
-
 
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {

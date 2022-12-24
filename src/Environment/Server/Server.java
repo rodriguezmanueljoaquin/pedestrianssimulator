@@ -36,14 +36,11 @@ public abstract class Server implements Objective {
 
     @Override
     public Vector getPosition(Agent agent) {
-        //Cuando me llaman al getPosition, basicamente estoy en esta situaccion:
-        //Tengo el objetivo del server y tengo que ir a algun lugar, ahora...
-        //adonde voy? -> Primero me fijo, ya estoy en el sistema?
-        //sino: me fijo, hay capacidad? si la hay -> me voy al server directo
-        //sino me agrego a la queue
-
+        // server positions vary per agent, as the server may command agent to go to a specific place  in the queue,
+        // or in the server when attending it
         if (serverPositionHandler.isInServer(agent.getId()))
             return serverPositionHandler.getOccupiedPosition(agent.getId());
+
         if (queueHandler.isInQueue(agent))
             return queueHandler.getPosition(agent);
 

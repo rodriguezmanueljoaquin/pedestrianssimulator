@@ -23,7 +23,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        String RESULTS_PATH = "./visualization/results/";
+        String RESULTS_PATH = "./results/";
         if (!Files.exists(Paths.get(RESULTS_PATH))) {
             new File(RESULTS_PATH).mkdir();
         }
