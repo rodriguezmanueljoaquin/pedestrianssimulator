@@ -44,12 +44,12 @@ public class Main {
         List<Exit> exits = InputHandler.importExitsFromTxt("./input/SALIDAS.csv");
 
         // -------- SERVERS --------
-        List<Server> servers = new ArrayList<>(); // TODO
+        List<Server> servers = new ArrayList<>();
 
         servers.add(new DynamicServer(1,
-                new Rectangle(new Vector(0.5, 8.0), new Vector(10, 15)),
-                200, 20,
-                new Line(new Vector(5, 4), new Vector(8, 4)))
+                new Rectangle(new Vector(45, 10), new Vector(50, 20)),
+                20,
+                new Line(new Vector(45, 4), new Vector(35, 4)))
         );
 
 

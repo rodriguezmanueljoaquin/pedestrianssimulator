@@ -8,8 +8,8 @@ import Utils.Vector;
 public class DynamicServer extends Server {
 
     //Dynamic event is for an event that happens continuously.
-    public DynamicServer(int maxCapacity, Rectangle zone, double startTime, double attendingTime, Line queueLine) {
-        super(maxCapacity, zone, startTime, attendingTime, queueLine);
+    public DynamicServer(int maxCapacity, Rectangle zone, double attendingTime, Line queueLine) {
+        super(maxCapacity, zone, 0, attendingTime, queueLine);
     }
 
     @Override

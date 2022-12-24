@@ -18,7 +18,7 @@ class QueueHandler {
 
     public QueueHandler(Line line) {
         this.line = line;
-        this.capacity = line.getSegmentsQuantity(Constants.SPACE_IN_QUEUE);
+        this.capacity = line.getSegmentsQuantity();
         this.queueingAgents = new LinkedList<>();
     }
 
@@ -39,11 +39,11 @@ class QueueHandler {
         Agent queueingAgent = null;
         int position = 0;
         for (Agent possibleAgent : this.queueingAgents) {
-            position++;
             if (possibleAgent.equals(agent)) {
                 queueingAgent = possibleAgent;
                 break;
             }
+            position++;
         }
         if (queueingAgent == null) {
             System.err.println("Agent is not in queue");
