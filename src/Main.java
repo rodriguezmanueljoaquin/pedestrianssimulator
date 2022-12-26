@@ -47,11 +47,16 @@ public class Main {
         // -------- SERVERS --------
         List<Server> servers = new ArrayList<>();
 
-        servers.add(new StaticServer(2,
-                new Rectangle(new Vector(45, 10), new Vector(50, 20)),20,
+        servers.add(new DynamicServer(2,
+                new Rectangle(new Vector(45, 10), new Vector(50, 20)),
                 20,
                 new Line(new Vector(45, 4), new Vector(25, 4)))
         );
+//        servers.add(new StaticServer(2,
+//                new Rectangle(new Vector(45, 10), new Vector(50, 20)),20,
+//                20,
+//                new Line(new Vector(45, 4), new Vector(25, 4)))
+//        );
 
 
         // -------- TARGETS --------

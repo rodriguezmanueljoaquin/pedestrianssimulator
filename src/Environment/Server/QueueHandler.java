@@ -13,17 +13,22 @@ class QueueHandler {
     private final Line line;
     private final int capacity;
     private final List<Agent> queueingAgents;
-    private Boolean hasToUpdate;
+    private final List<Agent> incomingAgentsToQueue;
 
     public QueueHandler(Line line) {
         this.line = line;
         this.capacity = line.getSegmentsQuantity();
-        this.queueingAgents = new LinkedList<>();
-        this.hasToUpdate = true;
+        this.queueingAgents = new ArrayList<>();
+        this.incomingAgentsToQueue = new ArrayList<>();
     }
 
-    public boolean isInQueue(Agent agent) {
+    public boolean isInQueueOrGoingToQueue(Agent agent) {
         for (Agent possibleAgent : this.queueingAgents) {
+            if (possibleAgent.equals(agent)) {
+                return true;
+            }
+        }
+        for (Agent possibleAgent : this.incomingAgentsToQueue) {
             if (possibleAgent.equals(agent)) {
                 return true;
             }
@@ -36,48 +41,33 @@ class QueueHandler {
     }
 
     public Vector getPosition(Agent agent) {
-        int position = 0;
-        for (Agent possibleAgent : this.queueingAgents) {
-            if(possibleAgent.getPosition().distance(this.line.getSegmentPosition(position)) > 2*Constants.SPACE_BETWEEN_AGENTS_IN_QUEUE)
-                this.hasToUpdate = true;
-            if (possibleAgent.equals(agent)) {
-                return this.line.getSegmentPosition(position);
+        if(this.incomingAgentsToQueue.contains(agent)) {
+            Vector firstAvailablePosition = this.line.getSegmentPosition(this.queueingAgents.size() -1);
+            if(agent.getPosition().distance(firstAvailablePosition) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
+                // assign to queue as it got to the first free spot
+                this.queueingAgents.add(agent);
+                this.incomingAgentsToQueue.remove(agent);
             }
-            position++;
+
+            return firstAvailablePosition;
+
+        } else {
+            int position = this.queueingAgents.indexOf(agent);
+            if(position == -1) {
+                System.err.println("Agent is not in queue neither going to queue");
+                return null;
+            }
+
+            return this.line.getSegmentPosition(position);
         }
-        System.err.println("Agent is not in queue");
-        return null;
     }
 
-    public void addToQueue(Agent agent) {
+    public void addToAgentsGoingToQueue(Agent agent) {
         if (!hasCapacity()) {
             System.out.println("No capacity in queue");
         }
         //Lo agrego igual, pero lo mando a amontonarse a B;
-        this.queueingAgents.add(agent);
-    }
-
-    public void updateQueue(){
-        if(!hasToUpdate)
-            return;
-        Agent minDistanceAgent;
-        int minPosition;
-        for(int i =0;i < queueingAgents.size();i++){
-            Vector positionInQueue = this.line.getSegmentPosition(i);
-            minDistanceAgent = queueingAgents.get(i);
-            minPosition = i;
-            Double minDistance = queueingAgents.get(i).getPosition().distance(positionInQueue);
-            for(int j =i + 1;j < queueingAgents.size();j++) {
-                if(minDistance > queueingAgents.get(j).getPosition().distance(positionInQueue)) {
-                    minDistanceAgent = queueingAgents.get(j);
-                    minDistance = queueingAgents.get(j).getPosition().distance(positionInQueue);
-                    minPosition = j;
-                }
-            }
-            queueingAgents.set(minPosition,queueingAgents.get(i));
-            queueingAgents.set(i,minDistanceAgent);
-        }
-        hasToUpdate = false;
+        this.incomingAgentsToQueue.add(agent);
     }
 
     public Agent removeFromQueue() {
@@ -88,7 +78,7 @@ class QueueHandler {
         return this.queueingAgents.remove(0);
     }
 
-    public int size() {
+    public int agentsInQueue() {
         return this.queueingAgents.size();
     }
 }

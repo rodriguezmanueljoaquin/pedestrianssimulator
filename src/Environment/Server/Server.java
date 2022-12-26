@@ -27,11 +27,10 @@ public abstract class Server implements Objective {
 
     public void updateServer() {
         Agent agent;
-        while (this.servingAgents.size() < this.maxAttendants && this.queueHandler.size() > 0) {
+        while (this.servingAgents.size() < this.maxAttendants && this.queueHandler.agentsInQueue() > 0) {
             agent = queueHandler.removeFromQueue();
             this.startAttendingAgent(agent);
         }
-        queueHandler.updateQueue();
     }
 
     private Vector startAttendingAgent(Agent agent) {
@@ -51,11 +50,11 @@ public abstract class Server implements Objective {
         if (this.servingAgents.contains(agent))
             return this.serverPositionHandler.getOccupiedPosition(agent.getId());
 
-        if (this.queueHandler.isInQueue(agent))
+        if (this.queueHandler.isInQueueOrGoingToQueue(agent))
             return this.queueHandler.getPosition(agent);
 
-        if (this.queueHandler.size() != 0 || this.servingAgents.size() >= this.maxAttendants) {
-            this.queueHandler.addToQueue(agent);
+        if (this.queueHandler.agentsInQueue() > 0 || this.servingAgents.size() >= this.maxAttendants) {
+            this.queueHandler.addToAgentsGoingToQueue(agent);
             return this.queueHandler.getPosition(agent);
         }
 

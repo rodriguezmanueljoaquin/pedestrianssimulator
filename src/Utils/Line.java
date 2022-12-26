@@ -18,6 +18,8 @@ public class Line {
     public Vector getSegmentPosition(int segmentIndex) {
         if(segmentIndex > this.segmentsQuantity)
             return x2;
+        if(segmentIndex < 0)
+            return x1;
 
         return this.x1.add(this.x2.substract(this.x1).scalarMultiply(1d/this.segmentsQuantity).scalarMultiply((double) segmentIndex));
     }

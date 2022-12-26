@@ -21,9 +21,6 @@ public class StaticServer extends Server {
 
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
-        System.out.println("Current time: " + currentTime);
-        System.out.println("Start time: " + startTime);
-        System.out.println("Attending time: " + this.attendingTime);
         return currentTime - this.startTime > this.attendingTime;
     }
 
