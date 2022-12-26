@@ -23,17 +23,7 @@ class QueueHandler {
     }
 
     public boolean isInQueueOrGoingToQueue(Agent agent) {
-        for (Agent possibleAgent : this.queueingAgents) {
-            if (possibleAgent.equals(agent)) {
-                return true;
-            }
-        }
-        for (Agent possibleAgent : this.incomingAgentsToQueue) {
-            if (possibleAgent.equals(agent)) {
-                return true;
-            }
-        }
-        return false;
+        return this.queueingAgents.contains(agent) || this.incomingAgentsToQueue.contains(agent);
     }
 
     public boolean hasCapacity() {
