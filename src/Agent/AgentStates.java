@@ -7,13 +7,19 @@ public enum AgentStates {
             return AgentConstants.STANDARD_VELOCITY;
         }
     },
+    MOVING_TO_QUEUE_POSITION {
+        @Override
+        public double getVelocity() {
+            return AgentConstants.STANDARD_VELOCITY;
+        }
+    },
     ATTENDING {
         @Override
         public double getVelocity() {
             return 0.0;
         }
     },
-    WAITING {
+    WAITING_IN_QUEUE {
         @Override
         public double getVelocity() {
             return 0.0;

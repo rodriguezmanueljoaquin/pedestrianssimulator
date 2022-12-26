@@ -4,7 +4,6 @@ import Agent.Agent;
 import Agent.AgentStates;
 import GraphGenerator.Graph;
 import GraphGenerator.NodePath;
-import Utils.Constants;
 
 public class StudentSM implements StateMachine {
     private final Graph graph;
@@ -13,16 +12,25 @@ public class StudentSM implements StateMachine {
         this.graph = graph;
     }
 
+    private void updateAgentCurrentPath(Agent agent) {
+        NodePath path = this.graph.getPathToPosition(agent.getPosition(), agent.getCurrentObjective().getPosition(agent));
+
+        if (path == null) {
+            // FIXME! Checkear por que a veces da null
+            System.out.println("ERROR: NULL searching for path to objective, from: " + agent.getPosition() + " to: " + agent.getCurrentObjective().getPosition(agent));
+            agent.setState(AgentStates.LEAVING);
+        } else {
+            agent.setCurrentPath(path);
+        }
+    }
+
     private void updateAgentCurrentObjective(Agent agent) {
         if (agent.hasObjectives()) {
-            NodePath path = this.graph.getPathToPosition(agent.getPosition(), agent.getCurrentObjective().getPosition(agent));
+            this.updateAgentCurrentPath(agent);
 
-            if (path == null) {
-                // FIXME! Checkear por que a veces da null
-                System.out.println("ERROR: NULL searching for path to objective, from: " + agent.getPosition() + " to: " + agent.getCurrentObjective().getPosition(agent));
-                agent.setState(AgentStates.LEAVING);
-            } else {
-                agent.setCurrentPath(path);
+            if (agent.getCurrentObjective().isQueue())
+                agent.setState(AgentStates.MOVING_TO_QUEUE_POSITION);
+            else {
                 agent.setState(AgentStates.MOVING);
             }
         } else {
@@ -34,25 +42,17 @@ public class StudentSM implements StateMachine {
     public void updateAgent(Agent agent, double currentTime) {
         switch (agent.getState()) {
             case MOVING:
-                // FIXME: NOT WORKING WITH DYNAMIC SERVERS!
+                // TODO: TRY WITH STATIC
 //                if(agent.getCurrentObjective().isServer() && agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
 //                    agent.setState(AgentStates.ATTENDING);
 //                    return;
 //                }
-
-                if(agent.getCurrentObjective().isServer() &&
-                        !graph.isPositionVisible(agent.getCurrentPath().getLastNode().getPosition(),agent.getCurrentObjective().getPosition(agent)))
-                    // Server may change the position the agent has to go to while he is moving, therefore agent should update its path accordingly
-                    updateAgentCurrentObjective(agent);
-
-                if (agent.getPosition().distance(agent.getCurrentObjective().getPosition(agent)) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
-                    if (agent.getCurrentObjective().canAttend(agent)) {
-                        agent.setStartedAttendingAt(currentTime);
-                        agent.setState(AgentStates.ATTENDING);
-                    } else {
-                        // agent has to wait until objective can attend him
-                        agent.setState(AgentStates.WAITING);
+                if (agent.reachedObjective()) {
+                    if (!agent.getCurrentObjective().canAttend(agent)) {
+                        throw new RuntimeException("Objective that should be attendable says it is not");
                     }
+                    agent.setStartedAttendingAt(currentTime);
+                    agent.setState(AgentStates.ATTENDING);
                     return;
                 }
                 break;
@@ -63,18 +63,29 @@ public class StudentSM implements StateMachine {
                     this.updateAgentCurrentObjective(agent);
                 }
                 break;
-            case STARTING:
-                this.updateAgentCurrentObjective(agent);
+
+            case MOVING_TO_QUEUE_POSITION:
+                if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
+                    // start attending to server without doing the queue
+                    agent.popNextObjective(); //remove queue objective
+                    this.updateAgentCurrentObjective(agent);
+                } else if (agent.getCurrentObjective().canAttend(agent))
+                    agent.setState(AgentStates.WAITING_IN_QUEUE);
                 break;
 
-            case WAITING:
-                if (agent.getCurrentObjective().canAttend(agent)) {
-                    agent.setStartedAttendingAt(currentTime);
+            case WAITING_IN_QUEUE:
+                if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
+                    agent.popNextObjective(); //remove queue objective
                     this.updateAgentCurrentObjective(agent);
-                } else if(agent.getPosition().distance(agent.getCurrentObjective().getPosition(agent)) > Constants.MINIMUM_DISTANCE_TO_TARGET) {
+                } else if (!agent.reachedObjective()) {
                     // update in queue, has to move
-                    this.updateAgentCurrentObjective(agent);
+                    this.updateAgentCurrentPath(agent);
+                    agent.setState(AgentStates.MOVING_TO_QUEUE_POSITION);
                 }
+                break;
+
+            case STARTING:
+                this.updateAgentCurrentObjective(agent);
                 break;
 
             case LEAVING:

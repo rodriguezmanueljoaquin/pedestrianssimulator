@@ -10,7 +10,7 @@ public interface Objective {
 
     Boolean hasFinishedAttending(Agent agent, double currentTime);
 
-    default Boolean isServer() {
+    default Boolean isQueue() {
         return false;
     }
 }

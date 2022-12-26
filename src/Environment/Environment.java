@@ -58,4 +58,12 @@ public class Environment {
         return newAgents;
     }
 
+    public List<Agent> update(Double time) {
+        for (Server server : this.getServers()) {
+            server.updateServer(time);
+        }
+
+        return generateAgents(time);
+    }
+
 }

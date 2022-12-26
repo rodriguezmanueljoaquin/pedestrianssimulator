@@ -74,7 +74,7 @@ public class Graph {
     }
 
     public NodePath getPathToPosition(Vector fromPosition, Vector toPosition) {
-        if(this.isPositionVisible(fromPosition, toPosition))
+        if (this.isPositionVisible(fromPosition, toPosition))
             return new NodePath();
 
         // first try to get by current position, otherwise get the closest visible

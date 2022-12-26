@@ -3,7 +3,6 @@ package Environment.Server;
 import Agent.Agent;
 import Utils.Line;
 import Utils.Rectangle;
-import Utils.Vector;
 
 public class DynamicServer extends Server {
 
@@ -19,10 +18,7 @@ public class DynamicServer extends Server {
 
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
-        if (this.servingAgents.contains(agent) && currentTime - agent.getStartedAttendingAt() > this.attendingTime) {
-            this.freeAgent(agent);
-            return true;
-        }
-        return false;
+        // returns true when agent has started attending the server and also has completed the time required of attending
+        return agent.getStartedAttendingAt() != null && currentTime - agent.getStartedAttendingAt() > this.attendingTime;
     }
 }

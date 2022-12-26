@@ -63,40 +63,8 @@ public class Agent {
         this.position = this.position.add(this.velocity.scalarMultiply(time));
     }
 
-    public Integer getId() {
-        return this.id;
-    }
-
-    public double getRadius() {
-        return radius;
-    }
-
-    public void setRadius(double radius) {
-        this.radius = radius;
-    }
-
-    public Vector getPosition() {
-        return this.position;
-    }
-
-    public Vector getVelocity() {
-        return this.velocity;
-    }
-
-    public void setVelocity(Vector speed) {
-        this.velocity = speed;
-    }
-
-    public AgentStates getState() {
-        return state;
-    }
-
-    public void setState(AgentStates state) {
-        this.state = state;
-    }
-
-    public List<? extends Objective> getObjectives() {
-        return objectives;
+    public boolean reachedObjective() {
+        return this.getPosition().distance(this.getCurrentObjective().getPosition(this)) < Constants.MINIMUM_DISTANCE_TO_TARGET;
     }
 
     public Objective getCurrentObjective() {
@@ -137,6 +105,38 @@ public class Agent {
 
     public double distance(Agent other) {
         return this.getPosition().distance(other.position) - this.radius - other.radius;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+
+    public Vector getPosition() {
+        return this.position;
+    }
+
+    public Vector getVelocity() {
+        return this.velocity;
+    }
+
+    public void setVelocity(Vector speed) {
+        this.velocity = speed;
+    }
+
+    public AgentStates getState() {
+        return state;
+    }
+
+    public void setState(AgentStates state) {
+        this.state = state;
     }
 
     @Override

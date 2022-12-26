@@ -7,7 +7,6 @@ import Environment.Exit;
 import Environment.Objective;
 import Environment.Server.DynamicServer;
 import Environment.Server.Server;
-import Environment.Server.StaticServer;
 import Environment.Wall;
 import GraphGenerator.Graph;
 import Utils.InputHandler;

@@ -28,6 +28,9 @@ public class NodePath {
     }
 
     public Node getFirstNode() {
+        if (this.path.size() == 0)
+            return null;
+
         return this.path.get(0);
     }
 

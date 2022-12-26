@@ -1,7 +1,6 @@
 import Agent.Agent;
 import Agent.AgentStates;
 import Environment.Environment;
-import Environment.Server.Server;
 import Environment.Wall;
 import GraphGenerator.Graph;
 
@@ -36,26 +35,22 @@ public class Simulation {
         this.writeOutput();
 
         while (this.time < this.maxTime) {
-            // create new agents
-            this.agents.addAll(this.environment.generateAgents(this.time));
+            // create new agents and update servers
+            this.agents.addAll(this.environment.update(this.time));
 
-            // TODO: make environment check servers and free its users if necessary?¿
-
-            // update positions
+            // update positions and state
             for (Agent agent : this.agents) {
                 agent.updatePosition(this.dt);
                 agent.getStateMachine().updateAgent(agent, this.time);
             }
-            // update servers
-            for (Server server : this.environment.getServers()) {
-                server.updateServer();
-            }
+
             // remove agents that left
             List<Agent> leavingAgents = new ArrayList<>();
             for (Agent agent : this.agents) {
                 if (agent.getState() == AgentStates.LEAVING)
                     leavingAgents.add(agent);
-                agent.updateVelocity();
+                else
+                    agent.updateVelocity();
             }
             this.agents.removeAll(leavingAgents);
 

@@ -19,23 +19,32 @@ public abstract class Server implements Objective {
 
     public Server(int maxCapacity, Rectangle zone, double startTime, double attendingTime, Line queueLine) {
         this.serverPositionHandler = new ServerPositionHandler(zone);
-        this.queueHandler = new QueueHandler(queueLine);
+        this.queueHandler = new QueueHandler(queueLine, this);
         this.maxAttendants = maxCapacity;
         this.attendingTime = attendingTime;
         this.servingAgents = new ArrayList<>();
     }
 
-    public void updateServer() {
-        Agent agent;
+    public void updateServer(double currentTime) {
+        List<Agent> freeAgents = new ArrayList<>();
+        for (Agent servingAgent : this.servingAgents) {
+            if (this.hasFinishedAttending(servingAgent, currentTime))
+                freeAgents.add(servingAgent);
+        }
+
+        for (Agent agent : freeAgents) {
+            freeAgent(agent);
+        }
+
         while (this.servingAgents.size() < this.maxAttendants && this.queueHandler.agentsInQueue() > 0) {
-            agent = queueHandler.removeFromQueue();
-            this.startAttendingAgent(agent);
+            this.startAttendingFirstAgentInQueue();
         }
     }
 
-    private Vector startAttendingAgent(Agent agent) {
+    private void startAttendingFirstAgentInQueue() {
+        Agent agent = this.queueHandler.removeFromQueue();
         this.servingAgents.add(agent);
-        return this.serverPositionHandler.setNewPosition(agent.getId());
+        this.serverPositionHandler.setNewPosition(agent.getId());
     }
 
     protected void freeAgent(Agent agent) {
@@ -47,22 +56,13 @@ public abstract class Server implements Objective {
     public Vector getPosition(Agent agent) {
         // server positions vary per agent, as the server may command agent to go to a specific place in the queue,
         // or in the server when attending it
-        if (this.servingAgents.contains(agent))
-            return this.serverPositionHandler.getOccupiedPosition(agent.getId());
+        if (!this.servingAgents.contains(agent))
+            throw new RuntimeException("SERVER NOT ATENDING AGENT " + agent.getId());
 
-        if (this.queueHandler.isInQueueOrGoingToQueue(agent))
-            return this.queueHandler.getPosition(agent);
-
-        if (this.queueHandler.agentsInQueue() > 0 || this.servingAgents.size() >= this.maxAttendants) {
-            this.queueHandler.addToAgentsGoingToQueue(agent);
-            return this.queueHandler.getPosition(agent);
-        }
-
-        return this.startAttendingAgent(agent);
+        return this.serverPositionHandler.getOccupiedPosition(agent.getId());
     }
 
-    @Override
-    public Boolean isServer() {
-        return true;
+    public QueueHandler getQueueHandler() {
+        return queueHandler;
     }
 }

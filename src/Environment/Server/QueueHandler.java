@@ -1,63 +1,51 @@
 package Environment.Server;
 
 import Agent.Agent;
+import Environment.Objective;
 import Utils.Constants;
 import Utils.Line;
 import Utils.Vector;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-class QueueHandler {
+class QueueHandler implements Objective {
     private final Line line;
-    private final int capacity;
     private final List<Agent> queueingAgents;
-    private final List<Agent> incomingAgentsToQueue;
+    private final Server server;
 
-    public QueueHandler(Line line) {
+    public QueueHandler(Line line, Server server) {
         this.line = line;
-        this.capacity = line.getSegmentsQuantity();
         this.queueingAgents = new ArrayList<>();
-        this.incomingAgentsToQueue = new ArrayList<>();
-    }
-
-    public boolean isInQueueOrGoingToQueue(Agent agent) {
-        return this.queueingAgents.contains(agent) || this.incomingAgentsToQueue.contains(agent);
-    }
-
-    public boolean hasCapacity() {
-        return this.queueingAgents.size() < this.capacity;
+        this.server = server;
     }
 
     public Vector getPosition(Agent agent) {
-        if(this.incomingAgentsToQueue.contains(agent)) {
-            Vector firstAvailablePosition = this.line.getSegmentPosition(this.queueingAgents.size() -1);
-            if(agent.getPosition().distance(firstAvailablePosition) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
-                // assign to queue as it got to the first free spot
-                this.queueingAgents.add(agent);
-                this.incomingAgentsToQueue.remove(agent);
-            }
-
-            return firstAvailablePosition;
-
-        } else {
-            int position = this.queueingAgents.indexOf(agent);
-            if(position == -1) {
-                System.err.println("Agent is not in queue neither going to queue");
-                return null;
-            }
-
+        // returns position designated for agent if its in queue, else returns first available position
+        int position = this.queueingAgents.indexOf(agent);
+        if (position != -1) {
             return this.line.getSegmentPosition(position);
         }
+
+        Vector firstAvailablePosition = this.line.getSegmentPosition(this.queueingAgents.size() - 1);
+        if (agent.getPosition().distance(firstAvailablePosition) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
+            // assign to queue as it got to the first free spot
+            this.queueingAgents.add(agent);
+        }
+
+        return firstAvailablePosition;
     }
 
-    public void addToAgentsGoingToQueue(Agent agent) {
-        if (!hasCapacity()) {
-            System.out.println("No capacity in queue");
-        }
-        //Lo agrego igual, pero lo mando a amontonarse a B;
-        this.incomingAgentsToQueue.add(agent);
+    @Override
+    public Boolean hasFinishedAttending(Agent agent, double currentTime) {
+        return this.server.canAttend(agent);
+    }
+
+    @Override
+    public Boolean canAttend(Agent agent) {
+        // returns true when agent is in the queue and in its position
+        return this.queueingAgents.contains(agent) &&
+                agent.getPosition().distance(this.line.getSegmentPosition(this.queueingAgents.indexOf(agent))) < Constants.MINIMUM_DISTANCE_TO_TARGET;
     }
 
     public Agent removeFromQueue() {
@@ -70,5 +58,10 @@ class QueueHandler {
 
     public int agentsInQueue() {
         return this.queueingAgents.size();
+    }
+
+    @Override
+    public Boolean isQueue() {
+        return true;
     }
 }

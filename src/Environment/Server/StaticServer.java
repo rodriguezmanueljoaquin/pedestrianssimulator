@@ -3,7 +3,6 @@ package Environment.Server;
 import Agent.Agent;
 import Utils.Line;
 import Utils.Rectangle;
-import Utils.Vector;
 
 public class StaticServer extends Server {
     //Static event is for an event that has a fixed schedule
