@@ -34,6 +34,10 @@ public class StudentSM implements StateMachine {
     public void updateAgent(Agent agent, double currentTime) {
         switch (agent.getState()) {
             case MOVING:
+                if(agent.getCurrentObjective().isServer() && agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
+                    agent.setState(AgentStates.ATTENDING);
+                    return;
+                }
                 if(agent.getCurrentObjective().isServer() &&
                         !graph.isPositionVisible(agent.getCurrentPath().getLastNode().getPosition(),agent.getCurrentObjective().getPosition(agent)))
                     // Server may change the position the agent has to go to while he is moving, therefore agent should update its path accordingly

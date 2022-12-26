@@ -27,11 +27,11 @@ public abstract class Server implements Objective {
 
     public void updateServer() {
         Agent agent;
-        queueHandler.updateQueue();
         while (this.servingAgents.size() < this.maxAttendants && this.queueHandler.size() > 0) {
             agent = queueHandler.removeFromQueue();
             this.startAttendingAgent(agent);
         }
+        queueHandler.updateQueue();
     }
 
     private Vector startAttendingAgent(Agent agent) {
