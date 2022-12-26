@@ -11,15 +11,16 @@ import java.util.List;
 import java.util.Queue;
 
 class QueueHandler {
-    //TODO: Esta clase, mi idea era hacer que reciba puntos de A a B donde puede crear posiciones, con la dist entre ellas.
     private final Line line;
     private final int capacity;
-    private final Queue<Agent> queueingAgents;
+    private final List<Agent> queueingAgents;
+    private Boolean hasToUpdate;
 
     public QueueHandler(Line line) {
         this.line = line;
         this.capacity = line.getSegmentsQuantity();
         this.queueingAgents = new LinkedList<>();
+        this.hasToUpdate = true;
     }
 
     public boolean isInQueue(Agent agent) {
@@ -36,21 +37,17 @@ class QueueHandler {
     }
 
     public Vector getPosition(Agent agent) {
-        Agent queueingAgent = null;
         int position = 0;
         for (Agent possibleAgent : this.queueingAgents) {
+            if(possibleAgent.getPosition().distance(this.line.getSegmentPosition(position)) > 2*Constants.SPACE_BETWEEN_AGENTS_IN_QUEUE)
+                this.hasToUpdate = true;
             if (possibleAgent.equals(agent)) {
-                queueingAgent = possibleAgent;
-                break;
+                return this.line.getSegmentPosition(position);
             }
             position++;
         }
-        if (queueingAgent == null) {
-            System.err.println("Agent is not in queue");
-            return null;
-        }
-
-        return this.line.getSegmentPosition(position);
+        System.err.println("Agent is not in queue");
+        return null;
     }
 
     public void addToQueue(Agent agent) {
@@ -61,12 +58,35 @@ class QueueHandler {
         this.queueingAgents.add(agent);
     }
 
+    public void updateQueue(){
+        if(!hasToUpdate)
+            return;
+        Agent minDistanceAgent;
+        int minPosition;
+        for(int i =0;i < queueingAgents.size();i++){
+            Vector positionInQueue = this.line.getSegmentPosition(i);
+            minDistanceAgent = queueingAgents.get(i);
+            minPosition = i;
+            Double minDistance = queueingAgents.get(i).getPosition().distance(positionInQueue);
+            for(int j =i + 1;j < queueingAgents.size();j++) {
+                if(minDistance > queueingAgents.get(j).getPosition().distance(positionInQueue)) {
+                    minDistanceAgent = queueingAgents.get(j);
+                    minDistance = queueingAgents.get(j).getPosition().distance(positionInQueue);
+                    minPosition = j;
+                }
+            }
+            queueingAgents.set(minPosition,queueingAgents.get(i));
+            queueingAgents.set(i,minDistanceAgent);
+        }
+        hasToUpdate = false;
+    }
+
     public Agent removeFromQueue() {
         if (this.queueingAgents.size() == 0) {
             System.err.println("No agents in queue");
             return null;
         }
-        return this.queueingAgents.poll();
+        return this.queueingAgents.remove(0);
     }
 
     public int size() {
