@@ -74,12 +74,15 @@ public class Graph {
     }
 
     public NodePath getPathToPosition(Vector fromPosition, Vector toPosition) {
+        if(this.isPositionVisible(fromPosition, toPosition))
+            return new NodePath();
+
         // first try to get by current position, otherwise get the closest visible
-        Node fromNode = nodes.get(fromPosition);
+        Node fromNode = this.nodes.get(fromPosition);
         if (fromNode == null) {
-            fromNode = getClosestVisibleNode(fromPosition);
+            fromNode = this.getClosestVisibleNode(fromPosition);
         }
-        NodePath fullPath = AStar(fromNode, toPosition);
+        NodePath fullPath = this.AStar(fromNode, toPosition);
         if (fullPath == null) {
             // none path found
             return null;
