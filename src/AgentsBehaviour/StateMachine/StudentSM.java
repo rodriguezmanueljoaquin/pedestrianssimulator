@@ -38,6 +38,11 @@ public class StudentSM implements StateMachine {
         }
     }
 
+    private void removeFromQueueAndUpdate(Agent agent) {
+        agent.popNextObjective(); //remove queue objective
+        this.updateAgentCurrentObjective(agent);
+    }
+
     @Override
     public void updateAgent(Agent agent, double currentTime) {
         switch (agent.getState()) {
@@ -59,6 +64,7 @@ public class StudentSM implements StateMachine {
 
             case ATTENDING:
                 if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
+                    agent.setStartedAttendingAt(null); // reset
                     agent.popNextObjective();
                     this.updateAgentCurrentObjective(agent);
                 }
@@ -66,17 +72,14 @@ public class StudentSM implements StateMachine {
 
             case MOVING_TO_QUEUE_POSITION:
                 if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
-                    // start attending to server without doing the queue
-                    agent.popNextObjective(); //remove queue objective
-                    this.updateAgentCurrentObjective(agent);
+                    this.removeFromQueueAndUpdate(agent); // start attending to server without doing the queue
                 } else if (agent.getCurrentObjective().canAttend(agent))
                     agent.setState(AgentStates.WAITING_IN_QUEUE);
                 break;
 
             case WAITING_IN_QUEUE:
                 if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
-                    agent.popNextObjective(); //remove queue objective
-                    this.updateAgentCurrentObjective(agent);
+                    this.removeFromQueueAndUpdate(agent);
                 } else if (!agent.reachedObjective()) {
                     // update in queue, has to move
                     this.updateAgentCurrentPath(agent);

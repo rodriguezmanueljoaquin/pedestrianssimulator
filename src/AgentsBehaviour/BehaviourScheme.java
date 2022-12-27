@@ -50,6 +50,8 @@ public class BehaviourScheme {
         objectives.add(servers.get(0).getQueueHandler());
         objectives.add(servers.get(0));
 
+        objectives.add(servers.get(0).getQueueHandler());
+        objectives.add(servers.get(0));
 
         // TODO: add nearest exit from last objective instead of exits.get(0)
         objectives.add(exits.get(0));
