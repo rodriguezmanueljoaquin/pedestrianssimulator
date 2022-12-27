@@ -62,6 +62,11 @@ public abstract class Server implements Objective {
         return this.serverPositionHandler.getOccupiedPosition(agent.getId());
     }
 
+    @Override
+    public Boolean isServer(){
+        return true;
+    }
+
     public QueueHandler getQueueHandler() {
         return queueHandler;
     }

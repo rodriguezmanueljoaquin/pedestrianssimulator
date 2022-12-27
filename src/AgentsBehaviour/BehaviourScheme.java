@@ -39,26 +39,26 @@ public class BehaviourScheme {
 
     public List<Objective> getObjectivesSample() {
         List<Objective> objectives = new ArrayList<>();
-//        for (ObjectiveGroup group : this.scheme) {
-//            int objectivesQuantity = (int) (this.random.nextDouble() * (group.getMaxOccurrences() - group.getMinOccurrences())) + group.getMinOccurrences();
-//
-//            for (int i = 0; i < objectivesQuantity; i++) {
-//                objectives.add(group.getRandomObjective());
-//            }
-//        }
+        for (ObjectiveGroup group : this.scheme) {
+            int objectivesQuantity = (int) (this.random.nextDouble() * (group.getMaxOccurrences() - group.getMinOccurrences())) + group.getMinOccurrences();
 
-        objectives.add(servers.get(0).getQueueHandler());
-        objectives.add(servers.get(0));
-
-        objectives.add(servers.get(0).getQueueHandler());
-        objectives.add(servers.get(0));
-
+            for (int i = 0; i < objectivesQuantity; i++) {
+                Objective obj = group.getRandomObjective();
+                if(obj.isServer()){
+                    addServerAndQueue((Server) obj,objectives);
+                }
+//                else objectives.add(obj);
+            }
+        }
         // TODO: add nearest exit from last objective instead of exits.get(0)
         objectives.add(exits.get(0));
-
         return objectives;
     }
 
+    private void addServerAndQueue(Server server, List<Objective> objectives){
+        objectives.add(server.getQueueHandler());
+        objectives.add(server);
+    }
     public StateMachine getStateMachine() {
         return stateMachine;
     }

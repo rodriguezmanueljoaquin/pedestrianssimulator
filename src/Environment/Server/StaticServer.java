@@ -15,13 +15,11 @@ public class StaticServer extends Server {
     @Override
     public Boolean canAttend(Agent agent) {
         //If event has finished, agent will be freed on next frame.
-        return true;
+        return this.servingAgents.contains(agent);
     }
 
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
-        return currentTime - this.startTime > this.attendingTime;
+        return currentTime - this.startTime > this.attendingTime && agent.getStartedAttendingAt() != null;
     }
-
-
 }

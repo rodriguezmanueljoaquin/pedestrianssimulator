@@ -73,6 +73,7 @@ public class StudentSM implements StateMachine {
             case MOVING_TO_QUEUE_POSITION:
                 if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
                     this.removeFromQueueAndUpdate(agent); // start attending to server without doing the queue
+
                 } else if (agent.getCurrentObjective().canAttend(agent))
                     agent.setState(AgentStates.WAITING_IN_QUEUE);
                 break;

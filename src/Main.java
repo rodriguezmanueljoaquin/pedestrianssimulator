@@ -7,6 +7,7 @@ import Environment.Exit;
 import Environment.Objective;
 import Environment.Server.DynamicServer;
 import Environment.Server.Server;
+import Environment.Server.StaticServer;
 import Environment.Wall;
 import GraphGenerator.Graph;
 import Utils.InputHandler;
@@ -51,11 +52,11 @@ public class Main {
                 20,
                 new Line(new Vector(45, 4), new Vector(25, 4)))
         );
-//        servers.add(new StaticServer(2,
-//                new Rectangle(new Vector(45, 10), new Vector(50, 20)),20,
-//                20,
-//                new Line(new Vector(45, 4), new Vector(25, 4)))
-//        );
+        servers.add(new DynamicServer(2,
+                new Rectangle(new Vector(1, 10), new Vector(15, 20)),
+                20,
+                new Line(new Vector(45, 4), new Vector(25, 4)))
+        );
 
 
         // -------- TARGETS --------
@@ -79,8 +80,11 @@ public class Main {
 
         BehaviourScheme studentBehaviourScheme = new BehaviourScheme(studentStateMachine, exits, servers);
 
+        List<Objective> objectives = new ArrayList<Objective>();
+        objectives.addAll(targets);
+        objectives.addAll(servers);
         // SEARCH FOR PRODUCTS
-        studentBehaviourScheme.addObjectiveGroupToScheme(targets, 5, 10);
+        studentBehaviourScheme.addObjectiveGroupToScheme(objectives, 5, 10);
 
         // -------- AGENT GENERATORS --------
         List<AgentsGenerator> studentsGenerators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", studentBehaviourScheme);
