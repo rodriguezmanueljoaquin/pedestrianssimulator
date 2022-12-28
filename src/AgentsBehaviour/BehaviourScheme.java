@@ -59,7 +59,7 @@ public class BehaviourScheme {
         objectives.add(server.getQueueHandler());
         objectives.add(server);
     }
-    public StateMachine getStateMachine() {
+    public StateMachine getStateMachine()    {
         return stateMachine;
     }
 
@@ -77,7 +77,6 @@ public class BehaviourScheme {
 
         public Objective getRandomObjective() {
             int objectiveIndex = (int) (this.random.nextDouble() * this.possibleObjectives.size());
-
             return this.possibleObjectives.get(objectiveIndex);
         }
 

@@ -1,5 +1,6 @@
 import Agent.Agent;
 import Agent.AgentStates;
+import CPM.CPM;
 import Environment.Environment;
 import Environment.Wall;
 import GraphGenerator.Graph;
@@ -55,7 +56,7 @@ public class Simulation {
             this.agents.removeAll(leavingAgents);
 
 
-            // update velocities acording CPM
+            // update velocities acording CPM.CPM
             CPM.updateAgents(agents, environment);
 
 

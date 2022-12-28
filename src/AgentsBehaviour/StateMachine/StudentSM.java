@@ -47,11 +47,7 @@ public class StudentSM implements StateMachine {
     public void updateAgent(Agent agent, double currentTime) {
         switch (agent.getState()) {
             case MOVING:
-                // TODO: TRY WITH STATIC
-//                if(agent.getCurrentObjective().isServer() && agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
-//                    agent.setState(AgentStates.ATTENDING);
-//                    return;
-//                }
+
                 if (agent.reachedObjective()) {
                     if (!agent.getCurrentObjective().canAttend(agent)) {
                         throw new RuntimeException("Objective that should be attendable says it is not");

@@ -1,3 +1,5 @@
+package CPM;
+
 import Agent.Agent;
 import Environment.Environment;
 
@@ -9,7 +11,7 @@ public class CPM {
     private final double EXPANSION_TIME = 0.5;
 
     public static void updateAgents(List<Agent> agents, Environment environment) {
-        // USAR CPM VIEJO!!!!
+        // USAR CPM.CPM VIEJO!!!!
 
 
         // encontrar colisiones
@@ -25,8 +27,8 @@ public class CPM {
 //        }
 
 
-        // actualizar velocidades de particulas que colisionaron con CPM
-        // actualizar velocidades de particulas que no colisionaron con CPM
+        // actualizar velocidades de particulas que colisionaron con CPM.CPM
+        // actualizar velocidades de particulas que no colisionaron con CPM.CPM
     }
 
 //    private void radiusUpdate(Agent.Agent agent, boolean contact, Double DELTA_T) {

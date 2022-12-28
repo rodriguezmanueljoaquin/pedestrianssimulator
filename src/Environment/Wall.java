@@ -36,7 +36,7 @@ public class Wall {
         return String.format(Locale.ENGLISH, "%f;%f;%f;%f", this.A.getX(), this.A.getY(), this.B.getX(), this.B.getY());
     }
 
-    // For CPM usages
+    // For CPM.CPM usages
     // method from: https://math.stackexchange.com/questions/2193720/find-a-point-on-a-line-segment-which-is-the-closest-to-other-point-not-on-the-li
     public Vector getClosestPoint(Vector P) {
         Vector u = A.substract(P);
