@@ -1,5 +1,6 @@
 package Environment.Server;
 
+import Agent.Agent;
 import Utils.Rectangle;
 import Utils.Vector;
 
@@ -14,6 +15,14 @@ class ServerPositionHandler {
     public ServerPositionHandler(Rectangle zone) {
         this.zone = zone;
         this.occupiedPositions = new HashMap<>();
+    }
+
+    public Vector getMiddlePoint() {
+        return this.zone.getMiddlePoint();
+    }
+
+    public boolean isAgentInside(Agent agent) {
+        return this.zone.isPointInside(agent.getPosition());
     }
 
     public Vector setNewPosition(int id) {

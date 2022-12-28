@@ -47,16 +47,19 @@ public class Main {
         // -------- SERVERS --------
         List<Server> servers = new ArrayList<>();
 
-        servers.add(new DynamicServer(2,
+        servers.add(new StaticServer(2,
                 new Rectangle(new Vector(45, 10), new Vector(50, 20)),
-                20,
-                new Line(new Vector(45, 4), new Vector(25, 4)))
-        );
+                20, 100
+        )); // supongamos que esto es clase de MATEMATICAS
+        servers.add(new StaticServer(3,
+                new Rectangle(new Vector(36, 10), new Vector(40, 20)),
+                80, 100
+        )); // supongamos que esto es clase de LENGUA
         servers.add(new DynamicServer(2,
                 new Rectangle(new Vector(1, 10), new Vector(15, 20)),
-                20,
-                new Line(new Vector(45, 4), new Vector(25, 4)))
-        );
+                10,
+                new Line(new Vector(5, 4), new Vector(20, 4)))
+        ); // supongamos que esto es una zona con maquinas expendedoras
 
 
         // -------- TARGETS --------
@@ -80,11 +83,14 @@ public class Main {
 
         BehaviourScheme studentBehaviourScheme = new BehaviourScheme(studentStateMachine, exits, servers);
 
-        List<Objective> objectives = new ArrayList<Objective>();
-        objectives.addAll(targets);
-        objectives.addAll(servers);
+        List<Objective> serverObjectives = new ArrayList<>();
+        serverObjectives.addAll(servers);
+        studentBehaviourScheme.addObjectiveGroupToScheme(serverObjectives, 1, 3);
+
         // SEARCH FOR PRODUCTS
-        studentBehaviourScheme.addObjectiveGroupToScheme(objectives, 5, 10);
+        List<Objective> productsObjectives = new ArrayList<>();
+        productsObjectives.addAll(targets);
+        studentBehaviourScheme.addObjectiveGroupToScheme(productsObjectives, 2, 5);
 
         // -------- AGENT GENERATORS --------
         List<AgentsGenerator> studentsGenerators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", studentBehaviourScheme);
