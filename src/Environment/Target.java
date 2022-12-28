@@ -22,7 +22,8 @@ public class Target implements Objective {
 
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
-        return currentTime - agent.getStartedAttendingAt() >= this.attendingTime;
+        //true if the agent has started to attend and completed it "task"
+        return agent.getStartedAttendingAt() != null && currentTime - agent.getStartedAttendingAt() >= this.attendingTime;
     }
 
     @Override

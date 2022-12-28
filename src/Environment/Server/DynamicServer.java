@@ -12,6 +12,21 @@ public class DynamicServer extends Server {
     }
 
     @Override
+    public void updateServer(double currentTime) {
+        super.updateServer(currentTime);
+
+        while (this.servingAgents.size() < this.maxAttendants && this.queueHandler.agentsInQueue() > 0) {
+            this.startAttendingFirstAgentInQueue();
+        }
+    }
+
+    private void startAttendingFirstAgentInQueue() {
+        Agent agent = this.queueHandler.removeFromQueue();
+        this.servingAgents.add(agent);
+        this.serverPositionHandler.setNewPosition(agent.getId());
+    }
+
+    @Override
     public Boolean canAttend(Agent agent) {
         return this.servingAgents.contains(agent);
     }
@@ -20,5 +35,10 @@ public class DynamicServer extends Server {
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
         // returns true when agent has started attending the server and also has completed the time required of attending
         return agent.getStartedAttendingAt() != null && currentTime - agent.getStartedAttendingAt() > this.attendingTime;
+    }
+
+    @Override
+    public Boolean hasQueue() {
+        return true;
     }
 }

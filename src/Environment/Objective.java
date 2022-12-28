@@ -14,7 +14,7 @@ public interface Objective {
         return false;
     }
 
-    default Boolean isServer(){
+    default Boolean hasQueue(){
         return false;
     }
 }

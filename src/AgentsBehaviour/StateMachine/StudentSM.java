@@ -4,6 +4,8 @@ import Agent.Agent;
 import Agent.AgentStates;
 import GraphGenerator.Graph;
 import GraphGenerator.NodePath;
+import Utils.Constants;
+import Utils.Vector;
 
 public class StudentSM implements StateMachine {
     private final Graph graph;
@@ -47,17 +49,16 @@ public class StudentSM implements StateMachine {
     public void updateAgent(Agent agent, double currentTime) {
         switch (agent.getState()) {
             case MOVING:
-                // TODO: TRY WITH STATIC
-//                if(agent.getCurrentObjective().isServer() && agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
-//                    agent.setState(AgentStates.ATTENDING);
-//                    return;
-//                }
                 if (agent.reachedObjective()) {
-                    if (!agent.getCurrentObjective().canAttend(agent)) {
-                        throw new RuntimeException("Objective that should be attendable says it is not");
-                    }
+                    // when agent has arrived to objective
                     agent.setStartedAttendingAt(currentTime);
                     agent.setState(AgentStates.ATTENDING);
+                    return;
+
+                } else if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
+                    //objective finished attending agent before it arrived
+                    agent.popNextObjective();
+                    this.updateAgentCurrentObjective(agent);
                     return;
                 }
                 break;
@@ -71,9 +72,11 @@ public class StudentSM implements StateMachine {
                 break;
 
             case MOVING_TO_QUEUE_POSITION:
+                if(!graph.isPositionVisible(agent.getPosition(), agent.getCurrentObjective().getPosition(agent)))
+                    this.updateAgentCurrentPath(agent); // objective position in queue changed
+
                 if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
                     this.removeFromQueueAndUpdate(agent); // start attending to server without doing the queue
-
                 } else if (agent.getCurrentObjective().canAttend(agent))
                     agent.setState(AgentStates.WAITING_IN_QUEUE);
                 break;

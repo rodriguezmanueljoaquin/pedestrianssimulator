@@ -36,15 +36,6 @@ public abstract class Server implements Objective {
             freeAgent(agent);
         }
 
-        while (this.servingAgents.size() < this.maxAttendants && this.queueHandler.agentsInQueue() > 0) {
-            this.startAttendingFirstAgentInQueue();
-        }
-    }
-
-    private void startAttendingFirstAgentInQueue() {
-        Agent agent = this.queueHandler.removeFromQueue();
-        this.servingAgents.add(agent);
-        this.serverPositionHandler.setNewPosition(agent.getId());
     }
 
     protected void freeAgent(Agent agent) {
@@ -60,11 +51,6 @@ public abstract class Server implements Objective {
             throw new RuntimeException("SERVER NOT ATENDING AGENT " + agent.getId());
 
         return this.serverPositionHandler.getOccupiedPosition(agent.getId());
-    }
-
-    @Override
-    public Boolean isServer(){
-        return true;
     }
 
     public QueueHandler getQueueHandler() {

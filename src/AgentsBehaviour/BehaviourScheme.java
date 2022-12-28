@@ -44,12 +44,13 @@ public class BehaviourScheme {
 
             for (int i = 0; i < objectivesQuantity; i++) {
                 Objective obj = group.getRandomObjective();
-                if(obj.isServer()){
-                    addServerAndQueue((Server) obj,objectives);
+                if(obj.hasQueue()){
+                    addServerAndQueue((Server) obj, objectives);
                 }
-//                else objectives.add(obj);
+                else objectives.add(obj);
             }
         }
+
         // TODO: add nearest exit from last objective instead of exits.get(0)
         objectives.add(exits.get(0));
         return objectives;
