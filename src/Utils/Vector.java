@@ -57,9 +57,12 @@ public class Vector {
     }
 
     public Vector normalize() {
-        double hypot = Math.sqrt(Math.pow(this.getX(), 2) + Math.pow(this.getY(), 2));
+        double hypot = this.module();
 
         return new Vector(this.getX() / hypot, this.getY() / hypot);
+    }
+    public Double module(){
+        return Math.sqrt(Math.pow(this.getX(), 2) + Math.pow(this.getY(), 2));
     }
 
     public Double distance(Vector e) {

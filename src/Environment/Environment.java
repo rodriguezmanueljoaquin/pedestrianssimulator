@@ -49,6 +49,20 @@ public class Environment {
         return minExit;
     }
 
+    public Wall getClosestWall(Vector position){
+        Wall closestWall = walls.get(0);
+        Double minDistance = closestWall.getClosestPoint(position).distance(position);
+        Double currentDistance;
+        for(Wall wall : walls){
+            currentDistance = wall.getClosestPoint(position).distance(position);
+            if(currentDistance < minDistance){
+                minDistance = currentDistance;
+                closestWall = wall;
+            }
+        }
+        return closestWall;
+    }
+
     public List<Agent> generateAgents(Double time) {
         List<Agent> newAgents = new ArrayList<>();
 
