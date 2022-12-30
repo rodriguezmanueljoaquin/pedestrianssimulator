@@ -41,7 +41,6 @@ public class StaticServer extends Server {
         } else if(!this.servingAgents.contains(agent) && this.serverPositionHandler.isAgentInside(agent)){
             this.servingAgents.add(agent);
             this.serverPositionHandler.setNewPosition(agent.getId());
-            return false;
         }
 
         return false;

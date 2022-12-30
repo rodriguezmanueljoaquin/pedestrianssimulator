@@ -45,7 +45,7 @@ public class Simulation {
                 agent.getStateMachine().updateAgent(agent, this.time);
             }
 
-            // remove agents that left
+            // remove agents that left and update the velocity of the rest
             List<Agent> leavingAgents = new ArrayList<>();
             for (Agent agent : this.agents) {
                 if (agent.getState() == AgentStates.LEAVING)
