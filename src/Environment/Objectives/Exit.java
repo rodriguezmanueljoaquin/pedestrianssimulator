@@ -23,7 +23,7 @@ public class Exit implements Objective {
 
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
-        return agent.reachedObjective();
+        return true;
     }
 
     @Override

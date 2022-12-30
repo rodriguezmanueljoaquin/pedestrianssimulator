@@ -29,15 +29,13 @@ public class DefaultSM implements StateMachine {
         if (agent.hasObjectives()) {
             this.updateAgentCurrentPath(agent);
 
-            if (agent.getCurrentObjective().getType().equals(ObjectiveType.QUEUE))
+            if (agent.getCurrentObjective().getType().equals(ObjectiveType.QUEUE)) {
                 agent.setState(AgentStates.MOVING_TO_QUEUE_POSITION);
-            else {
-                // TODO: ONLY DO THIS WITH STATIC SERVERS
-                if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
-                    //objective finished attending agent before it arrived
-                    removeFromQueueAndUpdate(agent, currentTime);
-                    return;
-                }
+            } else if (agent.getCurrentObjective().getType().equals(ObjectiveType.STATIC_SERVER) &&
+                    agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
+                //static server has finished attending before agent arrived
+                removeFromQueueAndUpdate(agent, currentTime);
+            } else {
                 agent.setState(AgentStates.MOVING);
             }
         } else {
@@ -96,7 +94,7 @@ public class DefaultSM implements StateMachine {
                 break;
 
             case MOVING_TO_QUEUE_POSITION:
-                if(!graph.isPositionVisible(agent.getPosition(), agent.getCurrentObjective().getPosition(agent)))
+                if (!graph.isPositionVisible(agent.getPosition(), agent.getCurrentObjective().getPosition(agent)))
                     // objective position in queue changed while going to it
                     this.updateAgentCurrentPath(agent);
 
