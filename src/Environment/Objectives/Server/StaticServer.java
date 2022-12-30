@@ -1,12 +1,9 @@
-package Environment.Server;
+package Environment.Objectives.Server;
 
 import Agent.Agent;
-import Utils.Line;
+import Environment.Objectives.ObjectiveType;
 import Utils.Rectangle;
 import Utils.Vector;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class StaticServer extends Server {
     //Static event is for an event that has a fixed schedule
@@ -44,5 +41,10 @@ public class StaticServer extends Server {
         }
 
         return false;
+    }
+
+    @Override
+    public ObjectiveType getType() {
+        return ObjectiveType.STATIC_SERVER;
     }
 }

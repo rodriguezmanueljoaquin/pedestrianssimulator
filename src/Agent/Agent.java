@@ -1,7 +1,7 @@
 package Agent;
 
 import AgentsBehaviour.StateMachine.StateMachine;
-import Environment.Objective;
+import Environment.Objectives.Objective;
 import GraphGenerator.Node;
 import GraphGenerator.NodePath;
 import Utils.Constants;

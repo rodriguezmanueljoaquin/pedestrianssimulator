@@ -3,10 +3,12 @@ from enum import Enum
 # enum
 class ParticleState(Enum):
     MOVING = 0
-    ATTENDING = 1
-    WAITING = 2
-    LEAVING = 3
-    STARTING = 4
+    MOVING_TO_QUEUE_POSITION = 1
+    ATTENDING = 2
+    WAITING = 3
+    LEAVING = 4
+    STARTING = 5
+    APPROXIMATING = 6
 
 class Particle:    
     def __init__(self,id,x,y,velx,vely,radius,state):

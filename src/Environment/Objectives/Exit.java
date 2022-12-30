@@ -1,6 +1,7 @@
-package Environment;
+package Environment.Objectives;
 
 import Agent.Agent;
+import Environment.Wall;
 import Utils.Vector;
 
 public class Exit implements Objective {
@@ -23,5 +24,10 @@ public class Exit implements Objective {
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
         return agent.reachedObjective();
+    }
+
+    @Override
+    public ObjectiveType getType() {
+        return ObjectiveType.EXIT;
     }
 }

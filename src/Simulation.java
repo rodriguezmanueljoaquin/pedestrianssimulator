@@ -1,6 +1,5 @@
 import Agent.Agent;
 import Agent.AgentStates;
-import CPM.CPM;
 import Environment.Environment;
 import Environment.Wall;
 import GraphGenerator.Graph;
@@ -57,7 +56,7 @@ public class Simulation {
 
 
             // update velocities acording CPM.CPM
-            CPM.updateAgents(agents, environment);
+//            CPM.updateAgents(agents, environment);
 
 
             // escribir output

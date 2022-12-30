@@ -1,13 +1,13 @@
 import AgentsBehaviour.BehaviourScheme;
 import AgentsBehaviour.StateMachine.StateMachine;
-import AgentsBehaviour.StateMachine.StudentSM;
+import AgentsBehaviour.StateMachine.SuperMarketClientSM;
 import AgentsGenerator.AgentsGenerator;
 import Environment.Environment;
-import Environment.Exit;
-import Environment.Objective;
-import Environment.Server.DynamicServer;
-import Environment.Server.Server;
-import Environment.Server.StaticServer;
+import Environment.Objectives.Exit;
+import Environment.Objectives.Objective;
+import Environment.Objectives.Server.DynamicServer;
+import Environment.Objectives.Server.Server;
+import Environment.Objectives.Server.StaticServer;
 import Environment.Wall;
 import GraphGenerator.Graph;
 import Utils.InputHandler;
@@ -79,9 +79,10 @@ public class Main {
 
         // -------- BEHAVIOUR --------
         // ---- STATE MACHINE ----
-        StateMachine studentStateMachine = new StudentSM(graph);
+//        StateMachine stateMachine = new DefaultSM(graph);
+        StateMachine stateMachine = new SuperMarketClientSM(graph);
 
-        BehaviourScheme studentBehaviourScheme = new BehaviourScheme(studentStateMachine, exits, servers);
+        BehaviourScheme studentBehaviourScheme = new BehaviourScheme(stateMachine, exits, servers);
 
         List<Objective> serverObjectives = new ArrayList<>();
         serverObjectives.addAll(servers);

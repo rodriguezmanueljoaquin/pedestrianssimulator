@@ -1,9 +1,10 @@
 package AgentsBehaviour;
 
 import AgentsBehaviour.StateMachine.StateMachine;
-import Environment.Exit;
-import Environment.Objective;
-import Environment.Server.Server;
+import Environment.Objectives.Exit;
+import Environment.Objectives.Objective;
+import Environment.Objectives.ObjectiveType;
+import Environment.Objectives.Server.Server;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,8 @@ public class BehaviourScheme {
 
             for (int i = 0; i < objectivesQuantity; i++) {
                 Objective obj = group.getRandomObjective();
-                if(obj.hasQueue()){
+                if(obj.getType().equals(ObjectiveType.DYNAMIC_SERVER)){
+                    // has to add queue as previous objective
                     addServerAndQueue((Server) obj, objectives);
                 }
                 else objectives.add(obj);

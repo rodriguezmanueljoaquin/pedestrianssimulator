@@ -2,7 +2,8 @@ package Environment;
 
 import Agent.Agent;
 import AgentsGenerator.AgentsGenerator;
-import Environment.Server.Server;
+import Environment.Objectives.Exit;
+import Environment.Objectives.Server.Server;
 import Utils.Vector;
 
 import java.util.ArrayList;

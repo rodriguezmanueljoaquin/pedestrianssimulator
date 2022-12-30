@@ -1,4 +1,4 @@
-package Environment;
+package Environment.Objectives;
 
 
 import Agent.Agent;
@@ -31,4 +31,8 @@ public class Target implements Objective {
         return true;
     }
 
+    @Override
+    public ObjectiveType getType() {
+        return ObjectiveType.TARGET;
+    }
 }

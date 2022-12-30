@@ -3,9 +3,9 @@ package Utils;
 import AgentsBehaviour.BehaviourScheme;
 import AgentsGenerator.AgentsGenerator;
 import AgentsGenerator.AgentsGeneratorZone;
-import Environment.Exit;
-import Environment.Objective;
-import Environment.Target;
+import Environment.Objectives.Exit;
+import Environment.Objectives.Objective;
+import Environment.Objectives.Target;
 import Environment.Wall;
 
 import java.io.File;

@@ -1,7 +1,7 @@
-package Environment.Server;
+package Environment.Objectives.Server;
 
 import Agent.Agent;
-import Environment.Objective;
+import Environment.Objectives.Objective;
 import Utils.Line;
 import Utils.Rectangle;
 import Utils.Vector;

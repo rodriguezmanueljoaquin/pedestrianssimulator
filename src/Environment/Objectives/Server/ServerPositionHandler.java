@@ -1,4 +1,4 @@
-package Environment.Server;
+package Environment.Objectives.Server;
 
 import Agent.Agent;
 import Utils.Rectangle;

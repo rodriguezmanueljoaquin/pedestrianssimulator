@@ -2,15 +2,14 @@ package AgentsBehaviour.StateMachine;
 
 import Agent.Agent;
 import Agent.AgentStates;
+import Environment.Objectives.ObjectiveType;
 import GraphGenerator.Graph;
 import GraphGenerator.NodePath;
-import Utils.Constants;
-import Utils.Vector;
 
-public class StudentSM implements StateMachine {
-    private final Graph graph;
+public class DefaultSM implements StateMachine {
+    protected final Graph graph;
 
-    public StudentSM(Graph graph) {
+    public DefaultSM(Graph graph) {
         this.graph = graph;
     }
 
@@ -30,9 +29,10 @@ public class StudentSM implements StateMachine {
         if (agent.hasObjectives()) {
             this.updateAgentCurrentPath(agent);
 
-            if (agent.getCurrentObjective().isQueue())
+            if (agent.getCurrentObjective().getType().equals(ObjectiveType.QUEUE))
                 agent.setState(AgentStates.MOVING_TO_QUEUE_POSITION);
             else {
+                // TODO: ONLY DO THIS WITH STATIC SERVERS
                 if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
                     //objective finished attending agent before it arrived
                     removeFromQueueAndUpdate(agent, currentTime);
@@ -50,7 +50,7 @@ public class StudentSM implements StateMachine {
         this.updateAgentCurrentObjective(agent, currentTime);
     }
 
-    /* BEHAVIOUR OF AN STUDENT:
+    /* BEHAVIOUR OF AN AVERAGE AGENT:
         For each objective:
             if(objective has queue)
                 moves to it in a state where target position may vary as it is a queue
@@ -67,15 +67,24 @@ public class StudentSM implements StateMachine {
      */
 
     @Override
+    public void movingBehaviour(Agent agent, double currentTime) {
+        if (agent.reachedObjective()) {
+            // when agent has arrived to objective
+            agent.setStartedAttendingAt(currentTime);
+            agent.setState(AgentStates.ATTENDING);
+        }
+    }
+
+    @Override
+    public void approximatingBehaviour(Agent agent, double currentTime) {
+        return;
+    }
+
+    @Override
     public void updateAgent(Agent agent, double currentTime) {
         switch (agent.getState()) {
             case MOVING:
-                if (agent.reachedObjective()) {
-                    // when agent has arrived to objective
-                    agent.setStartedAttendingAt(currentTime);
-                    agent.setState(AgentStates.ATTENDING);
-                    return;
-                }
+                movingBehaviour(agent, currentTime);
                 break;
 
             case ATTENDING:
@@ -107,6 +116,10 @@ public class StudentSM implements StateMachine {
 
             case STARTING:
                 this.updateAgentCurrentObjective(agent, currentTime);
+                break;
+
+            case APPROXIMATING:
+                approximatingBehaviour(agent, currentTime);
                 break;
 
             case LEAVING:

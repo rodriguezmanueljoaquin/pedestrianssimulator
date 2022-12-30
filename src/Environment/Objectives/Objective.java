@@ -1,4 +1,4 @@
-package Environment;
+package Environment.Objectives;
 
 import Agent.Agent;
 import Utils.Vector;
@@ -10,11 +10,5 @@ public interface Objective {
 
     Boolean hasFinishedAttending(Agent agent, double currentTime);
 
-    default Boolean isQueue() {
-        return false;
-    }
-
-    default Boolean hasQueue(){
-        return false;
-    }
+    ObjectiveType getType();
 }
