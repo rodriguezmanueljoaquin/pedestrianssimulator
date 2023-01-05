@@ -35,4 +35,9 @@ public class Target implements Objective {
     public ObjectiveType getType() {
         return ObjectiveType.TARGET;
     }
+
+    @Override
+    public Vector getCentroidPosition() {
+        return position;
+    }
 }

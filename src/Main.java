@@ -79,10 +79,9 @@ public class Main {
 
         // -------- BEHAVIOUR --------
         // ---- STATE MACHINE ----
-//        StateMachine stateMachine = new DefaultSM(graph);
         StateMachine stateMachine = new SuperMarketClientSM(graph);
 
-        BehaviourScheme studentBehaviourScheme = new BehaviourScheme(stateMachine, exits, servers);
+        BehaviourScheme studentBehaviourScheme = new BehaviourScheme(stateMachine, exits, graph);
 
         List<Objective> serverObjectives = new ArrayList<>();
         serverObjectives.addAll(servers);

@@ -86,7 +86,7 @@ EXAMPLE_PATH = "DXFParser/DXFExamples/Plano2.dxf"
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Parse a .dxf file to a the .csv files necessary for the program.")
     parser.add_argument("-dxf", help="Path to the .dxf file to be used by the programs. \
-        Please make sure that this file follows the five layers requirements of this program. \
+        This file has to follow the five layers requirements of this program indicated on the README. \
             Defaults to: " + EXAMPLE_PATH, type=str, default=EXAMPLE_PATH, required=False)
     args = parser.parse_args()
 

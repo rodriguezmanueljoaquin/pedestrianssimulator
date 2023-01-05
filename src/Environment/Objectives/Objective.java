@@ -11,4 +11,6 @@ public interface Objective {
     Boolean hasFinishedAttending(Agent agent, double currentTime);
 
     ObjectiveType getType();
+
+    Vector getCentroidPosition();
 }

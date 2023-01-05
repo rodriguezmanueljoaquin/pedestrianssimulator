@@ -65,4 +65,8 @@ public class Wall {
                 position.getX(), position.getY()
         );
     }
+
+    public Vector getCentroid() {
+        return this.A.add(this.B.substract(this.A).scalarMultiply(0.5));
+    }
 }

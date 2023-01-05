@@ -16,7 +16,7 @@ public class StaticServer extends Server {
     public Vector getPosition(Agent agent) {
         // position can depend on agent current location, as it may vary only inside server zone and when the agent is inside
         if(!this.servingAgents.contains(agent)) {
-            return this.serverPositionHandler.getMiddlePoint();
+            return this.serverPositionHandler.getCentroid();
         }
 
         return super.getPosition(agent); //returns position designated to agent

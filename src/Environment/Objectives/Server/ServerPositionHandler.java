@@ -12,13 +12,13 @@ class ServerPositionHandler {
     private final Rectangle zone;
     private final Map<Integer, Vector> occupiedPositions;
 
+    public Vector getCentroid() {
+        return this.zone.getMiddlePoint();
+    }
+
     public ServerPositionHandler(Rectangle zone) {
         this.zone = zone;
         this.occupiedPositions = new HashMap<>();
-    }
-
-    public Vector getMiddlePoint() {
-        return this.zone.getMiddlePoint();
     }
 
     public boolean isAgentInside(Agent agent) {

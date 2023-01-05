@@ -30,4 +30,9 @@ public class Exit implements Objective {
     public ObjectiveType getType() {
         return ObjectiveType.EXIT;
     }
+
+    @Override
+    public Vector getCentroidPosition() {
+        return exit.getCentroid();
+    }
 }

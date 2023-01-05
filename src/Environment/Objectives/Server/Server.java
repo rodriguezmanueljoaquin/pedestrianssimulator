@@ -53,6 +53,11 @@ public abstract class Server implements Objective {
         return this.serverPositionHandler.getOccupiedPosition(agent.getId());
     }
 
+    @Override
+    public Vector getCentroidPosition() {
+        return this.serverPositionHandler.getCentroid();
+    }
+
     public QueueHandler getQueueHandler() {
         return queueHandler;
     }

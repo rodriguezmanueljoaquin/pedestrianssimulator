@@ -65,4 +65,9 @@ class QueueHandler implements Objective {
     public ObjectiveType getType() {
         return ObjectiveType.QUEUE;
     }
+
+    @Override
+    public Vector getCentroidPosition() {
+        return line.getSegmentPosition(0);
+    }
 }
