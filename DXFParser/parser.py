@@ -1,3 +1,4 @@
+import argparse
 import ezdxf
 
 GENERATORS_LAYER_NAME = "PEATONES"
@@ -80,8 +81,13 @@ def parse_dxf(in_file_path, out_path):
     write_to_file(exits_file, exits_array)
     exits_file.close()
 
+EXAMPLE_PATH = "DXFParser/DXFExamples/Plano2.dxf"
 
 if __name__ == '__main__':
-    # parse_dxf("DXFParser/DXFExamples/market.dxf", "input/") TODO: NO FUNCIONA! pedir a alguien que maneje dxf
-    # parse_dxf("DXFParser/DXFExamples/Plano1.dxf", "input/")
-    parse_dxf("DXFParser/DXFExamples/Plano2.dxf", "input/")
+    parser = argparse.ArgumentParser(description="Parse a .dxf file to a the .csv files necessary for the program.")
+    parser.add_argument("-dxf", help="Path to the .dxf file to be used by the programs. \
+        Please make sure that this file follows the five layers requirements of this program. \
+            Defaults to: " + EXAMPLE_PATH, type=str, default=EXAMPLE_PATH, required=False)
+    args = parser.parse_args()
+
+    parse_dxf(args.dxf, "input/")
