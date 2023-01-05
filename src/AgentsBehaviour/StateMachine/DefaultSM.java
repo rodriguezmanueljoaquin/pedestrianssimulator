@@ -75,7 +75,6 @@ public class DefaultSM implements StateMachine {
 
     @Override
     public void approximatingBehaviour(Agent agent, double currentTime) {
-        return;
     }
 
     @Override

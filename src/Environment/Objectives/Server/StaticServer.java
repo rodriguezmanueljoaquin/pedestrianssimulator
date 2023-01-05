@@ -14,9 +14,17 @@ public class StaticServer extends Server {
 
     @Override
     public Vector getPosition(Agent agent) {
-        // position can depend on agent current location, as it may vary only inside server zone and when the agent is inside
+        // position can depend on agent current location,
+        // if agent is far from server, returned position is the centroid
+        // if it is close (inside)
+        //      it is added to "clients",
+        //      and it will start to be attended by the server (it may be freed just after if static server has already finished)
         if(!this.servingAgents.contains(agent)) {
-            return this.serverPositionHandler.getCentroid();
+            if(this.serverPositionHandler.isAgentInside(agent) && this.servingAgents.size() < this.maxAttendants){
+                this.servingAgents.add(agent);
+                this.serverPositionHandler.setNewPosition(agent.getId());
+            } else
+                return this.serverPositionHandler.getCentroid();
         }
 
         return super.getPosition(agent); //returns position designated to agent
@@ -31,16 +39,8 @@ public class StaticServer extends Server {
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
         // returns true when server has ended it activity or when a new agent arrives in a moment where server is at maxCapacity
-        if(currentTime - this.startTime > this.attendingTime ||
-                (!this.servingAgents.contains(agent) && this.servingAgents.size() >= this.maxAttendants)) {
-            return true;
-
-        } else if(!this.servingAgents.contains(agent) && this.serverPositionHandler.isAgentInside(agent)){
-            this.servingAgents.add(agent);
-            this.serverPositionHandler.setNewPosition(agent.getId());
-        }
-
-        return false;
+        return currentTime - this.startTime > this.attendingTime ||
+                (!this.servingAgents.contains(agent) && this.servingAgents.size() >= this.maxAttendants);
     }
 
     @Override
