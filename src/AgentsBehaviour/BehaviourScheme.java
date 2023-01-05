@@ -29,12 +29,12 @@ public class BehaviourScheme {
     private final Graph graph;
     private final Random random;
 
-    public BehaviourScheme(StateMachine stateMachine, List<Exit> exits, Graph graph) {
+    public BehaviourScheme(StateMachine stateMachine, List<Exit> exits, Graph graph, long randomSeed) {
         this.stateMachine = stateMachine;
         this.scheme = new ArrayList<>();
         this.exits = exits;
         this.graph = graph;
-        this.random = new Random(1);
+        this.random = new Random(randomSeed);
     }
 
     public void addObjectiveGroupToScheme(List<Objective> possibleObjectives, Integer minOccurrences, Integer maxOccurrences) {

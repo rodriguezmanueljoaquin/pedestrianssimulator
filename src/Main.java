@@ -22,10 +22,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
         String RESULTS_PATH = "./results/";
+        Random random = new Random(1);
         if (!Files.exists(Paths.get(RESULTS_PATH))) {
             new File(RESULTS_PATH).mkdir();
         }
@@ -81,7 +83,7 @@ public class Main {
         // ---- STATE MACHINE ----
         StateMachine stateMachine = new SuperMarketClientSM(graph);
 
-        BehaviourScheme studentBehaviourScheme = new BehaviourScheme(stateMachine, exits, graph);
+        BehaviourScheme studentBehaviourScheme = new BehaviourScheme(stateMachine, exits, graph, random.nextLong());
 
         List<Objective> serverObjectives = new ArrayList<>();
         serverObjectives.addAll(servers);
@@ -93,11 +95,10 @@ public class Main {
         studentBehaviourScheme.addObjectiveGroupToScheme(productsObjectives, 2, 5);
 
         // -------- AGENT GENERATORS --------
-        List<AgentsGenerator> studentsGenerators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", studentBehaviourScheme);
+        List<AgentsGenerator> studentsGenerators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", studentBehaviourScheme, random.nextLong());
 
         // -------- ENVIRONMENT --------
         Environment environment = new Environment(walls, servers, studentsGenerators, exits);
-
 
         try {
             Simulation.createStaticFile(RESULTS_PATH, environment);
