@@ -1,7 +1,7 @@
-package Environment.Server;
+package Environment.Objectives.Server;
 
 import Agent.Agent;
-import Environment.Objective;
+import Environment.Objectives.Objective;
 import Utils.Line;
 import Utils.Rectangle;
 import Utils.Vector;
@@ -51,6 +51,11 @@ public abstract class Server implements Objective {
             throw new RuntimeException("SERVER NOT ATENDING AGENT " + agent.getId());
 
         return this.serverPositionHandler.getOccupiedPosition(agent.getId());
+    }
+
+    @Override
+    public Vector getCentroidPosition() {
+        return this.serverPositionHandler.getCentroid();
     }
 
     public QueueHandler getQueueHandler() {

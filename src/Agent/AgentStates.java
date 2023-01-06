@@ -37,7 +37,18 @@ public enum AgentStates {
         public double getVelocity() {
             return 0.0;
         }
-    };
+    },
+
+    /* for SuperMarketClientSM */
+    APPROXIMATING {
+        @Override
+        public double getVelocity() {
+            return AgentConstants.APPROXIMATING_VELOCITY;
+        }
+    }
+
+
+    ;
 
     public abstract double getVelocity();
 }

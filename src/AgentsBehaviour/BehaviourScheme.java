@@ -1,13 +1,19 @@
 package AgentsBehaviour;
 
 import AgentsBehaviour.StateMachine.StateMachine;
-import Environment.Exit;
-import Environment.Objective;
-import Environment.Server.Server;
+import Environment.Objectives.Exit;
+import Environment.Objectives.Objective;
+import Environment.Objectives.ObjectiveType;
+import Environment.Objectives.Server.Server;
+import GraphGenerator.Graph;
+import Utils.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class BehaviourScheme {
     // BehaviourScheme defines how agents will act, it is an ordered list detailing the structure of the sequence of actions they will make.
@@ -20,15 +26,15 @@ public class BehaviourScheme {
     private final StateMachine stateMachine;
     private final List<ObjectiveGroup> scheme;
     private final List<Exit> exits;
-    private final List<Server> servers;
+    private final Graph graph;
     private final Random random;
 
-    public BehaviourScheme(StateMachine stateMachine, List<Exit> exits, List<Server> servers) {
+    public BehaviourScheme(StateMachine stateMachine, List<Exit> exits, Graph graph, long randomSeed) {
         this.stateMachine = stateMachine;
         this.scheme = new ArrayList<>();
         this.exits = exits;
-        this.servers = servers;
-        this.random = new Random(1);
+        this.graph = graph;
+        this.random = new Random(randomSeed);
     }
 
     public void addObjectiveGroupToScheme(List<Objective> possibleObjectives, Integer minOccurrences, Integer maxOccurrences) {
@@ -44,15 +50,21 @@ public class BehaviourScheme {
 
             for (int i = 0; i < objectivesQuantity; i++) {
                 Objective obj = group.getRandomObjective();
-                if(obj.hasQueue()){
+                if(obj.getType().equals(ObjectiveType.DYNAMIC_SERVER)){
+                    // has to add queue as previous objective
                     addServerAndQueue((Server) obj, objectives);
                 }
                 else objectives.add(obj);
             }
         }
 
-        // TODO: add nearest exit from last objective instead of exits.get(0)
-        objectives.add(exits.get(0));
+        Vector lastObjectivePosition = objectives.get(objectives.size() -1).getCentroidPosition();
+        Map<Vector, Exit> exitsByCentroid = exits.stream()
+                .collect(Collectors.toMap(Exit::getCentroidPosition, Function.identity()));
+        Exit closestExitFromLastObjective = exitsByCentroid
+                .get(graph.getClosestDestination(lastObjectivePosition, new ArrayList<>(exitsByCentroid.keySet())));
+
+        objectives.add(closestExitFromLastObjective);
         return objectives;
     }
 

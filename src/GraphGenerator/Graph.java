@@ -10,7 +10,6 @@ import java.util.*;
 
 public class Graph {
     private final static double STEP_SIZE = 2;
-//    private static Graph instance;
 
     // CLOCKWISE
     private final static Vector[] POSSIBLE_NEIGHBORS_POSITION_DIFFERENCE = {
@@ -28,10 +27,6 @@ public class Graph {
     public Graph(List<Wall> walls) {
         this.nodes = new HashMap<>();
         this.walls = walls;
-    }
-
-    public Map<Vector, Node> getNodes() {
-        return nodes;
     }
 
     public boolean isPositionVisible(Vector origin, Vector destiny) {
@@ -59,20 +54,6 @@ public class Graph {
         return bestNode;
     }
 
-    public double getPathLengthToObjective(Vector fromPostion, Vector toPosition) {
-        NodePath path = getPathToPosition(fromPostion, toPosition);
-        Node currentNode = path.getFirstNode();
-        Node lastNode = path.getLastNode();
-        Node previousNode;
-        double sum = 0.0;
-        while (currentNode != lastNode) {
-            previousNode = currentNode;
-            currentNode = path.getNodeAfter(currentNode);
-            sum += previousNode.getPosition().distance(currentNode.getPosition());
-        }
-        return sum;
-    }
-
     public NodePath getPathToPosition(Vector fromPosition, Vector toPosition) {
         if (this.isPositionVisible(fromPosition, toPosition))
             return new NodePath();
@@ -82,6 +63,7 @@ public class Graph {
         if (fromNode == null) {
             fromNode = this.getClosestVisibleNode(fromPosition);
         }
+
         NodePath fullPath = this.AStar(fromNode, toPosition);
         if (fullPath == null) {
             // none path found
@@ -127,6 +109,29 @@ public class Graph {
 
             current.addNeighbors(currentNeighbours);
         }
+    }
+
+    public Vector getClosestDestination(Vector fromPosition, List<Vector> possibleDestinations) {
+        double minDistance = Double.MAX_VALUE;
+        Vector closestDestination = null;
+        for (int i = 0; i < possibleDestinations.size(); i++) {
+            NodePath path = this.getPathToPosition(fromPosition, possibleDestinations.get(i));
+            if(path != null) {
+                double pathTotalDistance;
+                if(path.getFirstNode() != null)
+                    // path has at least one node
+                    pathTotalDistance = fromPosition.distance(path.getFirstNode().getPosition()) + path.getDistance() +
+                            path.getLastNode().getPosition().distance(possibleDestinations.get(i));
+                else pathTotalDistance = fromPosition.distance(possibleDestinations.get(i));
+
+                if(minDistance > pathTotalDistance) {
+                    minDistance = pathTotalDistance;
+                    closestDestination = possibleDestinations.get(i);
+                }
+            }
+        }
+
+        return closestDestination;
     }
 
     private NodePath pathReducer(Vector fromPosition, Vector toPosition, NodePath path) {
@@ -192,6 +197,7 @@ public class Graph {
         return currentPath;
     }
 
+    // Method for showing the node positions (DEBUGGING)
     public void generateOutput(String outputPath) {
         System.out.println("\tCreating static file. . .");
 

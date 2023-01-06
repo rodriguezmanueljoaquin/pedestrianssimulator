@@ -1,6 +1,7 @@
-package Environment.Server;
+package Environment.Objectives.Server;
 
 import Agent.Agent;
+import Environment.Objectives.ObjectiveType;
 import Utils.Line;
 import Utils.Rectangle;
 
@@ -38,7 +39,7 @@ public class DynamicServer extends Server {
     }
 
     @Override
-    public Boolean hasQueue() {
-        return true;
+    public ObjectiveType getType() {
+        return ObjectiveType.DYNAMIC_SERVER;
     }
 }

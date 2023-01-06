@@ -1,6 +1,5 @@
 import Agent.Agent;
 import Agent.AgentStates;
-import CPM.CPM;
 import Environment.Environment;
 import Environment.Wall;
 import GraphGenerator.Graph;
@@ -45,7 +44,7 @@ public class Simulation {
                 agent.getStateMachine().updateAgent(agent, this.time);
             }
 
-            // remove agents that left
+            // remove agents that left and update the velocity of the rest
             List<Agent> leavingAgents = new ArrayList<>();
             for (Agent agent : this.agents) {
                 if (agent.getState() == AgentStates.LEAVING)
@@ -57,7 +56,7 @@ public class Simulation {
 
 
             // update velocities acording CPM.CPM
-            CPM.updateAgents(agents, environment);
+//            CPM.updateAgents(agents, environment);
 
 
             // escribir output

@@ -7,20 +7,21 @@ import java.util.List;
 public class NodePath {
     private List<Node> path;
     private Double functionValue;
+    private Double distance;
 
     public NodePath() {
         this.path = new ArrayList<>();
-        recalculateFunctionValue();
+        recalculateFunctionValueAndDistance();
     }
 
     public void add(Node node) {
         this.path.add(node);
-        recalculateFunctionValue();
+        recalculateFunctionValueAndDistance();
     }
 
     public void addAll(List<Node> nodes) {
         this.path.addAll(nodes);
-        recalculateFunctionValue();
+        recalculateFunctionValueAndDistance();
     }
 
     public Node getLastNode() {
@@ -41,13 +42,14 @@ public class NodePath {
         return answer;
     }
 
-    private void recalculateFunctionValue() {
+    private void recalculateFunctionValueAndDistance() {
         double totalDistance = 0;
         for (int i = 0; i < path.size() - 1; i++) {
             totalDistance += path.get(i).getPosition().distance(path.get(i + 1).getPosition());
         }
 
-        this.functionValue = totalDistance; // TODO: FALTA HEURISITCA, AHORA SOLO CONSIDERA COSTO
+        this.distance = totalDistance;
+        this.functionValue = this.distance; // TODO: FALTA HEURISITCA, AHORA SOLO CONSIDERA COSTO
     }
 
     public Node getNodeAfter(Node node) {
@@ -62,7 +64,11 @@ public class NodePath {
     }
 
     public Double getFunctionValue() {
-        return functionValue;
+        return this.functionValue;
+    }
+
+    public Double getDistance() {
+        return this.distance;
     }
 
     @Override

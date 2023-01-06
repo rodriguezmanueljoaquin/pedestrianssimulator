@@ -3,9 +3,9 @@ package Utils;
 import AgentsBehaviour.BehaviourScheme;
 import AgentsGenerator.AgentsGenerator;
 import AgentsGenerator.AgentsGeneratorZone;
-import Environment.Exit;
-import Environment.Objective;
-import Environment.Target;
+import Environment.Objectives.Exit;
+import Environment.Objectives.Objective;
+import Environment.Objectives.Target;
 import Environment.Wall;
 
 import java.io.File;
@@ -49,7 +49,7 @@ public class InputHandler {
         return result;
     }
 
-    private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, BehaviourScheme behaviourScheme) {
+    private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, BehaviourScheme behaviourScheme, long randomSeed) {
         // TODO: SHOULD RECEIVE BEHAVIOUR MODULE WITH AGENTS GENERATORS PARAMETERS AND POSSIBLE TARGETS, IT SHOULDNT RECEIVE IT AS A PARAMETER
         AgentsGeneratorZone zone = new AgentsGeneratorZone(
                 // rectangle is defined by its lowest and leftest point and highest and rightest point, data is assured to provide rectangles as generators zones
@@ -57,10 +57,10 @@ public class InputHandler {
                 new Vector(Collections.max(xInputs), Collections.max(yInputs))
         );
 
-        return new AgentsGenerator(zone, 2, 50, 1, 1, 2, behaviourScheme);
+        return new AgentsGenerator(zone, 2, 50, 1, 1, 2, behaviourScheme, randomSeed);
     }
 
-    public static List<AgentsGenerator> importAgentsGeneratorsFromTxt(String filePath, BehaviourScheme behaviourScheme) {
+    public static List<AgentsGenerator> importAgentsGeneratorsFromTxt(String filePath, BehaviourScheme behaviourScheme, long randomSeed) {
         Scanner scanner = getCSVScanner(filePath);
 
         List<AgentsGenerator> result = new ArrayList<>();
@@ -81,7 +81,7 @@ public class InputHandler {
 
             if (sidesAnalyzed > 3) {
                 sidesAnalyzed = 0;
-                result.add(createAgentsGenerator(xInputs, yInputs, behaviourScheme));
+                result.add(createAgentsGenerator(xInputs, yInputs, behaviourScheme, randomSeed));
                 xInputs.clear();
                 yInputs.clear();
             }

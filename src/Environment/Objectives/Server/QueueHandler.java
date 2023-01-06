@@ -1,7 +1,8 @@
-package Environment.Server;
+package Environment.Objectives.Server;
 
 import Agent.Agent;
-import Environment.Objective;
+import Environment.Objectives.Objective;
+import Environment.Objectives.ObjectiveType;
 import Utils.Constants;
 import Utils.Line;
 import Utils.Vector;
@@ -61,7 +62,12 @@ class QueueHandler implements Objective {
     }
 
     @Override
-    public Boolean isQueue() {
-        return true;
+    public ObjectiveType getType() {
+        return ObjectiveType.QUEUE;
+    }
+
+    @Override
+    public Vector getCentroidPosition() {
+        return line.getSegmentPosition(0);
     }
 }

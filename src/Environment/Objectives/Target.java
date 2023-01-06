@@ -1,4 +1,4 @@
-package Environment;
+package Environment.Objectives;
 
 
 import Agent.Agent;
@@ -23,7 +23,7 @@ public class Target implements Objective {
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
         //true if the agent has started to attend and completed it "task"
-        return agent.getStartedAttendingAt() != null && currentTime - agent.getStartedAttendingAt() >= this.attendingTime;
+        return currentTime - agent.getStartedAttendingAt() >= this.attendingTime;
     }
 
     @Override
@@ -31,4 +31,13 @@ public class Target implements Objective {
         return true;
     }
 
+    @Override
+    public ObjectiveType getType() {
+        return ObjectiveType.TARGET;
+    }
+
+    @Override
+    public Vector getCentroidPosition() {
+        return position;
+    }
 }
