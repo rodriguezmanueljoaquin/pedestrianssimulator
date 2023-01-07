@@ -6,6 +6,7 @@
 
 ## Dependencias
 Java 8 JRE y JDK, o posterior
+pip install ezdxf
 
 ## Requisitos DXF
 El programa funciona sobre un archivo en formato DXF (versiones aceptadas: R12, R2000, R2004, R2007, R2010, R2013 o R2018) que debe cumplir con las siguientes caracteristicas:

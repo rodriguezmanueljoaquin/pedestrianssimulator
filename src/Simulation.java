@@ -70,10 +70,10 @@ public class Simulation {
             }
             this.agents.removeAll(leavingAgents);
 
-            // update velocities according CPM
-            // get pair of agents that collided and those who didn`t collide
-            // update agents in collisions
-            //List<Pair<Agent, Agent>> collisionedAgents = ...;
+//             update velocities according CPM
+//             get pair of agents that collided and those who didn`t collide
+//             update agents in collisions
+//            List<Pair<Agent, Agent>> collisionedAgents = ...;
 //            for(Pair<Agent, Agent>> collisionedAgents : collisionedPair) {
 //                CPM.updateAgentsInCollision(collisionedPair);
 //            }

@@ -13,25 +13,27 @@ public class CPM {
     private static final double EXPANSION_TIME = 0.5;
     private static final double MAX_SPEED = 3.0;
     private static final double NEIGHBOURS_RADIUS = 3.0;
-    private static final double agentAp = 2000, agentBp = 0.2, wallAp = 500, wallBp = 0.4, beta = .9, tau = .5;
+    private static final double HEURISTIC_WEIGHT = 1.0;
+    private static final double agentAp = 1200, agentBp = 0.4, wallAp = 100, wallBp = 0.1, beta = .9, tau = .5;
     // TODO: MAPA<ID DE AGENTE, CPMAGENT> PARA ASOCIAR COEFICIENTES DISTINTOS (randomizados un poco desde un valor) A LOS AGENTS
 
     public static void updateAgent(Agent agent, List<Agent> agents, Environment environment) {
         Vector heuristicVelocity = calculateHeuristicVelocity(agent, agents, environment);
-        Vector resultantDirection =
-                calculateTargetDirection(heuristicVelocity, agent.getVelocity()); // takes in account both heuristic velocity and original agent velocity
-//        System.out.println("Entered with velocity " + agent.getVelocity() + " and left with velocity: " + resultantVelocity);
-        agent.setVelocity(resultantDirection.scalarMultiply(agent.getState().getVelocity()));
+        Vector resultantVelocity =
+                calculateTargetDirection(heuristicVelocity, agent.getVelocity()).scalarMultiply(agent.getState().getVelocity()); // takes in account both heuristic velocity and original agent velocity
+//        if(heuristicVelocity.module() != 0.0)
+//            System.out.println(heuristicVelocity);
+        agent.setVelocity(resultantVelocity);
     }
 
     private static Vector calculateHeuristicVelocity(Agent agent, List<Agent> agents, Environment environment) {
         Vector resultantNc = new Vector(0, 0);
         List<Agent> neighbours = agents.stream()
-                .filter(other -> agent.getPosition().distance(other.getPosition()) > NEIGHBOURS_RADIUS && !agent.equals(other))
+                .filter(other -> agent.getPosition().distance(other.getPosition()) < NEIGHBOURS_RADIUS && !agent.equals(other))
                 .collect(Collectors.toList());
 
         for (Agent neighbour : neighbours) {
-            resultantNc.add(calculateRepulsionForce(agent.getPosition(), neighbour.getPosition(), agent.getVelocity(), agentAp, agentBp));
+            resultantNc = resultantNc.add(calculateRepulsionForce(agent.getPosition(), neighbour.getPosition(), agent.getVelocity(), agentAp, agentBp));
         }
 //        Vector closestWallPosition = environment.getClosestWall(agent.getPosition()).getClosestPoint(agent.getPosition());
 //        Vector wallRepulsion = calculateRepulsionForce(agent.getPosition(),closestWallPosition,agent.getVelocity(),wallAp,wallBp);
@@ -39,24 +41,27 @@ public class CPM {
     }
 
     private static Vector calculateTargetDirection(Vector heuristicVelocity, Vector originalVelocity) {
-        return heuristicVelocity.add(originalVelocity).normalize();
+        Vector heuristicWeightedVelocity = heuristicVelocity.normalize().scalarMultiply(HEURISTIC_WEIGHT);
+        Vector originalWeightedVelocity = originalVelocity.normalize().scalarMultiply(1.0 - HEURISTIC_WEIGHT);
+        return heuristicWeightedVelocity.add(originalWeightedVelocity).normalize();
     }
 
 
     private static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector objective, double Ap, double Bp) {
         //eij (e sub ij)
-        Vector repulsionVector = obstacle.substract(position).normalize();
+        Vector repulsionDirection = position.substract(obstacle).normalize();
 
         //dij (d sub ij) distance between position and otherPosition
         Double repulsionDistance = obstacle.distance(position);
 
 //        Vector objectiveVector = objective.substract(position).normalize();
-        Vector objectiveVector = objective.normalize();
+        Vector objectiveDirection = objective.normalize();
         //cos(0) = a.b / |a||b| (ya estan normalizados o sea |a| = |b| = 1)
-        double cosineOfTheta = objectiveVector.dotMultiply(obstacle);
-
+        double cosineOfTheta = objectiveDirection.dotMultiply(repulsionDirection) / (objectiveDirection.module() * repulsionDirection.module());
+        if(objectiveDirection.module() == 0 || repulsionDirection.module() == 0)
+            throw new RuntimeException();
         //eij*Ap*e^(-dij/bp)*cos(0)
-        return repulsionVector.scalarMultiply(-Math.abs(Ap * Math.exp(-repulsionDistance / Bp) * cosineOfTheta));
+        return repulsionDirection.scalarMultiply(Ap * Math.exp(-repulsionDistance / Bp) * cosineOfTheta);
     }
 
 }
