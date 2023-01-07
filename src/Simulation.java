@@ -3,6 +3,7 @@ import Agent.AgentStates;
 import Environment.Environment;
 import Environment.Wall;
 import GraphGenerator.Graph;
+import OperationalModelModule.*;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -10,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class Simulation {
     private List<Agent> agents;
@@ -54,10 +56,11 @@ public class Simulation {
             }
             this.agents.removeAll(leavingAgents);
 
-
             // update velocities acording CPM.CPM
-//            CPM.updateAgents(agents, environment);
-
+            List<Agent> movingAgents = agents.stream().filter(a -> a.getState() == AgentStates.MOVING || a.getState() == AgentStates.MOVING_TO_QUEUE_POSITION).collect(Collectors.toList());
+            for(Agent movingAgent : movingAgents){
+                CPM.updateAgent(movingAgent, agents, environment);
+            }
 
             // escribir output
             this.writeOutput();

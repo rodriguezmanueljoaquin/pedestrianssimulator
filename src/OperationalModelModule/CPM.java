@@ -1,12 +1,10 @@
-package CPM;
+package OperationalModelModule;
 
 import Agent.Agent;
 import Environment.Environment;
 import Utils.Vector;
-import Agent.AgentStates;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CPM {
     private static final double MAX_RADIUS = 5;
@@ -14,15 +12,8 @@ public class CPM {
     private static final double EXPANSION_TIME = 0.5;
     private static final double MAX_SPEED = 3.0;
     private static final double agentAp = 2000, agentBp = 0.2, wallAp = 500, wallBp =0.4, beta = .9, tau = .5;
-    public static void updateAgents(List<Agent> agents, Environment environment) {
-        List<Agent> movingAgents = agents.stream().filter(a -> a.getState() == AgentStates.MOVING || a.getState() == AgentStates.MOVING_TO_QUEUE_POSITION).collect(Collectors.toList());
-        for(Agent agent : movingAgents){
-            updateSpeedForAgent(agent, agents,environment);
-        }
-    }
 
-
-    private static void updateSpeedForAgent(Agent agent,List<Agent> agents, Environment environment){
+    public static void updateAgent(Agent agent, List<Agent> agents, Environment environment){
         Vector resultantNc = calculateResultantNc(agent,agents,environment);
         Vector resultantVelocity = calculateResultantVelocity(resultantNc,agent.getVelocity());
 //        System.out.println("Entered with velocity " + agent.getVelocity() + " and left with velocity: " + resultantVelocity);
