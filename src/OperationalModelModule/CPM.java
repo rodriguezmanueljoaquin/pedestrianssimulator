@@ -13,8 +13,8 @@ public class CPM {
     private static final double EXPANSION_TIME = 0.5;
     private static final double MAX_SPEED = 3.0;
     private static final double NEIGHBOURS_RADIUS = 3.0;
-    private static final double HEURISTIC_WEIGHT = 1.0;
-    private static final double agentAp = 1200, agentBp = 0.4, wallAp = 100, wallBp = 0.1, beta = .9, tau = .5;
+    private static final double HEURISTIC_WEIGHT = 0.4;
+    private static final double agentAp = 1200, agentBp = 0.6, wallAp = 100, wallBp = 0.1, beta = .9, tau = .5;
     // TODO: MAPA<ID DE AGENTE, CPMAGENT> PARA ASOCIAR COEFICIENTES DISTINTOS (randomizados un poco desde un valor) A LOS AGENTS
 
     public static void updateAgent(Agent agent, List<Agent> agents, Environment environment) {
@@ -47,19 +47,17 @@ public class CPM {
     }
 
 
-    private static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector objective, double Ap, double Bp) {
+    private static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector targetVelocity, double Ap, double Bp) {
         //eij (e sub ij)
         Vector repulsionDirection = position.substract(obstacle).normalize();
 
         //dij (d sub ij) distance between position and otherPosition
         Double repulsionDistance = obstacle.distance(position);
 
-//        Vector objectiveVector = objective.substract(position).normalize();
-        Vector objectiveDirection = objective.normalize();
+//       Vector objectiveVector = objective.substract(position).normalize();
+        Vector targetDirection = targetVelocity.normalize();
         //cos(0) = a.b / |a||b| (ya estan normalizados o sea |a| = |b| = 1)
-        double cosineOfTheta = objectiveDirection.dotMultiply(repulsionDirection) / (objectiveDirection.module() * repulsionDirection.module());
-        if(objectiveDirection.module() == 0 || repulsionDirection.module() == 0)
-            throw new RuntimeException();
+        double cosineOfTheta = targetVelocity.add(position).dotMultiply(obstacle) / (targetVelocity.add(position).module() * obstacle.module());
         //eij*Ap*e^(-dij/bp)*cos(0)
         return repulsionDirection.scalarMultiply(Ap * Math.exp(-repulsionDistance / Bp) * cosineOfTheta);
     }
