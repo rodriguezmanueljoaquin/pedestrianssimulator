@@ -116,15 +116,15 @@ public class Graph {
         Vector closestDestination = null;
         for (int i = 0; i < possibleDestinations.size(); i++) {
             NodePath path = this.getPathToPosition(fromPosition, possibleDestinations.get(i));
-            if(path != null) {
+            if (path != null) {
                 double pathTotalDistance;
-                if(path.getFirstNode() != null)
+                if (path.getFirstNode() != null)
                     // path has at least one node
                     pathTotalDistance = fromPosition.distance(path.getFirstNode().getPosition()) + path.getDistance() +
                             path.getLastNode().getPosition().distance(possibleDestinations.get(i));
                 else pathTotalDistance = fromPosition.distance(possibleDestinations.get(i));
 
-                if(minDistance > pathTotalDistance) {
+                if (minDistance > pathTotalDistance) {
                     minDistance = pathTotalDistance;
                     closestDestination = possibleDestinations.get(i);
                 }

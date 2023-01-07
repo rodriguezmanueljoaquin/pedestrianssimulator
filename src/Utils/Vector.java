@@ -61,7 +61,8 @@ public class Vector {
 
         return new Vector(this.getX() / hypot, this.getY() / hypot);
     }
-    public Double module(){
+
+    public Double module() {
         return Math.sqrt(Math.pow(this.getX(), 2) + Math.pow(this.getY(), 2));
     }
 

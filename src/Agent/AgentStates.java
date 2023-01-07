@@ -45,10 +45,7 @@ public enum AgentStates {
         public double getVelocity() {
             return AgentConstants.APPROXIMATING_VELOCITY;
         }
-    }
-
-
-    ;
+    };
 
     public abstract double getVelocity();
 }

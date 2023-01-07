@@ -14,9 +14,9 @@ public class AgentsGenerator {
     private final double notActiveTime;
     private final double timeBetweenGenerations;
     private final BehaviourScheme behaviourScheme;
+    private final Random random;
     private int minGeneration, maxGeneration;
     private double lastGenerationTime;
-    private final Random random;
 
     public AgentsGenerator(AgentsGeneratorZone zone, double activeTime, double notActiveTime, double timeBetweenGenerations,
                            int minGeneration, int maxGeneration, BehaviourScheme behaviourScheme, long randomSeed) {

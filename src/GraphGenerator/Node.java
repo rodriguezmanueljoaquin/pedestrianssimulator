@@ -7,10 +7,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class Node {
+    private static Integer count = 1;
     private final Vector position;
     private final List<Node> neighbors;
-
-    private static Integer count = 1;
     private final Integer id;
 
     public Node(Vector position) {

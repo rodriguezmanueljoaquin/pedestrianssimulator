@@ -50,13 +50,13 @@ public class Environment {
         return minExit;
     }
 
-    public Wall getClosestWall(Vector position){
+    public Wall getClosestWall(Vector position) {
         Wall closestWall = walls.get(0);
         Double minDistance = closestWall.getClosestPoint(position).distance(position);
         Double currentDistance;
-        for(Wall wall : walls){
+        for (Wall wall : walls) {
             currentDistance = wall.getClosestPoint(position).distance(position);
-            if(currentDistance < minDistance){
+            if (currentDistance < minDistance) {
                 minDistance = currentDistance;
                 closestWall = wall;
             }

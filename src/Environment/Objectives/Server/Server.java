@@ -14,8 +14,8 @@ public abstract class Server implements Objective {
     protected final List<Agent> servingAgents;
     protected final ServerPositionHandler serverPositionHandler;
     protected final QueueHandler queueHandler;
-    protected Double startTime = null;
     protected final double attendingTime;
+    protected Double startTime = null;
 
     public Server(int maxCapacity, Rectangle zone, double startTime, double attendingTime, Line queueLine) {
         this.serverPositionHandler = new ServerPositionHandler(zone);

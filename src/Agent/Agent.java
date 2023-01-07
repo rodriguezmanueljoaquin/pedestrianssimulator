@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class Agent {
+    private static Integer count = 1;
+    private final StateMachine stateMachine;
+    private final Integer id;
     private Vector position;
     private Vector velocity;
-    private final StateMachine stateMachine;
-    private static Integer count = 1;
-    private final Integer id;
     private double radius;
     private AgentStates state;
     private List<? extends Objective> objectives;
