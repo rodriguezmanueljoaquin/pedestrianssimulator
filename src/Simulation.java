@@ -79,7 +79,7 @@ public class Simulation {
 //            }
 
             // update agents not in collisions
-            List<Agent> movingAgents = agents.stream().filter(a -> a.getState() == AgentStates.MOVING || a.getState() == AgentStates.MOVING_TO_QUEUE_POSITION).collect(Collectors.toList());
+            List<Agent> movingAgents = agents.stream().filter(a -> a.getState().getVelocity() != 0).collect(Collectors.toList());
             for (Agent movingAgent : movingAgents) {
                 CPM.updateAgent(movingAgent, agents, environment);
             }
