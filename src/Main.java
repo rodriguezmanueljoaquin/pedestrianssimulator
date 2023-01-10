@@ -10,10 +10,7 @@ import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Wall;
 import GraphGenerator.Graph;
-import Utils.InputHandler;
-import Utils.Line;
-import Utils.Rectangle;
-import Utils.Vector;
+import Utils.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -102,7 +99,7 @@ public class Main {
 
         try {
             Simulation.createStaticFile(RESULTS_PATH, environment);
-            Simulation sim = new Simulation(graph, 200, 0.025, 0.25, environment, RESULTS_PATH);
+            Simulation sim = new Simulation(graph, Constants.MAX_TIME, Constants.DELTA_T, Constants.FRAME_EXPORT_DELTA_T, environment, RESULTS_PATH);
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

@@ -2,23 +2,57 @@ package OperationalModelModule;
 
 import Agent.Agent;
 import Environment.Environment;
+import Utils.Constants;
 import Utils.Vector;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CPM {
-    private static final double MAX_RADIUS = 5;
-    private static final double MIN_RADIUS = 1;
+    private static final double MAX_RADIUS = 1;
+    private static final double MIN_RADIUS = 0.1;
     private static final double EXPANSION_TIME = 0.5;
     private static final double MAX_SPEED = 3.0;
     private static final double NEIGHBOURS_RADIUS = 3.0;
-    private static final double ORIGINAL_DIRECTION_AP = 200, AGENT_AP = 400, AGENT_BP = 0.5, WALL_AP = 100, WALL_BP = 0.5, BETA = .9, TAU = .5;
+    private static final double ORIGINAL_DIRECTION_AP = 200, AGENT_AP = 400, AGENT_BP = 0.5, WALL_AP = 100, WALL_BP = 0.5, BETA = .9;
     // TODO: MAPA<ID DE AGENTE, CPMAGENT> PARA ASOCIAR COEFICIENTES DISTINTOS (randomizados un poco desde un valor) A LOS AGENTS
 
     public static void updateAgent(Agent agent, List<Agent> agents, Environment environment) {
+
+        if(checkAndUpdateCollisions(agent,agents))
+            return;
+
         Vector heuristicDirection = calculateHeuristicDirection(agent, agents, environment);
         agent.setVelocity(heuristicDirection.scalarMultiply(agent.getState().getVelocity()));
+        expandAgent(agent);
+    }
+
+    public static boolean checkAndUpdateCollisions(Agent agent, List<Agent> agents){
+        for(Agent other: agents) {
+            Double minDistance = agent.getRadius() + other.getRadius();
+            if(agent.getId() == other.getId())
+                continue;
+            if(other.getPosition().distance(agent.getPosition()) < minDistance){
+                collapseAgent(agent);
+                escapeFromOther(agent,other.getPosition());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void escapeFromOther(Agent agent, Vector other){
+        Vector oppositeDirection = other.substract(agent.getPosition()).normalize().scalarMultiply(-1.0);
+        agent.setVelocity(oppositeDirection.scalarMultiply(agent.getState().getVelocity()));
+    }
+
+    private static void expandAgent(Agent agent){
+        if(agent.getRadius() < MAX_RADIUS) {
+            agent.setRadius(agent.getRadius() + MAX_RADIUS/(EXPANSION_TIME / Constants.DELTA_T));
+        }
+    }
+    private static void collapseAgent(Agent agent) {
+        agent.setRadius(MIN_RADIUS);
     }
 
     private static Vector calculateHeuristicDirection(Agent agent, List<Agent> agents, Environment environment) {
