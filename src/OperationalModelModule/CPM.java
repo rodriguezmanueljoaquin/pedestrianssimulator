@@ -14,7 +14,7 @@ public class CPM {
     private static final double EXPANSION_TIME = 0.5;
     private static final double MAX_SPEED = 3.0;
     private static final double NEIGHBOURS_RADIUS = 3.0;
-    private static final double ORIGINAL_DIRECTION_AP = 200, AGENT_AP = 400, AGENT_BP = 0.5, WALL_AP = 100, WALL_BP = 0.5, BETA = .9;
+    private static final double ORIGINAL_DIRECTION_AP = 300, AGENT_AP = 400, AGENT_BP = 0.5, WALL_AP = 100, WALL_BP = 0.5, BETA = .9;
     // TODO: MAPA<ID DE AGENTE, CPMAGENT> PARA ASOCIAR COEFICIENTES DISTINTOS (randomizados un poco desde un valor) A LOS AGENTS
 
     public static void updateAgent(Agent agent, List<Agent> agents, Environment environment) {
@@ -65,7 +65,7 @@ public class CPM {
         for (Agent neighbour : neighbours) {
             resultantNc = resultantNc.add(calculateRepulsionForce(agent.getPosition(), neighbour.getPosition(), agent.getVelocity(), AGENT_AP, AGENT_BP));
         }
-
+//
         Vector closestWallPosition = environment.getClosestWall(agent.getPosition()).getClosestPoint(agent.getPosition());
         Vector wallRepulsion = calculateRepulsionForce(agent.getPosition(),closestWallPosition,agent.getVelocity(), WALL_AP, WALL_BP);
         resultantNc = resultantNc.add(wallRepulsion);
@@ -82,6 +82,7 @@ public class CPM {
 
         //cos(0) = a.b / |a||b|
         double cosineOfTheta = originalVelocity.add(position).dotMultiply(obstacle) / (originalVelocity.add(position).module() * obstacle.module());
+//        double cosineOfTheta = 1.0;
         double weight = Ap * Math.exp(-repulsionDistance / Bp);
 
         //eij*Ap*e^(-dij/bp)*cos(0)
