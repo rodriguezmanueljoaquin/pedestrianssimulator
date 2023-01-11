@@ -4,6 +4,9 @@ import Environment.Environment;
 import Environment.Wall;
 import GraphGenerator.Graph;
 import OperationalModelModule.CPM;
+import OperationalModelModule.Collisions.AgentsCollision;
+import OperationalModelModule.Collisions.CollisionsFinder;
+import OperationalModelModule.Collisions.WallCollision;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -31,20 +34,6 @@ public class Simulation {
         createDynamicFile(outputDirectoryPath);
     }
 
-    public static void createStaticFile(String outputPath, Environment environment) throws FileNotFoundException, UnsupportedEncodingException {
-        System.out.println("\tCreating static file. . .");
-
-        PrintWriter writer = new PrintWriter(outputPath + "/static.txt", "UTF-8");
-
-        // walls
-        writer.write(String.format(Locale.ENGLISH, "%d\n", environment.getWalls().size()));
-        for (Wall wall : environment.getWalls())
-            writer.write(String.format(Locale.ENGLISH, "%s\n", wall.toString()));
-
-        writer.close();
-        System.out.println("\tStatic file successfully created");
-    }
-
     public void run() {
         System.out.println("\t\tSimulation started...");
         // first iteration
@@ -70,19 +59,7 @@ public class Simulation {
             }
             this.agents.removeAll(leavingAgents);
 
-//             update velocities according CPM
-//             get pair of agents that collided and those who didn`t collide
-//             update agents in collisions
-//            List<Pair<Agent, Agent>> collisionedAgents = ...;
-//            for(Pair<Agent, Agent>> collisionedAgents : collisionedPair) {
-//                CPM.updateAgentsInCollision(collisionedPair);
-//            }
-
-            // update agents not in collisions
-            List<Agent> movingAgents = agents.stream().filter(a -> a.getState().getVelocity() != 0).collect(Collectors.toList());
-            for (Agent movingAgent : movingAgents) {
-                CPM.updateAgent(movingAgent, agents, environment);
-            }
+            Simulation.executeOperationalModelModule(agents, environment);
 
             // escribir output
             this.writeOutput();
@@ -91,6 +68,41 @@ public class Simulation {
         this.writer.close();
         System.out.println("\t\tSimulation ended");
         System.out.println("\tSuccesfully created dynamic file");
+    }
+
+    private static void executeOperationalModelModule(List<Agent> agents, Environment environment) {
+        List<WallCollision> wallCollisions = new ArrayList<>();
+        List<AgentsCollision > agentsCollisions = new ArrayList<>();
+        List<Agent> nonCollisionAgents = new ArrayList<>();
+        CollisionsFinder.Find(agents, environment, wallCollisions, agentsCollisions, nonCollisionAgents);
+
+        for (AgentsCollision agentsCollision : agentsCollisions) {
+            CPM.updateCollidingAgents(agentsCollision);
+        }
+
+        for (WallCollision wallCollision : wallCollisions) {
+            CPM.updateWallCollidingAgent(wallCollision);
+        }
+
+        // update agents not in collisions and moving
+        List<Agent> movingAgents = nonCollisionAgents.stream().filter(a -> a.getState().getVelocity() != 0).collect(Collectors.toList());
+        for (Agent movingAgent : movingAgents) {
+            CPM.updateAgent(movingAgent, agents, environment);
+        }
+    }
+
+    public static void createStaticFile(String outputPath, Environment environment) throws FileNotFoundException, UnsupportedEncodingException {
+        System.out.println("\tCreating static file. . .");
+
+        PrintWriter writer = new PrintWriter(outputPath + "/static.txt", "UTF-8");
+
+        // walls
+        writer.write(String.format(Locale.ENGLISH, "%d\n", environment.getWalls().size()));
+        for (Wall wall : environment.getWalls())
+            writer.write(String.format(Locale.ENGLISH, "%s\n", wall.toString()));
+
+        writer.close();
+        System.out.println("\tStatic file successfully created");
     }
 
     private void writeOutput() {

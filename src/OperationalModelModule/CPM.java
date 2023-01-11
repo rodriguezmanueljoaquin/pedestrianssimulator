@@ -2,6 +2,8 @@ package OperationalModelModule;
 
 import Agent.Agent;
 import Environment.Environment;
+import OperationalModelModule.Collisions.AgentsCollision;
+import OperationalModelModule.Collisions.WallCollision;
 import Utils.Constants;
 import Utils.Vector;
 
@@ -18,30 +20,26 @@ public class CPM {
     // TODO: MAPA<ID DE AGENTE, CPMAGENT> PARA ASOCIAR COEFICIENTES DISTINTOS (randomizados un poco desde un valor) A LOS AGENTS
 
     public static void updateAgent(Agent agent, List<Agent> agents, Environment environment) {
-
-        if(checkAndUpdateCollisions(agent,agents))
-            return;
-
         Vector heuristicDirection = calculateHeuristicDirection(agent, agents, environment);
         agent.setVelocity(heuristicDirection.scalarMultiply(agent.getState().getVelocity()));
         expandAgent(agent);
     }
 
-    public static boolean checkAndUpdateCollisions(Agent agent, List<Agent> agents){
-        for(Agent other: agents) {
-            Double minDistance = agent.getRadius() + other.getRadius();
-            if(agent.getId() == other.getId())
-                continue;
-            if(other.getPosition().distance(agent.getPosition()) < minDistance){
-                collapseAgent(agent);
-                escapeFromOther(agent,other.getPosition());
-                return true;
-            }
-        }
-        return false;
+    public static void updateCollidingAgents(AgentsCollision agentsCollision) {
+        Agent agent1 = agentsCollision.getAgent1();
+        Agent agent2 = agentsCollision.getAgent2();
+        collapseAgent(agent1);
+        collapseAgent(agent2);
+        escapeFromObstacle(agent1, agent2.getPosition());
+        escapeFromObstacle(agent2, agent1.getPosition());
     }
 
-    private static void escapeFromOther(Agent agent, Vector other){
+    public static void updateWallCollidingAgent(WallCollision wallCollision) {
+        collapseAgent(wallCollision.getAgent());
+        escapeFromObstacle(wallCollision.getAgent(), wallCollision.getWallClosestPoint());
+    }
+
+    private static void escapeFromObstacle(Agent agent, Vector other){
         Vector oppositeDirection = other.substract(agent.getPosition()).normalize().scalarMultiply(-1.0);
         agent.setVelocity(oppositeDirection.scalarMultiply(agent.getState().getVelocity()));
     }

@@ -107,6 +107,10 @@ public class Agent {
         return this.getPosition().distance(other.position) - this.radius - other.radius;
     }
 
+    public double distance(Vector position) {
+        return this.getPosition().distance(position) - this.radius;
+    }
+
     public Integer getId() {
         return this.id;
     }
