@@ -2,6 +2,7 @@ package Agent;
 
 public class AgentConstants {
     public static double MAX_RADIUS = .50;
+    public static double MIN_RADIUS = .25;
     public static double STANDARD_VELOCITY = 4.0;
 
 

@@ -1,5 +1,6 @@
 import Agent.Agent;
 import Agent.AgentStates;
+import Agent.AgentConstants;
 import Environment.Environment;
 import Environment.Wall;
 import GraphGenerator.Graph;
@@ -31,6 +32,7 @@ public class Simulation {
         this.graph = graph;
         this.environment = environment;
         this.time = 0;
+        this.dt = AgentConstants.MAX_RADIUS / (2 * AgentConstants.STANDARD_VELOCITY);
         createDynamicFile(outputDirectoryPath);
     }
 

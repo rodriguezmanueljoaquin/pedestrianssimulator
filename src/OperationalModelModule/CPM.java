@@ -1,6 +1,7 @@
 package OperationalModelModule;
 
 import Agent.Agent;
+import Agent.AgentConstants;
 import Environment.Environment;
 import OperationalModelModule.Collisions.AgentsCollision;
 import OperationalModelModule.Collisions.WallCollision;
@@ -11,8 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CPM {
-    private static final double MAX_RADIUS = 1;
-    private static final double MIN_RADIUS = 0.1;
     private static final double EXPANSION_TIME = 0.5;
     private static final double MAX_SPEED = 3.0;
     private static final double NEIGHBOURS_RADIUS = 3.0;
@@ -45,12 +44,12 @@ public class CPM {
     }
 
     private static void expandAgent(Agent agent){
-        if(agent.getRadius() < MAX_RADIUS) {
-            agent.setRadius(agent.getRadius() + MAX_RADIUS/(EXPANSION_TIME / Constants.DELTA_T));
+        if(agent.getRadius() < AgentConstants.MAX_RADIUS) {
+            agent.setRadius(agent.getRadius() + AgentConstants.MAX_RADIUS/(EXPANSION_TIME / Constants.DELTA_T));
         }
     }
     private static void collapseAgent(Agent agent) {
-        agent.setRadius(MIN_RADIUS);
+        agent.setRadius(AgentConstants.MIN_RADIUS);
     }
 
     private static Vector calculateHeuristicDirection(Agent agent, List<Agent> agents, Environment environment) {
