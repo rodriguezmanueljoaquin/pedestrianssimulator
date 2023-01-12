@@ -20,7 +20,7 @@ public class CPM {
 
     public static void updateAgent(Agent agent, List<Agent> agents, Environment environment) {
         Vector heuristicDirection = calculateHeuristicDirection(agent, agents, environment);
-        agent.setVelocity(heuristicDirection.scalarMultiply(agent.getState().getVelocity()));
+        agent.setVelocity(heuristicDirection.scalarMultiply(agent.getVelocityModule()));
         expandAgent(agent);
     }
 

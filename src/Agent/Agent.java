@@ -34,7 +34,7 @@ public class Agent {
     }
 
     public void updateVelocity() {
-        if (state == AgentStates.LEAVING) {
+        if (this.getState() == AgentStates.LEAVING) {
             // will be destroyed next iteration
             this.setVelocity(new Vector(0, 0));
             return;
@@ -42,7 +42,7 @@ public class Agent {
 
         // first check if intermediate node has to be updated
         if (currentIntermediateObjectiveNode != null &&
-                this.position.distance(this.currentIntermediateObjectiveNode.getPosition()) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
+                this.getPosition().distance(this.currentIntermediateObjectiveNode.getPosition()) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
             // intermediate node reached, update it
             this.currentIntermediateObjectiveNode = this.currentPath.getNodeAfter(this.currentIntermediateObjectiveNode);
         }
@@ -55,12 +55,12 @@ public class Agent {
             objectivePosition = this.currentIntermediateObjectiveNode.getPosition();
         }
 
-        Vector r = objectivePosition.substract(this.position).normalize();
-        this.setVelocity(r.scalarMultiply(this.getState().getVelocity()));
+        Vector r = objectivePosition.substract(this.getPosition()).normalize();
+        this.setVelocity(r.scalarMultiply(this.getVelocityModule()));
     }
 
     public void updatePosition(double time) {
-        this.position = this.position.add(this.velocity.scalarMultiply(time));
+        this.position = this.position.add(this.getVelocity().scalarMultiply(time));
     }
 
     public boolean reachedObjective() {
@@ -129,6 +129,12 @@ public class Agent {
 
     public Vector getVelocity() {
         return this.velocity;
+    }
+
+    public double getVelocityModule() {
+        double maxVelocity = this.getState().getVelocity();
+        return maxVelocity * (Math.pow((this.getRadius() - AgentConstants.MIN_RADIUS) /
+                (AgentConstants.MAX_RADIUS - AgentConstants.MIN_RADIUS), AgentConstants.B));
     }
 
     public void setVelocity(Vector speed) {
