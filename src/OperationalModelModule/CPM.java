@@ -38,16 +38,17 @@ public class CPM {
         escapeFromObstacle(wallCollision.getAgent(), wallCollision.getWallClosestPoint());
     }
 
-    private static void escapeFromObstacle(Agent agent, Vector other){
+    private static void escapeFromObstacle(Agent agent, Vector other) {
         Vector oppositeDirection = other.substract(agent.getPosition()).normalize().scalarMultiply(-1.0);
         agent.setVelocity(oppositeDirection.scalarMultiply(agent.getState().getVelocity()));
     }
 
-    private static void expandAgent(Agent agent){
-        if(agent.getRadius() < AgentConstants.MAX_RADIUS) {
-            agent.setRadius(agent.getRadius() + AgentConstants.MAX_RADIUS/(EXPANSION_TIME / Constants.DELTA_T));
+    private static void expandAgent(Agent agent) {
+        if (agent.getRadius() < AgentConstants.MAX_RADIUS) {
+            agent.setRadius(agent.getRadius() + AgentConstants.MAX_RADIUS / (EXPANSION_TIME / Constants.DELTA_T));
         }
     }
+
     private static void collapseAgent(Agent agent) {
         agent.setRadius(AgentConstants.MIN_RADIUS);
     }
@@ -64,7 +65,7 @@ public class CPM {
         }
 //
         Vector closestWallPosition = environment.getClosestWall(agent.getPosition()).getClosestPoint(agent.getPosition());
-        Vector wallRepulsion = calculateRepulsionForce(agent.getPosition(),closestWallPosition,agent.getVelocity(), WALL_AP, WALL_BP);
+        Vector wallRepulsion = calculateRepulsionForce(agent.getPosition(), closestWallPosition, agent.getVelocity(), WALL_AP, WALL_BP);
         resultantNc = resultantNc.add(wallRepulsion);
 
         return resultantNc.normalize();

@@ -57,9 +57,9 @@ public class Vector {
     }
 
     public Vector normalize() {
-        if(this.module() == 0.0)
-            return new Vector(0,0);
-        return this.scalarMultiply(1/this.module());
+        if (this.module() == 0.0)
+            return new Vector(0, 0);
+        return this.scalarMultiply(1 / this.module());
     }
 
     public Double module() {

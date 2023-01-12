@@ -18,7 +18,7 @@ public class CollisionsFinder {
             // wall
             Wall closestWall = environment.getClosestWall(current.getPosition());
             Vector closestPoint = closestWall.getClosestPoint(current.getPosition());
-            if(current.distance(closestPoint) < 0) {
+            if (current.distance(closestPoint) < 0) {
                 wallCollisions.add(new WallCollision(current, closestPoint));
                 hasCollided = true;
             }
@@ -36,7 +36,7 @@ public class CollisionsFinder {
             if (agentsCollisions.stream().anyMatch(agentsCollision -> agentsCollision.getAgent2().equals(current)))
                 hasCollided = true;
 
-            if(!hasCollided)
+            if (!hasCollided)
                 nonCollisionAgents.add(current);
         }
     }

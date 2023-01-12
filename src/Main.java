@@ -6,6 +6,7 @@ import Environment.Environment;
 import Environment.Objectives.Exit;
 import Environment.Objectives.Objective;
 import Environment.Objectives.Server.DynamicServer;
+import Environment.Objectives.Server.QueueLine;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Wall;
@@ -57,7 +58,7 @@ public class Main {
         servers.add(new DynamicServer(2,
                 new Rectangle(new Vector(1, 10), new Vector(15, 20)),
                 10,
-                new Line(new Vector(5, 4), new Vector(20, 4)))
+                new QueueLine(new Vector(5, 4), new Vector(20, 4)))
         ); // supongamos que esto es una zona con maquinas expendedoras
 
 
