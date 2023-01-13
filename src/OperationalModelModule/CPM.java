@@ -26,10 +26,9 @@ public class CPM {
     public static void updateNonCollisionAgent(Agent agent, List<Agent> agents, Environment environment, double dt, Random random) {
         Vector heuristicDirection = calculateHeuristicDirection(agent, agents, environment, random);
         agent.setVelocity(heuristicDirection.scalarMultiply(agent.getVelocityModule()));
-        expandAgent(agent, dt);
     }
 
-    private static void expandAgent(Agent agent, double dt) {
+    public static void expandAgent(Agent agent) {
         if (agent.getRadius() < AgentConstants.MAX_RADIUS) {
             agent.setRadius(agent.getRadius() + AgentConstants.MAX_RADIUS / DTS_NEEDED_FOR_EXPANSION);
         }

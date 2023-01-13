@@ -63,11 +63,11 @@ public class Agent {
     }
 
     public boolean reachedObjective() {
-        return this.distance(this.getCurrentObjective().getPosition(this)) < Constants.MINIMUM_DISTANCE_TO_TARGET;
+        return this.distance(this.getCurrentObjective().getPosition(this)) < AgentConstants.MINIMUM_DISTANCE_TO_TARGET;
     }
 
     public boolean reachedPosition(Vector position) {
-        return this.distance(position) < 0;
+        return this.distance(position) <= 0;
     }
 
     public Objective getCurrentObjective() {

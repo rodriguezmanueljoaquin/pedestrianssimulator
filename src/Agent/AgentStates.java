@@ -4,13 +4,13 @@ public enum AgentStates {
     MOVING {
         @Override
         public double getVelocity() {
-            return AgentConstants.STANDARD_VELOCITY;
+            return AgentConstants.MAXIMUM_VELOCITY;
         }
     },
     MOVING_TO_QUEUE_POSITION {
         @Override
         public double getVelocity() {
-            return AgentConstants.STANDARD_VELOCITY;
+            return AgentConstants.MAXIMUM_VELOCITY;
         }
     },
     ATTENDING {
@@ -29,7 +29,7 @@ public enum AgentStates {
         //TODO: Get nearest exit.
         @Override
         public double getVelocity() {
-            return AgentConstants.STANDARD_VELOCITY;
+            return AgentConstants.MAXIMUM_VELOCITY;
         }
     },
     STARTING {

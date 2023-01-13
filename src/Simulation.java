@@ -1,5 +1,4 @@
 import Agent.Agent;
-import Agent.AgentConstants;
 import Agent.AgentStates;
 import Environment.Environment;
 import Environment.Wall;
@@ -15,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-import java.util.stream.Collectors;
+
+import static Utils.Constants.DELTA_T;
 
 public class Simulation {
     private List<Agent> agents;
@@ -30,7 +30,7 @@ public class Simulation {
         this.environment = environment;
         this.random = random;
         this.time = 0;
-        this.dt = AgentConstants.MAX_RADIUS / (2 * AgentConstants.STANDARD_VELOCITY);
+        this.dt = DELTA_T;
         this.dt2 = this.dt * 4;
 
         createDynamicFile(outputDirectoryPath);
@@ -48,12 +48,17 @@ public class Simulation {
 
         for (WallCollision wallCollision : wallCollisions) {
             CPM.updateWallCollidingAgent(wallCollision);
+            Agent agent = wallCollision.getAgent();
+            agent.getStateMachine().updateAgentCurrentPath(agent);
         }
 
-        // update agents not in collisions and moving
-        List<Agent> movingAgents = nonCollisionAgents.stream().filter(a -> a.getState().getVelocity() != 0).collect(Collectors.toList());
-        for (Agent movingAgent : movingAgents) {
-            CPM.updateNonCollisionAgent(movingAgent, this.agents, this.environment, this.dt, this.random);
+        for (Agent agent : nonCollisionAgents) {
+            // update radius
+            CPM.expandAgent(agent);
+
+            if(agent.getState().getVelocity() != 0)
+                // if moving, update direction with heuristics
+                CPM.updateNonCollisionAgent(agent, this.agents, this.environment, this.dt, this.random);
         }
     }
 

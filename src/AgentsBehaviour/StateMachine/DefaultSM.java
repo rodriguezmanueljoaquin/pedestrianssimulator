@@ -13,7 +13,7 @@ public class DefaultSM implements StateMachine {
         this.graph = graph;
     }
 
-    private void updateAgentCurrentPath(Agent agent) {
+    public void updateAgentCurrentPath(Agent agent) {
         NodePath path = this.graph.getPathToPosition(agent.getPosition(), agent.getCurrentObjective().getPosition(agent));
 
         if (path == null) {
