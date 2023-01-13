@@ -29,7 +29,7 @@ Donde DXF_PATH es el path al archivo DXF sobre el cual se realizara
 ## Ejecución del programa por partes
 Desde el directorio pincipal, los comandos de ejecución son:
 ### DXF Parser
-```python3 DXFParser/main.py -dxf=DXF_PATH```
+```python3 DXFParser/parser.py -dxf=DXF_PATH```
 Donde DXF_PATH es el archivo de formato DXF donde se realiza la simulación, este debe cumplir con los [requisitos mencionados](#Requisitos DXF) para el correcto funcionamiento del programa, este es un parametro opcional que en caso de no ser indicado tomara el path al archivo de ejemplo: "DXFParser/DXFExamples/Plano2.dxf".
 
 ### Simulación
@@ -38,4 +38,4 @@ java -cp ./src/ Main
 find src -type f -name "*.class" -delete
 
 ### Visualización
-```python3 visualization/parser.py```
+```python3 visualization/visualizator.py```

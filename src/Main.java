@@ -93,14 +93,15 @@ public class Main {
         studentBehaviourScheme.addObjectiveGroupToScheme(productsObjectives, 2, 5);
 
         // -------- AGENT GENERATORS --------
-        List<AgentsGenerator> studentsGenerators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", studentBehaviourScheme, random.nextLong());
+        List<AgentsGenerator> studentsGenerators =
+                InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", studentBehaviourScheme, random.nextLong());
 
         // -------- ENVIRONMENT --------
         Environment environment = new Environment(walls, servers, studentsGenerators, exits);
 
         try {
             Simulation.createStaticFile(RESULTS_PATH, environment);
-            Simulation sim = new Simulation(graph, Constants.MAX_TIME, Constants.DELTA_T, Constants.FRAME_EXPORT_DELTA_T, environment, RESULTS_PATH);
+            Simulation sim = new Simulation(Constants.MAX_TIME, environment, RESULTS_PATH, random);
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

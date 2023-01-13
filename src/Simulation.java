@@ -3,7 +3,6 @@ import Agent.AgentConstants;
 import Agent.AgentStates;
 import Environment.Environment;
 import Environment.Wall;
-import GraphGenerator.Graph;
 import OperationalModelModule.CPM;
 import OperationalModelModule.Collisions.AgentsCollision;
 import OperationalModelModule.Collisions.CollisionsFinder;
@@ -15,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Simulation {
@@ -22,25 +22,25 @@ public class Simulation {
     private double time, maxTime, dt, dt2;
     private Environment environment;
     private PrintWriter writer;
-    private Graph graph;
+    private Random random;
 
-    public Simulation(Graph graph, double maxTime, double dt, double dt2, Environment environment, String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {
+    public Simulation(double maxTime, Environment environment, String outputDirectoryPath, Random random) throws FileNotFoundException, UnsupportedEncodingException {
         this.agents = new ArrayList<>();
         this.maxTime = maxTime;
-        this.dt = dt;
-        this.dt2 = dt2;
-        this.graph = graph;
         this.environment = environment;
+        this.random = random;
         this.time = 0;
         this.dt = AgentConstants.MAX_RADIUS / (2 * AgentConstants.STANDARD_VELOCITY);
+        this.dt2 = this.dt * 4;
+
         createDynamicFile(outputDirectoryPath);
     }
 
-    private static void executeOperationalModelModule(List<Agent> agents, Environment environment) {
+    private void executeOperationalModelModule() {
         List<WallCollision> wallCollisions = new ArrayList<>();
         List<AgentsCollision> agentsCollisions = new ArrayList<>();
         List<Agent> nonCollisionAgents = new ArrayList<>();
-        CollisionsFinder.Find(agents, environment, wallCollisions, agentsCollisions, nonCollisionAgents);
+        CollisionsFinder.Find(this.agents, this.environment, wallCollisions, agentsCollisions, nonCollisionAgents);
 
         for (AgentsCollision agentsCollision : agentsCollisions) {
             CPM.updateCollidingAgents(agentsCollision);
@@ -53,7 +53,7 @@ public class Simulation {
         // update agents not in collisions and moving
         List<Agent> movingAgents = nonCollisionAgents.stream().filter(a -> a.getState().getVelocity() != 0).collect(Collectors.toList());
         for (Agent movingAgent : movingAgents) {
-            CPM.updateAgent(movingAgent, agents, environment);
+            CPM.updateNonCollisionAgent(movingAgent, this.agents, this.environment, this.dt, this.random);
         }
     }
 
@@ -96,7 +96,7 @@ public class Simulation {
             }
             this.agents.removeAll(leavingAgents);
 
-            Simulation.executeOperationalModelModule(agents, environment);
+            this.executeOperationalModelModule();
 
             // escribir output
             this.writeOutput();
