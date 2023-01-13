@@ -28,7 +28,7 @@ class QueueHandler implements Objective {
         }
 
         Vector firstAvailablePosition = this.queueLine.getSegmentPosition(this.queueingAgents.size() - 1);
-        if (agent.getPosition().distance(firstAvailablePosition) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
+        if (agent.reachedPosition(firstAvailablePosition)) {
             // assign to queue as it got to the first free spot
             this.queueingAgents.add(agent);
         }
@@ -45,7 +45,7 @@ class QueueHandler implements Objective {
     public Boolean canAttend(Agent agent) {
         // returns true when agent is in the queue and in its position
         return this.queueingAgents.contains(agent) &&
-                agent.getPosition().distance(this.queueLine.getSegmentPosition(this.queueingAgents.indexOf(agent))) < Constants.MINIMUM_DISTANCE_TO_TARGET;
+                agent.reachedPosition(this.queueLine.getSegmentPosition(this.queueingAgents.indexOf(agent)));
     }
 
     public Agent removeFromQueue() {

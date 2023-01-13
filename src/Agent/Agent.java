@@ -18,7 +18,7 @@ public class Agent {
     private Vector velocity;
     private double radius;
     private AgentStates state;
-    private List<? extends Objective> objectives;
+    private final List<? extends Objective> objectives;
     private Double startedAttendingAt;
     private NodePath currentPath;
     private Node currentIntermediateObjectiveNode;
@@ -41,8 +41,7 @@ public class Agent {
         }
 
         // first check if intermediate node has to be updated
-        if (currentIntermediateObjectiveNode != null &&
-                this.getPosition().distance(this.currentIntermediateObjectiveNode.getPosition()) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
+        if (currentIntermediateObjectiveNode != null && this.reachedPosition(this.currentIntermediateObjectiveNode.getPosition())) {
             // intermediate node reached, update it
             this.currentIntermediateObjectiveNode = this.currentPath.getNodeAfter(this.currentIntermediateObjectiveNode);
         }
@@ -64,7 +63,11 @@ public class Agent {
     }
 
     public boolean reachedObjective() {
-        return this.getPosition().distance(this.getCurrentObjective().getPosition(this)) < Constants.MINIMUM_DISTANCE_TO_TARGET;
+        return this.distance(this.getCurrentObjective().getPosition(this)) < Constants.MINIMUM_DISTANCE_TO_TARGET;
+    }
+
+    public boolean reachedPosition(Vector position) {
+        return this.distance(position) < 0;
     }
 
     public Objective getCurrentObjective() {
