@@ -17,11 +17,12 @@ public class CPM {
     private static final double
             ORIGINAL_DIRECTION_AP = 250,
             AGENT_AP = 100,
-            AGENT_BP = 0.5,
+            AGENT_BP = 1,
             WALL_AP = 400,
-            WALL_BP = 1, // cuanto mas grande, a mayor distancia reacciona más
+            WALL_BP = 2, // cuanto mas grande, a mayor distancia reacciona más
             AP_VARIATION = 25,
-            BP_VARIATION = 0.1;
+            BP_VARIATION = 0.1,
+            NON_MOVING_AGENT_REPULSION_MULTIPLIER = 3;
 
     public static void updateNonCollisionAgent(Agent agent, List<Agent> agents, Environment environment, double dt, Random random) {
         Vector heuristicDirection = calculateHeuristicDirection(agent, agents, environment, random);
@@ -44,12 +45,23 @@ public class CPM {
                 .filter(other -> agent.distance(other) < NEIGHBOURS_RADIUS && !agent.equals(other))
                 .collect(Collectors.toList());
 
+        double AP, BP;
         for (Agent neighbour : neighbours) {
+            // agent fears more those agents not moving
+            if(neighbour.getVelocityModule() == 0) {
+                AP = AGENT_AP * NON_MOVING_AGENT_REPULSION_MULTIPLIER;
+                BP = AGENT_BP * NON_MOVING_AGENT_REPULSION_MULTIPLIER;
+            }
+            else {
+                AP = AGENT_AP;
+                BP = AGENT_BP;
+            }
+
             resultantNc = resultantNc.add(
                     calculateRepulsionForce(
                             agent.getPosition(), neighbour.getPosition(), agent.getVelocity(),
-                            getRandomDoubleInRange(AGENT_AP, AP_VARIATION, random),
-                            getRandomDoubleInRange(AGENT_BP, BP_VARIATION, random)
+                            getRandomDoubleInRange(AP, AP_VARIATION, random),
+                            getRandomDoubleInRange(BP, BP_VARIATION, random)
                     )
             );
         }
