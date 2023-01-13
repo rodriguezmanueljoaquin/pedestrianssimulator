@@ -12,14 +12,14 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class CPM {
-    private static final double EXPANSION_TIME = 0.5;
+    private static final double DTS_NEEDED_FOR_EXPANSION = 5;
     private static final double NEIGHBOURS_RADIUS = 5.0;
     private static final double
             ORIGINAL_DIRECTION_AP = 250,
             AGENT_AP = 100,
             AGENT_BP = 0.5,
-            WALL_AP = 200,
-            WALL_BP = 1,
+            WALL_AP = 400,
+            WALL_BP = 1, // cuanto mas grande, a mayor distancia reacciona más
             AP_VARIATION = 25,
             BP_VARIATION = 0.1;
 
@@ -31,7 +31,7 @@ public class CPM {
 
     private static void expandAgent(Agent agent, double dt) {
         if (agent.getRadius() < AgentConstants.MAX_RADIUS) {
-            agent.setRadius(agent.getRadius() + AgentConstants.MAX_RADIUS / (EXPANSION_TIME / dt));
+            agent.setRadius(agent.getRadius() + AgentConstants.MAX_RADIUS / DTS_NEEDED_FOR_EXPANSION);
         }
     }
 
