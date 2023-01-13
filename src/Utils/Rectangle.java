@@ -18,7 +18,7 @@ public class Rectangle {
     }
 
     public Vector getMiddlePoint() {
-        return x1.add(x2).scalarMultiply(1/2.);
+        return x1.add(x2).scalarMultiply(1 / 2.);
     }
 
     protected double getRandomDoubleInRange(Double min, Double max) {

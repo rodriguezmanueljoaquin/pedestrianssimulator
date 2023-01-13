@@ -50,15 +50,14 @@ public class BehaviourScheme {
 
             for (int i = 0; i < objectivesQuantity; i++) {
                 Objective obj = group.getRandomObjective();
-                if(obj.getType().equals(ObjectiveType.DYNAMIC_SERVER)){
+                if (obj.getType().equals(ObjectiveType.DYNAMIC_SERVER)) {
                     // has to add queue as previous objective
                     addServerAndQueue((Server) obj, objectives);
-                }
-                else objectives.add(obj);
+                } else objectives.add(obj);
             }
         }
 
-        Vector lastObjectivePosition = objectives.get(objectives.size() -1).getCentroidPosition();
+        Vector lastObjectivePosition = objectives.get(objectives.size() - 1).getCentroidPosition();
         Map<Vector, Exit> exitsByCentroid = exits.stream()
                 .collect(Collectors.toMap(Exit::getCentroidPosition, Function.identity()));
         Exit closestExitFromLastObjective = exitsByCentroid
@@ -68,11 +67,12 @@ public class BehaviourScheme {
         return objectives;
     }
 
-    private void addServerAndQueue(Server server, List<Objective> objectives){
+    private void addServerAndQueue(Server server, List<Objective> objectives) {
         objectives.add(server.getQueueHandler());
         objectives.add(server);
     }
-    public StateMachine getStateMachine()    {
+
+    public StateMachine getStateMachine() {
         return stateMachine;
     }
 

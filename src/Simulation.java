@@ -2,7 +2,10 @@ import Agent.Agent;
 import Agent.AgentStates;
 import Environment.Environment;
 import Environment.Wall;
-import GraphGenerator.Graph;
+import OperationalModelModule.CPM;
+import OperationalModelModule.Collisions.AgentsCollision;
+import OperationalModelModule.Collisions.CollisionsFinder;
+import OperationalModelModule.Collisions.WallCollision;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -10,23 +13,67 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
+
+import static Utils.Constants.DELTA_T;
 
 public class Simulation {
     private List<Agent> agents;
     private double time, maxTime, dt, dt2;
     private Environment environment;
     private PrintWriter writer;
-    private Graph graph;
+    private Random random;
 
-    public Simulation(Graph graph, double maxTime, double dt, double dt2, Environment environment, String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {
+    public Simulation(double maxTime, Environment environment, String outputDirectoryPath, Random random) throws FileNotFoundException, UnsupportedEncodingException {
         this.agents = new ArrayList<>();
         this.maxTime = maxTime;
-        this.dt = dt;
-        this.dt2 = dt2;
-        this.graph = graph;
         this.environment = environment;
+        this.random = random;
         this.time = 0;
+        this.dt = DELTA_T;
+        this.dt2 = this.dt * 4;
+
         createDynamicFile(outputDirectoryPath);
+    }
+
+    private void executeOperationalModelModule() {
+        List<WallCollision> wallCollisions = new ArrayList<>();
+        List<AgentsCollision> agentsCollisions = new ArrayList<>();
+        List<Agent> nonCollisionAgents = new ArrayList<>();
+        CollisionsFinder.Find(this.agents, this.environment, wallCollisions, agentsCollisions, nonCollisionAgents);
+
+        for (AgentsCollision agentsCollision : agentsCollisions) {
+            CPM.updateCollidingAgents(agentsCollision);
+        }
+
+        for (WallCollision wallCollision : wallCollisions) {
+            CPM.updateWallCollidingAgent(wallCollision);
+            Agent agent = wallCollision.getAgent();
+            agent.getStateMachine().updateAgentCurrentPath(agent);
+        }
+
+        for (Agent agent : nonCollisionAgents) {
+            // update radius
+            CPM.expandAgent(agent);
+
+            if(agent.getState().getVelocity() != 0)
+                // if moving, update direction with heuristics
+                CPM.updateNonCollisionAgent(agent, this.agents, this.environment, this.dt, this.random);
+        }
+    }
+
+    public static void createStaticFile(String outputPath, Environment environment) throws FileNotFoundException, UnsupportedEncodingException {
+        System.out.println("\tCreating static file. . .");
+
+        PrintWriter writer = new PrintWriter(outputPath + "/static.txt", "UTF-8");
+
+        // walls
+        writer.write(String.format(Locale.ENGLISH, "%d\n", environment.getWalls().size()));
+        for (Wall wall : environment.getWalls())
+            writer.write(String.format(Locale.ENGLISH, "%s\n", wall.toString()));
+
+        writer.close();
+        System.out.println("\tStatic file successfully created");
     }
 
     public void run() {
@@ -54,10 +101,7 @@ public class Simulation {
             }
             this.agents.removeAll(leavingAgents);
 
-
-            // update velocities acording CPM.CPM
-//            CPM.updateAgents(agents, environment);
-
+            this.executeOperationalModelModule();
 
             // escribir output
             this.writeOutput();
@@ -66,20 +110,6 @@ public class Simulation {
         this.writer.close();
         System.out.println("\t\tSimulation ended");
         System.out.println("\tSuccesfully created dynamic file");
-    }
-
-    public static void createStaticFile(String outputPath, Environment environment) throws FileNotFoundException, UnsupportedEncodingException {
-        System.out.println("\tCreating static file. . .");
-
-        PrintWriter writer = new PrintWriter(outputPath + "/static.txt", "UTF-8");
-
-        // walls
-        writer.write(String.format(Locale.ENGLISH, "%d\n", environment.getWalls().size()));
-        for (Wall wall : environment.getWalls())
-            writer.write(String.format(Locale.ENGLISH, "%s\n", wall.toString()));
-
-        writer.close();
-        System.out.println("\tStatic file successfully created");
     }
 
     private void writeOutput() {

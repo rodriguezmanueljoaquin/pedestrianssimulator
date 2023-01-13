@@ -6,14 +6,12 @@ import Environment.Environment;
 import Environment.Objectives.Exit;
 import Environment.Objectives.Objective;
 import Environment.Objectives.Server.DynamicServer;
+import Environment.Objectives.Server.QueueLine;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Wall;
 import GraphGenerator.Graph;
-import Utils.InputHandler;
-import Utils.Line;
-import Utils.Rectangle;
-import Utils.Vector;
+import Utils.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,7 +58,7 @@ public class Main {
         servers.add(new DynamicServer(2,
                 new Rectangle(new Vector(1, 10), new Vector(15, 20)),
                 10,
-                new Line(new Vector(5, 4), new Vector(20, 4)))
+                new QueueLine(new Vector(5, 4), new Vector(20, 4)))
         ); // supongamos que esto es una zona con maquinas expendedoras
 
 
@@ -95,14 +93,15 @@ public class Main {
         studentBehaviourScheme.addObjectiveGroupToScheme(productsObjectives, 2, 5);
 
         // -------- AGENT GENERATORS --------
-        List<AgentsGenerator> studentsGenerators = InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", studentBehaviourScheme, random.nextLong());
+        List<AgentsGenerator> studentsGenerators =
+                InputHandler.importAgentsGeneratorsFromTxt("./input/PEATONES.csv", studentBehaviourScheme, random.nextLong());
 
         // -------- ENVIRONMENT --------
         Environment environment = new Environment(walls, servers, studentsGenerators, exits);
 
         try {
             Simulation.createStaticFile(RESULTS_PATH, environment);
-            Simulation sim = new Simulation(graph, 200, 0.025, 0.25, environment, RESULTS_PATH);
+            Simulation sim = new Simulation(Constants.MAX_TIME, environment, RESULTS_PATH, random);
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

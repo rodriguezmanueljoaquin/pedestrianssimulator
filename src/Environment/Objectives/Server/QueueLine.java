@@ -1,11 +1,14 @@
-package Utils;
+package Environment.Objectives.Server;
 
-public class Line {
+import Utils.Constants;
+import Utils.Vector;
+
+public class QueueLine {
     private final Vector x1, x2;
     // x1 is the start
     private final int segmentsQuantity;
 
-    public Line(Vector x1, Vector x2) {
+    public QueueLine(Vector x1, Vector x2) {
         this.x1 = x1;
         this.x2 = x2;
         this.segmentsQuantity = (int) (this.x2.distance(this.x1) / Constants.SPACE_BETWEEN_AGENTS_IN_QUEUE);

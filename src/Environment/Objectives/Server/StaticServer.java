@@ -19,8 +19,8 @@ public class StaticServer extends Server {
         // if it is close (inside)
         //      it is added to "clients",
         //      and it will start to be attended by the server (it may be freed just after if static server has already finished)
-        if(!this.servingAgents.contains(agent)) {
-            if(this.serverPositionHandler.isAgentInside(agent) && this.servingAgents.size() < this.maxAttendants){
+        if (!this.servingAgents.contains(agent)) {
+            if (this.serverPositionHandler.isAgentInside(agent) && this.servingAgents.size() < this.maxAttendants) {
                 this.servingAgents.add(agent);
                 this.serverPositionHandler.setNewPosition(agent.getId());
             } else

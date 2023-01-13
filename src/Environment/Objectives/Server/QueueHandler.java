@@ -4,19 +4,18 @@ import Agent.Agent;
 import Environment.Objectives.Objective;
 import Environment.Objectives.ObjectiveType;
 import Utils.Constants;
-import Utils.Line;
 import Utils.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class QueueHandler implements Objective {
-    private final Line line;
+    private final QueueLine queueLine;
     private final List<Agent> queueingAgents;
     private final Server server;
 
-    public QueueHandler(Line line, Server server) {
-        this.line = line;
+    public QueueHandler(QueueLine queueLine, Server server) {
+        this.queueLine = queueLine;
         this.queueingAgents = new ArrayList<>();
         this.server = server;
     }
@@ -25,11 +24,11 @@ class QueueHandler implements Objective {
         // returns position designated for agent if its in queue, else returns first available position
         int position = this.queueingAgents.indexOf(agent);
         if (position != -1) {
-            return this.line.getSegmentPosition(position);
+            return this.queueLine.getSegmentPosition(position);
         }
 
-        Vector firstAvailablePosition = this.line.getSegmentPosition(this.queueingAgents.size() - 1);
-        if (agent.getPosition().distance(firstAvailablePosition) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
+        Vector firstAvailablePosition = this.queueLine.getSegmentPosition(this.queueingAgents.size() - 1);
+        if (agent.reachedPosition(firstAvailablePosition)) {
             // assign to queue as it got to the first free spot
             this.queueingAgents.add(agent);
         }
@@ -46,7 +45,7 @@ class QueueHandler implements Objective {
     public Boolean canAttend(Agent agent) {
         // returns true when agent is in the queue and in its position
         return this.queueingAgents.contains(agent) &&
-                agent.getPosition().distance(this.line.getSegmentPosition(this.queueingAgents.indexOf(agent))) < Constants.MINIMUM_DISTANCE_TO_TARGET;
+                agent.reachedPosition(this.queueLine.getSegmentPosition(this.queueingAgents.indexOf(agent)));
     }
 
     public Agent removeFromQueue() {
@@ -68,6 +67,6 @@ class QueueHandler implements Objective {
 
     @Override
     public Vector getCentroidPosition() {
-        return line.getSegmentPosition(0);
+        return queueLine.getSegmentPosition(0);
     }
 }

@@ -1,12 +1,12 @@
 package AgentsBehaviour.StateMachine;
 
 import Agent.Agent;
-import Agent.AgentStates;
 import Agent.AgentConstants;
+import Agent.AgentStates;
 import Environment.Objectives.ObjectiveType;
 import GraphGenerator.Graph;
 
-public class SuperMarketClientSM extends DefaultSM{
+public class SuperMarketClientSM extends DefaultSM {
     public SuperMarketClientSM(Graph graph) {
         super(graph);
     }
@@ -18,9 +18,9 @@ public class SuperMarketClientSM extends DefaultSM{
 
     @Override
     public void movingBehaviour(Agent agent, double currentTime) {
-        if(agent.getCurrentObjective().getType().equals(ObjectiveType.TARGET)) {
+        if (agent.getCurrentObjective().getType().equals(ObjectiveType.TARGET)) {
             // only approximates slowly to targets
-            if(agent.getPosition().distance(agent.getCurrentObjective().getPosition(agent)) < AgentConstants.MINIMUM_DISTANCE_TO_APPROXIMATING) {
+            if (agent.getPosition().distance(agent.getCurrentObjective().getPosition(agent)) < AgentConstants.MINIMUM_DISTANCE_TO_APPROXIMATING) {
                 agent.setState(AgentStates.APPROXIMATING);
             }
         } else {

@@ -1,70 +1,111 @@
-package CPM;
+package OperationalModelModule;
 
 import Agent.Agent;
+import Agent.AgentConstants;
 import Environment.Environment;
+import OperationalModelModule.Collisions.AgentsCollision;
+import OperationalModelModule.Collisions.WallCollision;
 import Utils.Vector;
-import Agent.AgentStates;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class CPM {
-    private static final double MAX_RADIUS = 5;
-    private static final double MIN_RADIUS = 1;
-    private static final double EXPANSION_TIME = 0.5;
-    private static final double MAX_SPEED = 3.0;
-    private static final double agentAp = 2000, agentBp = 0.2, wallAp = 500, wallBp =0.4, beta = .9, tau = .5;
-    public static void updateAgents(List<Agent> agents, Environment environment) {
-        List<Agent> movingAgents = agents.stream().filter(a -> a.getState() == AgentStates.MOVING || a.getState() == AgentStates.MOVING_TO_QUEUE_POSITION).collect(Collectors.toList());
-        for(Agent agent : movingAgents){
-            updateSpeedForAgent(agent, agents,environment);
+    private static final double DTS_NEEDED_FOR_EXPANSION = 5;
+    private static final double NEIGHBOURS_RADIUS = 5.0;
+    private static final double
+            ORIGINAL_DIRECTION_AP = 250,
+            AGENT_AP = 100,
+            AGENT_BP = 0.5,
+            WALL_AP = 400,
+            WALL_BP = 1, // cuanto mas grande, a mayor distancia reacciona más
+            AP_VARIATION = 25,
+            BP_VARIATION = 0.1;
+
+    public static void updateNonCollisionAgent(Agent agent, List<Agent> agents, Environment environment, double dt, Random random) {
+        Vector heuristicDirection = calculateHeuristicDirection(agent, agents, environment, random);
+        agent.setVelocity(heuristicDirection.scalarMultiply(agent.getVelocityModule()));
+    }
+
+    public static void expandAgent(Agent agent) {
+        if (agent.getRadius() < AgentConstants.MAX_RADIUS) {
+            agent.setRadius(agent.getRadius() + AgentConstants.MAX_RADIUS / DTS_NEEDED_FOR_EXPANSION);
         }
     }
 
+    private static Vector calculateHeuristicDirection(Agent agent, List<Agent> agents, Environment environment, Random random) {
+        //initialize with original direction
+        Vector resultantNc = agent.getVelocity().normalize()
+                .scalarMultiply(getRandomDoubleInRange(ORIGINAL_DIRECTION_AP, AP_VARIATION, random));
 
-    private static void updateSpeedForAgent(Agent agent,List<Agent> agents, Environment environment){
-        Vector resultantNc = calculateResultantNc(agent,agents,environment);
-        Vector resultantVelocity = calculateResultantVelocity(resultantNc,agent.getVelocity());
-//        System.out.println("Entered with velocity " + agent.getVelocity() + " and left with velocity: " + resultantVelocity);
-        agent.setVelocity(resultantVelocity);
-    }
+        // TODO: ADD CIM
+        List<Agent> neighbours = agents.stream()
+                .filter(other -> agent.distance(other) < NEIGHBOURS_RADIUS && !agent.equals(other))
+                .collect(Collectors.toList());
 
-    private static Vector calculateResultantNc(Agent agent,List<Agent> agents, Environment environment){
-        Vector resultantNc = new Vector(0,0);
-        for(Agent collisionAgent : agents){
-            if(collisionAgent.getId() == agent.getId() || agent.getPosition().distance(collisionAgent.getPosition()) > 3.0)
-                continue;
-            resultantNc.add(calculateRepulsionForce(agent.getPosition(),collisionAgent.getPosition(),agent.getVelocity(),agentAp,agentBp));
+        for (Agent neighbour : neighbours) {
+            resultantNc = resultantNc.add(
+                    calculateRepulsionForce(
+                            agent.getPosition(), neighbour.getPosition(), agent.getVelocity(),
+                            getRandomDoubleInRange(AGENT_AP, AP_VARIATION, random),
+                            getRandomDoubleInRange(AGENT_BP, BP_VARIATION, random)
+                    )
+            );
         }
-//        Vector closestWallPosition = environment.getClosestWall(agent.getPosition()).getClosestPoint(agent.getPosition());
-//        Vector wallRepulsion = calculateRepulsionForce(agent.getPosition(),closestWallPosition,agent.getVelocity(),wallAp,wallBp);
-        return resultantNc;
+
+        Vector closestWallPosition = environment.getClosestWall(agent.getPosition()).getClosestPoint(agent.getPosition());
+        Vector wallRepulsion = calculateRepulsionForce(
+                agent.getPosition(), closestWallPosition, agent.getVelocity(),
+                getRandomDoubleInRange(WALL_AP, AP_VARIATION, random),
+                getRandomDoubleInRange(WALL_BP, BP_VARIATION, random)
+        );
+        resultantNc = resultantNc.add(wallRepulsion);
+
+        return resultantNc.normalize();
     }
 
-    private static Vector calculateResultantVelocity(Vector resultantNc, Vector velocity){
-        Vector eit = velocity;
-        Vector eia = resultantNc.add(eit).normalize();
-//        double mod =  MAX_SPEED * Math.pow((agent.getRadius() - MIN_RADIUS) / (MAX_RADIUS - MIN_RADIUS), beta);
-//        if(agent.getRadius() < MAX_RADIUS)
-//            agent.setRadius(agent.getRadius() + MAX_RADIUS*EXPANSION_TIME/tau);
-        return eia;
-    }
-
-
-    private static Vector calculateRepulsionForce(Vector position,Vector obstacle, Vector objective, double Ap, double Bp){
+    private static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector originalVelocity, double Ap, double Bp) {
         //eij (e sub ij)
-        Vector repulsionVector = obstacle.substract(position).normalize();
+        Vector repulsionDirection = position.substract(obstacle).normalize();
 
         //dij (d sub ij) distance between position and otherPosition
-        Double repulsionDistance = obstacle.distance(position);
+        Double repulsionDistance = position.distance(obstacle);
 
-//        Vector objectiveVector = objective.substract(position).normalize();
-        Vector objectiveVector = objective.normalize();
-        //cos(0) = a.b / |a||b| (ya estan normalizados o sea |a| = |b| = 1)
-        double cosineOfTheta = objectiveVector.dotMultiply(obstacle);
+        //cos(0) = a.b / |a||b|
+        double cosineOfTheta = originalVelocity.add(position).dotMultiply(obstacle) / (originalVelocity.add(position).module() * obstacle.module());
+
+        double weight = Ap * Math.exp(-repulsionDistance / Bp);
 
         //eij*Ap*e^(-dij/bp)*cos(0)
-        return repulsionVector.scalarMultiply(-Math.abs(Ap*Math.exp(-repulsionDistance/Bp)*cosineOfTheta));
+        return repulsionDirection.scalarMultiply(weight * cosineOfTheta);
     }
 
+    public static void updateCollidingAgents(AgentsCollision agentsCollision) {
+        Agent agent1 = agentsCollision.getAgent1();
+        Agent agent2 = agentsCollision.getAgent2();
+        collapseAgent(agent1);
+        collapseAgent(agent2);
+        escapeFromObstacle(agent1, agent2.getPosition());
+        escapeFromObstacle(agent2, agent1.getPosition());
+    }
+
+    public static void updateWallCollidingAgent(WallCollision wallCollision) {
+        collapseAgent(wallCollision.getAgent());
+        escapeFromObstacle(wallCollision.getAgent(), wallCollision.getWallClosestPoint());
+    }
+
+    private static void escapeFromObstacle(Agent agent, Vector other) {
+        Vector oppositeDirection = other.substract(agent.getPosition()).normalize().scalarMultiply(-1.0);
+        agent.setVelocity(oppositeDirection.scalarMultiply(agent.getState().getVelocity()));
+    }
+
+
+    private static void collapseAgent(Agent agent) {
+        agent.setRadius(AgentConstants.MIN_RADIUS);
+    }
+
+    private static double getRandomDoubleInRange(double mean, double variation, Random random) {
+        return mean + (random.nextDouble() - 0.5) * variation;
+    }
 }

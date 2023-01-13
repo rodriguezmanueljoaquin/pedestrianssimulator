@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Objects;
 
 public class Agent {
+    private static Integer count = 1;
+    private final StateMachine stateMachine;
+    private final Integer id;
     private Vector position;
     private Vector velocity;
-    private final StateMachine stateMachine;
-    private static Integer count = 1;
-    private final Integer id;
     private double radius;
     private AgentStates state;
-    private List<? extends Objective> objectives;
+    private final List<? extends Objective> objectives;
     private Double startedAttendingAt;
     private NodePath currentPath;
     private Node currentIntermediateObjectiveNode;
@@ -34,15 +34,14 @@ public class Agent {
     }
 
     public void updateVelocity() {
-        if (state == AgentStates.LEAVING) {
+        if (this.getState() == AgentStates.LEAVING) {
             // will be destroyed next iteration
             this.setVelocity(new Vector(0, 0));
             return;
         }
 
         // first check if intermediate node has to be updated
-        if (currentIntermediateObjectiveNode != null &&
-                this.position.distance(this.currentIntermediateObjectiveNode.getPosition()) < Constants.MINIMUM_DISTANCE_TO_TARGET) {
+        if (currentIntermediateObjectiveNode != null && this.reachedPosition(this.currentIntermediateObjectiveNode.getPosition())) {
             // intermediate node reached, update it
             this.currentIntermediateObjectiveNode = this.currentPath.getNodeAfter(this.currentIntermediateObjectiveNode);
         }
@@ -55,16 +54,20 @@ public class Agent {
             objectivePosition = this.currentIntermediateObjectiveNode.getPosition();
         }
 
-        Vector r = objectivePosition.substract(this.position).normalize();
-        this.setVelocity(r.scalarMultiply(this.getState().getVelocity()));
+        Vector r = objectivePosition.substract(this.getPosition()).normalize();
+        this.setVelocity(r.scalarMultiply(this.getVelocityModule()));
     }
 
     public void updatePosition(double time) {
-        this.position = this.position.add(this.velocity.scalarMultiply(time));
+        this.position = this.position.add(this.getVelocity().scalarMultiply(time));
     }
 
     public boolean reachedObjective() {
-        return this.getPosition().distance(this.getCurrentObjective().getPosition(this)) < Constants.MINIMUM_DISTANCE_TO_TARGET;
+        return this.distance(this.getCurrentObjective().getPosition(this)) < AgentConstants.MINIMUM_DISTANCE_TO_TARGET;
+    }
+
+    public boolean reachedPosition(Vector position) {
+        return this.distance(position) <= 0;
     }
 
     public Objective getCurrentObjective() {
@@ -107,6 +110,10 @@ public class Agent {
         return this.getPosition().distance(other.position) - this.radius - other.radius;
     }
 
+    public double distance(Vector position) {
+        return this.getPosition().distance(position) - this.radius;
+    }
+
     public Integer getId() {
         return this.id;
     }
@@ -125,6 +132,12 @@ public class Agent {
 
     public Vector getVelocity() {
         return this.velocity;
+    }
+
+    public double getVelocityModule() {
+        double maxVelocity = this.getState().getVelocity();
+        return maxVelocity * (Math.pow((this.getRadius() - AgentConstants.MIN_RADIUS) /
+                (AgentConstants.MAX_RADIUS - AgentConstants.MIN_RADIUS), AgentConstants.B));
     }
 
     public void setVelocity(Vector speed) {

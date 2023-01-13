@@ -57,11 +57,12 @@ public class Vector {
     }
 
     public Vector normalize() {
-        double hypot = this.module();
-
-        return new Vector(this.getX() / hypot, this.getY() / hypot);
+        if (this.module() == 0.0)
+            return new Vector(0, 0);
+        return this.scalarMultiply(1 / this.module());
     }
-    public Double module(){
+
+    public Double module() {
         return Math.sqrt(Math.pow(this.getX(), 2) + Math.pow(this.getY(), 2));
     }
 
