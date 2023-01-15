@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class CPM {
+public class CPM implements OperationalModelModule {
     private static final double DTS_NEEDED_FOR_EXPANSION = 5;
     private static final double NEIGHBOURS_RADIUS = 5.0;
     private static final double
@@ -23,17 +23,6 @@ public class CPM {
             AP_VARIATION = 25,
             BP_VARIATION = 0.1,
             NON_MOVING_AGENT_REPULSION_MULTIPLIER = 3;
-
-    public static void updateNonCollisionAgent(Agent agent, List<Agent> agents, Environment environment, double dt, Random random) {
-        Vector heuristicDirection = calculateHeuristicDirection(agent, agents, environment, random);
-        agent.setVelocity(heuristicDirection.scalarMultiply(agent.getVelocityModule()));
-    }
-
-    public static void expandAgent(Agent agent) {
-        if (agent.getRadius() < AgentConstants.MAX_RADIUS) {
-            agent.setRadius(agent.getRadius() + AgentConstants.MAX_RADIUS / DTS_NEEDED_FOR_EXPANSION);
-        }
-    }
 
     private static Vector calculateHeuristicDirection(Agent agent, List<Agent> agents, Environment environment, Random random) {
         //initialize with original direction
@@ -48,11 +37,10 @@ public class CPM {
         double AP, BP;
         for (Agent neighbour : neighbours) {
             // agent fears more those agents not moving
-            if(neighbour.getVelocityModule() == 0) {
+            if (neighbour.getVelocityModule() == 0) {
                 AP = AGENT_AP * NON_MOVING_AGENT_REPULSION_MULTIPLIER;
                 BP = AGENT_BP * NON_MOVING_AGENT_REPULSION_MULTIPLIER;
-            }
-            else {
+            } else {
                 AP = AGENT_AP;
                 BP = AGENT_BP;
             }
@@ -93,7 +81,31 @@ public class CPM {
         return repulsionDirection.scalarMultiply(weight * cosineOfTheta);
     }
 
-    public static void updateCollidingAgents(AgentsCollision agentsCollision) {
+    private static void escapeFromObstacle(Agent agent, Vector other) {
+        Vector oppositeDirection = other.substract(agent.getPosition()).normalize().scalarMultiply(-1.0);
+        agent.setVelocity(oppositeDirection.scalarMultiply(agent.getState().getVelocity()));
+    }
+
+    private static void collapseAgent(Agent agent) {
+        agent.setRadius(AgentConstants.MIN_RADIUS);
+    }
+
+    private static double getRandomDoubleInRange(double mean, double variation, Random random) {
+        return mean + (random.nextDouble() - 0.5) * variation;
+    }
+
+    public void updateNonCollisionAgent(Agent agent, List<Agent> agents, Environment environment, double dt, Random random) {
+        Vector heuristicDirection = calculateHeuristicDirection(agent, agents, environment, random);
+        agent.setVelocity(heuristicDirection.scalarMultiply(agent.getVelocityModule()));
+    }
+
+    public void expandAgent(Agent agent) {
+        if (agent.getRadius() < AgentConstants.MAX_RADIUS) {
+            agent.setRadius(agent.getRadius() + AgentConstants.MAX_RADIUS / DTS_NEEDED_FOR_EXPANSION);
+        }
+    }
+
+    public void updateCollidingAgents(AgentsCollision agentsCollision) {
         Agent agent1 = agentsCollision.getAgent1();
         Agent agent2 = agentsCollision.getAgent2();
         collapseAgent(agent1);
@@ -102,22 +114,8 @@ public class CPM {
         escapeFromObstacle(agent2, agent1.getPosition());
     }
 
-    public static void updateWallCollidingAgent(WallCollision wallCollision) {
+    public void updateWallCollidingAgent(WallCollision wallCollision) {
         collapseAgent(wallCollision.getAgent());
         escapeFromObstacle(wallCollision.getAgent(), wallCollision.getWallClosestPoint());
-    }
-
-    private static void escapeFromObstacle(Agent agent, Vector other) {
-        Vector oppositeDirection = other.substract(agent.getPosition()).normalize().scalarMultiply(-1.0);
-        agent.setVelocity(oppositeDirection.scalarMultiply(agent.getState().getVelocity()));
-    }
-
-
-    private static void collapseAgent(Agent agent) {
-        agent.setRadius(AgentConstants.MIN_RADIUS);
-    }
-
-    private static double getRandomDoubleInRange(double mean, double variation, Random random) {
-        return mean + (random.nextDouble() - 0.5) * variation;
     }
 }

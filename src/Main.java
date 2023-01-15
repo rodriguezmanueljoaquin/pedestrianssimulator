@@ -11,7 +11,12 @@ import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Wall;
 import GraphGenerator.Graph;
-import Utils.*;
+import OperationalModelModule.CPM;
+import OperationalModelModule.OperationalModelModule;
+import Utils.Constants;
+import Utils.InputHandler;
+import Utils.Rectangle;
+import Utils.Vector;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -99,9 +104,12 @@ public class Main {
         // -------- ENVIRONMENT --------
         Environment environment = new Environment(walls, servers, studentsGenerators, exits);
 
+        // -------- OPERATIONAL MODEL MODULE --------
+        OperationalModelModule operationalModelModule = new CPM();
+
         try {
             Simulation.createStaticFile(RESULTS_PATH, environment);
-            Simulation sim = new Simulation(Constants.MAX_TIME, environment, RESULTS_PATH, random);
+            Simulation sim = new Simulation(Constants.MAX_TIME, environment, operationalModelModule, RESULTS_PATH, random);
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

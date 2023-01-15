@@ -3,7 +3,6 @@ package Environment.Objectives.Server;
 import Agent.Agent;
 import Environment.Objectives.Objective;
 import Environment.Objectives.ObjectiveType;
-import Utils.Constants;
 import Utils.Vector;
 
 import java.util.ArrayList;

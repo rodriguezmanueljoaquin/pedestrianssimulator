@@ -4,7 +4,6 @@ import AgentsBehaviour.StateMachine.StateMachine;
 import Environment.Objectives.Objective;
 import GraphGenerator.Node;
 import GraphGenerator.NodePath;
-import Utils.Constants;
 import Utils.Vector;
 
 import java.util.List;
@@ -14,11 +13,11 @@ public class Agent {
     private static Integer count = 1;
     private final StateMachine stateMachine;
     private final Integer id;
+    private final List<? extends Objective> objectives;
     private Vector position;
     private Vector velocity;
     private double radius;
     private AgentStates state;
-    private final List<? extends Objective> objectives;
     private Double startedAttendingAt;
     private NodePath currentPath;
     private Node currentIntermediateObjectiveNode;
@@ -134,14 +133,14 @@ public class Agent {
         return this.velocity;
     }
 
+    public void setVelocity(Vector speed) {
+        this.velocity = speed;
+    }
+
     public double getVelocityModule() {
         double maxVelocity = this.getState().getVelocity();
         return maxVelocity * (Math.pow((this.getRadius() - AgentConstants.MIN_RADIUS) /
                 (AgentConstants.MAX_RADIUS - AgentConstants.MIN_RADIUS), AgentConstants.B));
-    }
-
-    public void setVelocity(Vector speed) {
-        this.velocity = speed;
     }
 
     public AgentStates getState() {
