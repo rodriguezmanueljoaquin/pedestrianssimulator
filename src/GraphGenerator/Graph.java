@@ -50,7 +50,7 @@ public class Graph {
             }
         }
         if (bestNode == null)
-            throw new RuntimeException();
+            throw new RuntimeException("Zero nodes reachable from position: " + position);
         return bestNode;
     }
 

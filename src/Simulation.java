@@ -18,22 +18,24 @@ import java.util.Random;
 import static Utils.Constants.DELTA_T;
 
 public class Simulation {
-    private List<Agent> agents;
-    private double time, maxTime, dt, dt2;
-    private Environment environment;
+    private double time;
     private PrintWriter writer;
-    private Random random;
-    private OperationalModelModule operationalModelModule;
+    private final List<Agent> agents;
+    private final double maxTime;
+    private final double dt;
+    private final Environment environment;
+    private final Random random;
+    private final OperationalModelModule operationalModelModule;
 
-    public Simulation(double maxTime, Environment environment, OperationalModelModule operationalModelModule, String outputDirectoryPath, Random random) throws FileNotFoundException, UnsupportedEncodingException {
-        this.agents = new ArrayList<>();
+    public Simulation(double maxTime, Environment environment, OperationalModelModule operationalModelModule,
+                      String outputDirectoryPath, Random random) throws FileNotFoundException, UnsupportedEncodingException {
         this.maxTime = maxTime;
         this.environment = environment;
         this.operationalModelModule = operationalModelModule;
         this.random = random;
+        this.agents = new ArrayList<>();
         this.time = 0;
         this.dt = DELTA_T;
-        this.dt2 = this.dt * 4;
 
         createDynamicFile(outputDirectoryPath);
     }
@@ -50,32 +52,6 @@ public class Simulation {
 
         writer.close();
         System.out.println("\tStatic file successfully created");
-    }
-
-    private void executeOperationalModelModule() {
-        List<WallCollision> wallCollisions = new ArrayList<>();
-        List<AgentsCollision> agentsCollisions = new ArrayList<>();
-        List<Agent> nonCollisionAgents = new ArrayList<>();
-        CollisionsFinder.Find(this.agents, this.environment, wallCollisions, agentsCollisions, nonCollisionAgents);
-
-        for (AgentsCollision agentsCollision : agentsCollisions) {
-            this.operationalModelModule.updateCollidingAgents(agentsCollision);
-        }
-
-        for (WallCollision wallCollision : wallCollisions) {
-            this.operationalModelModule.updateWallCollidingAgent(wallCollision);
-            Agent agent = wallCollision.getAgent();
-            agent.getStateMachine().updateAgentCurrentPath(agent); // maybe because of this impact it has to change its path
-        }
-
-        for (Agent agent : nonCollisionAgents) {
-            // update radius
-            this.operationalModelModule.expandAgent(agent);
-
-            if (agent.getState().getVelocity() != 0)
-                // if moving, update direction with heuristics
-                this.operationalModelModule.updateNonCollisionAgent(agent, this.agents, this.environment, this.dt, this.random);
-        }
     }
 
     public void run() {
@@ -112,6 +88,33 @@ public class Simulation {
         this.writer.close();
         System.out.println("\t\tSimulation ended");
         System.out.println("\tSuccesfully created dynamic file");
+    }
+
+
+    private void executeOperationalModelModule() {
+        List<WallCollision> wallCollisions = new ArrayList<>();
+        List<AgentsCollision> agentsCollisions = new ArrayList<>();
+        List<Agent> nonCollisionAgents = new ArrayList<>();
+        CollisionsFinder.Find(this.agents, this.environment, wallCollisions, agentsCollisions, nonCollisionAgents);
+
+        for (AgentsCollision agentsCollision : agentsCollisions) {
+            this.operationalModelModule.updateCollidingAgents(agentsCollision);
+        }
+
+        for (WallCollision wallCollision : wallCollisions) {
+            this.operationalModelModule.updateWallCollidingAgent(wallCollision);
+            Agent agent = wallCollision.getAgent();
+            agent.getStateMachine().updateAgentCurrentPath(agent); // maybe because of this impact it has to change its path
+        }
+
+        for (Agent agent : nonCollisionAgents) {
+            // update radius
+            this.operationalModelModule.expandAgent(agent);
+
+            if (agent.getState().getVelocity() != 0)
+                // if moving, update direction with heuristics
+                this.operationalModelModule.updateNonCollisionAgent(agent, this.agents, this.environment, this.dt, this.random);
+        }
     }
 
     private void writeOutput() {
