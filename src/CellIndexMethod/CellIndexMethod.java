@@ -142,7 +142,7 @@ public class CellIndexMethod {
         this.matrix = new Cell[this.matrixRows][this.matrixCols];
         for (int i = 0; i < this.matrixRows; i++) {
             for (int j = 0; j < this.matrixCols; j++) {
-                this.matrix[i][j] = new Cell(null);
+                this.matrix[i][j] = new Cell();
             }
         }
     }

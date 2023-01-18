@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cell {
-    private final List<Agent> agents = new ArrayList<>();
+    private final List<Agent> agents;
 
-    public Cell(List<Agent> agents) {
-        this.agents.addAll(agents);
+    public Cell() {
+        this.agents = new ArrayList<>();
     }
 
     public List<Agent> getAgents() {
