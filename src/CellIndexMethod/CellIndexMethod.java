@@ -7,6 +7,7 @@ import Utils.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /* TODO: BORRAR?
@@ -29,7 +30,7 @@ A CADA PARTICULA.
 
     RADIUSC ES LA DISTANCIA ENTRE PARTICULAS MAX A CONSIDERAR
  */
-public class CellIndexMethod {
+public class CellIndexMethod extends Cell {
     private Cell[][] matrix;
     private Vector bottomLeft, topRight;
     private int matrixCols, matrixRows;
@@ -60,6 +61,15 @@ public class CellIndexMethod {
 
         if (currentMax.getY() < possibleNewMax.getY())
             currentMax.setY(possibleNewMax.getY());
+    }
+
+    public List<Agent> getAgentNeighbourseBruteForce(Agent agent,List<Agent> agents){
+        List<Agent> agentList = new ArrayList<>();
+        for(Agent neighbour : agents) {
+            if(!Objects.equals(agent.getId(), neighbour.getId()) && agent.distance(neighbour) <= neighbourhoodRadius)
+                agentList.add(neighbour);
+        }
+        return agentList;
     }
 
     public List<Agent> getAgentNeighbours(Agent agent) {

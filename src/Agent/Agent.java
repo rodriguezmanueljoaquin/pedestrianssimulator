@@ -9,7 +9,7 @@ import Utils.Vector;
 import java.util.List;
 import java.util.Objects;
 
-public class Agent {
+public class Agent extends AgentConstants {
     private static Integer count = 1;
     private final StateMachine stateMachine;
     private final Integer id;

@@ -35,7 +35,14 @@ public class CIMTest {
         CellIndexMethod cim = new CellIndexMethod(walls, 50);
         cim.updateAgentsPosition(agents);
 
-        List<Agent> neighbours = cim.getAgentNeighbours(analyzedAgent);
-        System.out.println(neighbours.stream().map(Agent::getId).sorted().collect(Collectors.toList()));
+        for(Agent agent : agents) {
+            List<Agent> neighbours = cim.getAgentNeighbours(agent);
+            System.out.println(neighbours.stream().map(Agent::getId).sorted().collect(Collectors.toList()));
+
+            List<Agent> neighboursBruteForce = cim.getAgentNeighbourseBruteForce(agent, agents);
+            System.out.println(neighboursBruteForce.stream().map(Agent::getId).sorted().collect(Collectors.toList()));
+            if(!neighbours.containsAll(neighboursBruteForce))
+                throw new RuntimeException();
+        }
     }
 }
