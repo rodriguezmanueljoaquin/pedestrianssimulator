@@ -10,32 +10,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/* TODO: BORRAR?
-las posiciones y radios de
-N partículas y los parámetros N, L, M y rc (ver punto 5). Las N partículas deben ser generadas en
-forma aleatoria dentro del área de lado L
-
-   ALGORITMO EN PAPEL;
-        1.Recibo particulas.
-        2.Por cada celda cargo las que entran en esa celda, cada celda es una lista de particulas. Una par
-ticula puede estar en mas de una celda.
-        3.Hago una martiz de NxN de ceros, donde hay una particula adyacente a otro le pongo un 1. Esta ma
-triz no representa la matriz de celdas, es solo
-            una celda de ids de particulas.
-        4. Recorro la matriz y muestro el output pedido.
-
-OUTPUT: [id de la partícula "i" id's de las partículas cuya distancia borde-borde es menos de rc].ESTO PAR
-A CADA PARTICULA.
-
-
-    RADIUSC ES LA DISTANCIA ENTRE PARTICULAS MAX A CONSIDERAR
- */
-public class CellIndexMethod extends Cell {
+public class CellIndexMethod {
     private Cell[][] matrix;
     private Vector bottomLeft, topRight;
-    private int matrixCols, matrixRows;
-    private double neighbourhoodRadius;
-    private static int[][] POSSIBLE_NEIGHBOURS_CELLS =
+    private int M; // cells in each row and in each column (the matrix must be square)
+    private double cellSize;
+    private final double neighbourhoodRadius;
+    private static final int[][] POSSIBLE_NEIGHBOURS_CELLS =
             {
                     {-1, 1}, {0, 1}, {1, 1}, // top row
                     {-1, 0}, {0, 0}, {1, 0}, // middle row
@@ -63,29 +44,17 @@ public class CellIndexMethod extends Cell {
             currentMax.setY(possibleNewMax.getY());
     }
 
-    public List<Agent> getAgentNeighbourseBruteForce(Agent agent,List<Agent> agents){
-        List<Agent> agentList = new ArrayList<>();
-        for(Agent neighbour : agents) {
-            if(!Objects.equals(agent.getId(), neighbour.getId()) && agent.distance(neighbour) <= neighbourhoodRadius)
-                agentList.add(neighbour);
-        }
-        return agentList;
-    }
-
     public List<Agent> getAgentNeighbours(Agent agent) {
-        double cellLength = (this.topRight.getX() - this.bottomLeft.getX()) / this.matrixCols;
-        double cellHeight = (this.topRight.getY() - this.bottomLeft.getY()) / this.matrixRows;
-        int i = ((Double) ((this.bottomLeft.getX() + agent.getPosition().getX()) / cellLength)).intValue();
-        int j = ((Double) ((this.bottomLeft.getY() + agent.getPosition().getY()) / cellHeight)).intValue();
+        int i = ((Double) ((this.bottomLeft.getX() + agent.getPosition().getX()) / this.cellSize)).intValue();
+        int j = ((Double) ((this.bottomLeft.getY() + agent.getPosition().getY()) / this.cellSize)).intValue();
 
         List<Agent> neighbours = new ArrayList<>();
-
 
         List<Cell> neighbourhood = new ArrayList<>();
         for(int[] shift : POSSIBLE_NEIGHBOURS_CELLS) {
             int neighbour_i = i + shift[0];
             int neighbour_j = j + shift[1];
-            if(!isOutOfBounds(neighbour_i, this.matrixRows) && !isOutOfBounds(neighbour_j, this.matrixCols)) {
+            if(!isOutOfBounds(neighbour_i, this.M) && !isOutOfBounds(neighbour_j, this.M)) {
                 neighbourhood.add(this.matrix[neighbour_i][neighbour_j]);
             }
         }
@@ -101,20 +70,16 @@ public class CellIndexMethod extends Cell {
     }
 
     public void updateAgentsPosition(List<Agent> agents) {
-        for (int i = 0; i < this.matrixRows; i++) {
-            for (int j = 0; j < this.matrixCols; j++) {
+        for (int i = 0; i < this.M; i++) {
+            for (int j = 0; j < this.M; j++) {
                 this.matrix[i][j].clear();
             }
         }
 
-        double cellLength = (this.topRight.getX() - this.bottomLeft.getX()) / this.matrixCols;
-        double cellHeight = (this.topRight.getY() - this.bottomLeft.getY()) / this.matrixRows;
-
-
         //Esto de sumarle el bottomLeft estara bien? ellos ya estan referenciados en el plano
         for (Agent agent : agents) {
-            int i = ((Double) ((this.bottomLeft.getX() + agent.getPosition().getX()) / cellLength)).intValue();
-            int j = ((Double) ((this.bottomLeft.getY() + agent.getPosition().getY()) / cellHeight)).intValue();
+            int i = ((Double) ((this.bottomLeft.getX() + agent.getPosition().getX()) / this.cellSize)).intValue();
+            int j = ((Double) ((this.bottomLeft.getY() + agent.getPosition().getY()) / this.cellSize)).intValue();
             this.matrix[i][j].addAgent(agent);
         }
     }
@@ -124,12 +89,6 @@ public class CellIndexMethod extends Cell {
     }
 
     private void initMatrix(List<Wall> walls) {
-        //Tuve que cambiar, el MATRIX_DIM pq ahora tenemos el problema de que las cells no son cuadradas
-        //Calculamos una cantidad para las filas y otra para las columnas
-        //El paper dice que L/(Rc + 2*maxRadius) > M
-        //El primer M que cumpla eso es el optimo
-
-
         // generate matrix from a rectangle that has all walls inside
 
         // find the dots that define this rectangle
@@ -145,13 +104,19 @@ public class CellIndexMethod extends Cell {
 
         double matrixLength = this.topRight.getX() - this.bottomLeft.getX();
         double matrixHeight = this.topRight.getY() - this.bottomLeft.getY();
+        // use the highest dimension to make the matrix square
+        if(matrixHeight > matrixLength) {
+            this.M = (int) Math.ceil(matrixHeight / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS));
+            this.cellSize = matrixHeight / this.M;
+        }
+        else {
+            this.M = (int) Math.ceil(matrixLength / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS));
+            this.cellSize = matrixLength / this.M;
+        }
 
-        this.matrixCols = (int) Math.ceil(matrixLength / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS));
-        this.matrixRows = (int) Math.ceil(matrixHeight / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS));
-
-        this.matrix = new Cell[this.matrixRows][this.matrixCols];
-        for (int i = 0; i < this.matrixRows; i++) {
-            for (int j = 0; j < this.matrixCols; j++) {
+        this.matrix = new Cell[this.M][this.M];
+        for (int i = 0; i < this.M; i++) {
+            for (int j = 0; j < this.M; j++) {
                 this.matrix[i][j] = new Cell();
             }
         }
