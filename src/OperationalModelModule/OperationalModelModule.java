@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Random;
 
 public interface OperationalModelModule {
-    void updateNonCollisionAgent(Agent agent, List<Agent> agents, Environment environment, double dt, Random random);
+    void updateAgentsPosition(List<Agent> agents);
+
+    void updateNonCollisionAgent(Agent agent, double dt, Random random);
 
     void expandAgent(Agent agent);
 
