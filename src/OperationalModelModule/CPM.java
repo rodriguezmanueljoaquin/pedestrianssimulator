@@ -2,6 +2,7 @@ package OperationalModelModule;
 
 import Agent.Agent;
 import Agent.AgentConstants;
+import CellIndexMethod.CellIndexMethod;
 import Environment.Environment;
 import OperationalModelModule.Collisions.AgentsCollision;
 import OperationalModelModule.Collisions.WallCollision;
@@ -12,6 +13,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class CPM implements OperationalModelModule {
+    private final CellIndexMethod CIM;
+    private final Environment environment;
     private static final double DTS_NEEDED_FOR_EXPANSION = 5;
     private static final double NEIGHBOURS_RADIUS = 5.0;
     private static final double
@@ -24,15 +27,22 @@ public class CPM implements OperationalModelModule {
             BP_VARIATION = 0.1,
             NON_MOVING_AGENT_REPULSION_MULTIPLIER = 3;
 
-    private static Vector calculateHeuristicDirection(Agent agent, List<Agent> agents, Environment environment, Random random) {
+    public CPM(Environment environment) {
+        this.environment = environment;
+        this.CIM = new CellIndexMethod(this.environment.getWalls(), NEIGHBOURS_RADIUS);
+    }
+
+    @Override
+    public void updateAgentsPosition(List<Agent> agents) {
+        this.CIM.updateAgentsPosition(agents);
+    }
+
+    private Vector calculateHeuristicDirection(Agent agent, Random random) {
         //initialize with original direction
         Vector resultantNc = agent.getVelocity().normalize()
                 .scalarMultiply(getRandomDoubleInRange(ORIGINAL_DIRECTION_AP, AP_VARIATION, random));
 
-        // TODO: ADD CIM
-        List<Agent> neighbours = agents.stream()
-                .filter(other -> agent.distance(other) < NEIGHBOURS_RADIUS && !agent.equals(other))
-                .collect(Collectors.toList());
+        List<Agent> neighbours = this.CIM.getAgentNeighbours(agent);
 
         double AP, BP;
         for (Agent neighbour : neighbours) {
@@ -54,7 +64,7 @@ public class CPM implements OperationalModelModule {
             );
         }
 
-        Vector closestWallPosition = environment.getClosestWall(agent.getPosition()).getClosestPoint(agent.getPosition());
+        Vector closestWallPosition = this.environment.getClosestWall(agent.getPosition()).getClosestPoint(agent.getPosition());
         Vector wallRepulsion = calculateRepulsionForce(
                 agent.getPosition(), closestWallPosition, agent.getVelocity(),
                 getRandomDoubleInRange(WALL_AP, AP_VARIATION, random),
@@ -94,8 +104,8 @@ public class CPM implements OperationalModelModule {
         return mean + (random.nextDouble() - 0.5) * variation;
     }
 
-    public void updateNonCollisionAgent(Agent agent, List<Agent> agents, Environment environment, double dt, Random random) {
-        Vector heuristicDirection = calculateHeuristicDirection(agent, agents, environment, random);
+    public void updateNonCollisionAgent(Agent agent, double dt, Random random) {
+        Vector heuristicDirection = calculateHeuristicDirection(agent, random);
         agent.setVelocity(heuristicDirection.scalarMultiply(agent.getVelocityModule()));
     }
 

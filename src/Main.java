@@ -105,7 +105,7 @@ public class Main {
         Environment environment = new Environment(walls, servers, studentsGenerators, exits);
 
         // -------- OPERATIONAL MODEL MODULE --------
-        OperationalModelModule operationalModelModule = new CPM();
+        OperationalModelModule operationalModelModule = new CPM(environment);
 
         try {
             Simulation.createStaticFile(RESULTS_PATH, environment);

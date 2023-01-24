@@ -1,5 +1,6 @@
 import Agent.Agent;
 import Agent.AgentStates;
+import CellIndexMethod.CellIndexMethod;
 import Environment.Environment;
 import Environment.Wall;
 import OperationalModelModule.Collisions.AgentsCollision;
@@ -92,6 +93,7 @@ public class Simulation {
 
 
     private void executeOperationalModelModule() {
+        this.operationalModelModule.updateAgentsPosition(this.agents);
         List<WallCollision> wallCollisions = new ArrayList<>();
         List<AgentsCollision> agentsCollisions = new ArrayList<>();
         List<Agent> nonCollisionAgents = new ArrayList<>();
@@ -113,7 +115,7 @@ public class Simulation {
 
             if (agent.getState().getVelocity() != 0)
                 // if moving, update direction with heuristics
-                this.operationalModelModule.updateNonCollisionAgent(agent, this.agents, this.environment, this.dt, this.random);
+                this.operationalModelModule.updateNonCollisionAgent(agent, this.dt, this.random);
         }
     }
 
