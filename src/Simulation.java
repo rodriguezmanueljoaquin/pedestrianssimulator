@@ -1,6 +1,5 @@
 import Agent.Agent;
 import Agent.AgentStates;
-import CellIndexMethod.CellIndexMethod;
 import Environment.Environment;
 import Environment.Wall;
 import OperationalModelModule.Collisions.AgentsCollision;
@@ -19,14 +18,14 @@ import java.util.Random;
 import static Utils.Constants.DELTA_T;
 
 public class Simulation {
-    private double time;
-    private PrintWriter writer;
     private final List<Agent> agents;
     private final double maxTime;
     private final double dt;
     private final Environment environment;
     private final Random random;
     private final OperationalModelModule operationalModelModule;
+    private double time;
+    private PrintWriter writer;
 
     public Simulation(double maxTime, Environment environment, OperationalModelModule operationalModelModule,
                       String outputDirectoryPath, Random random) throws FileNotFoundException, UnsupportedEncodingException {

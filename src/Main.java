@@ -47,7 +47,22 @@ public class Main {
         // BORRAR (TEST PARED DIAGONAL)
         walls.add(new Wall(new Vector(15, 0), new Vector(20, 5)));
 
+        // -------- EXITS --------
         List<Exit> exits = InputHandler.importExitsFromTxt("./input/SALIDAS.csv");
+
+        // -------- GRAPH --------
+        Graph graph = new Graph(walls);
+        graph.generateGraph(new Vector(1, 1));
+
+        // FOR GRAPH NODES PLOT:
+//        graph.generateOutput(RESULTS_PATH);
+//        NodePath path = graph.AStar(graph.getNodes().get(new Vector(1,3)), new Vector(25,1));
+//        System.out.println(path);
+
+        // -------- CONFIGURATION --------
+        // clase conf ...
+        // MAP<String, TargetConf> mapea por ej: "PRODUCT" con un conf que te indica la duracion
+        // MAP<String, ServerConf> mapea por ej: "CASHIER" con un conf que te indica min agents, max agents, duration, etc
 
         // -------- SERVERS --------
         List<Server> servers = new ArrayList<>();
@@ -72,15 +87,6 @@ public class Main {
         // TODO: Y DEBERIA SER UN MAP<Integer, List<Objective>> PARA DIFERENCIAR LOS DISTINTOS GRUPOS DE TARGETS
 //        List<Target> targets = InputHandler.importTargetFromTxt("./src/Utils/InputExamples/MarketTargets.txt");
         List<Objective> targets = InputHandler.importTargetsFromTxt("./src/Utils/InputExamples/Plano2Targets.txt");
-
-        // -------- GRAPH --------
-        Graph graph = new Graph(walls);
-        graph.generateGraph(new Vector(1, 1));
-
-        // FOR GRAPH NODES PLOT:
-//        graph.generateOutput(RESULTS_PATH);
-//        NodePath path = graph.AStar(graph.getNodes().get(new Vector(1,3)), new Vector(25,1));
-//        System.out.println(path);
 
         // -------- BEHAVIOUR --------
         // ---- STATE MACHINE ----

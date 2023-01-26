@@ -1,7 +1,6 @@
 package OperationalModelModule;
 
 import Agent.Agent;
-import Environment.Environment;
 import OperationalModelModule.Collisions.AgentsCollision;
 import OperationalModelModule.Collisions.WallCollision;
 

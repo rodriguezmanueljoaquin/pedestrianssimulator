@@ -7,21 +7,20 @@ import Utils.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CellIndexMethod {
-    private Cell[][] matrix;
-    private Vector bottomLeft, topRight;
-    private int M; // cells in each row and in each column (the matrix must be square)
-    private double cellSize;
-    private final double neighbourhoodRadius;
     private static final int[][] POSSIBLE_NEIGHBOURS_CELLS =
             {
                     {-1, 1}, {0, 1}, {1, 1}, // top row
                     {-1, 0}, {0, 0}, {1, 0}, // middle row
                     {-1, -1}, {0, -1}, {1, -1}, // bottom row
             };
+    private final double neighbourhoodRadius;
+    private Cell[][] matrix;
+    private Vector bottomLeft, topRight;
+    private int M; // cells in each row and in each column (the matrix must be square)
+    private double cellSize;
 
     public CellIndexMethod(List<Wall> walls, double neighbourhoodRadius) {
         this.neighbourhoodRadius = neighbourhoodRadius;
@@ -51,10 +50,10 @@ public class CellIndexMethod {
         List<Agent> neighbours = new ArrayList<>();
 
         List<Cell> neighbourhood = new ArrayList<>();
-        for(int[] shift : POSSIBLE_NEIGHBOURS_CELLS) {
+        for (int[] shift : POSSIBLE_NEIGHBOURS_CELLS) {
             int neighbour_i = i + shift[0];
             int neighbour_j = j + shift[1];
-            if(!isOutOfBounds(neighbour_i, this.M) && !isOutOfBounds(neighbour_j, this.M)) {
+            if (!isOutOfBounds(neighbour_i, this.M) && !isOutOfBounds(neighbour_j, this.M)) {
                 neighbourhood.add(this.matrix[neighbour_i][neighbour_j]);
             }
         }
@@ -105,11 +104,10 @@ public class CellIndexMethod {
         double matrixLength = this.topRight.getX() - this.bottomLeft.getX();
         double matrixHeight = this.topRight.getY() - this.bottomLeft.getY();
         // use the highest dimension to make the matrix square
-        if(matrixHeight > matrixLength) {
+        if (matrixHeight > matrixLength) {
             this.M = (int) Math.ceil(matrixHeight / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS));
             this.cellSize = matrixHeight / this.M;
-        }
-        else {
+        } else {
             this.M = (int) Math.ceil(matrixLength / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS));
             this.cellSize = matrixLength / this.M;
         }

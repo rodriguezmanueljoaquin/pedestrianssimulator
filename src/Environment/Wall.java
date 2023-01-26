@@ -9,10 +9,10 @@ public class Wall {
     private final Vector A, B; // where A.x < B.x, if A.x == B.x, A.y < B.y
 
     public Wall(Vector x1, Vector x2) {
-        if(x1.getX() > x2.getX()) {
+        if (x1.getX() > x2.getX()) {
             this.A = x1.clone();
             this.B = x2.clone();
-        }else if(x1.getX() < x2.getX()) {
+        } else if (x1.getX() < x2.getX()) {
             this.A = x2.clone();
             this.B = x1.clone();
         } else {

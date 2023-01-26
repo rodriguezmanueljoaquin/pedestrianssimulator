@@ -20,11 +20,11 @@ public class Cell {
         agents.add(agent);
     }
 
-    public void addAgents(List<Agent> agents){
+    public void addAgents(List<Agent> agents) {
         this.agents.addAll(agents);
     }
 
-    public void clear(){
+    public void clear() {
         this.agents.clear();
     }
 }
