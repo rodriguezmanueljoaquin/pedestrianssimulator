@@ -5,7 +5,7 @@
         "max_velocity": 1
     },
     
-    "pedestrians_generators_conf": {
+    "agents_generators_conf": {
         "GENERATOR_MAIN_ENTRANCE": {
             "active_time": 10,
             "inactive_time": 40,
