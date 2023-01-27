@@ -2,31 +2,34 @@
     "agents": {
         "max_radius": 0.5,
         "min_radius": 0.2,
-        "max_velocity": 1
+        "max_velocity": 1.0
     },
-    
-    "agents_generators_conf": {
-        "GENERATOR_MAIN_ENTRANCE": {
-            "active_time": 10,
-            "inactive_time": 40,
-            "generation_conf": {
-                "frequency": 5,
+
+    "agents_generators": [
+        {
+            "group_name": "GENERATOR_MAIN_ENTRANCE",
+            "active_time": 10.0,
+            "inactive_time": 40.0,
+            "generation": {
+                "frequency": 5.0,
                 "min_agents": 1,
                 "max_agents": 1
             }
         }
-    },
+    ],
 
-    "targets_conf": {
-        "PRODUCT": {
-            "duration": 5
+    "targets": [
+        {
+            "group_name": "PRODUCT",
+            "attending_time": 5.0
         }
-    },
+    ],
 
-    "servers_conf": {
-        "CASHIER": {
-            "duration": 5,
+    "servers": [
+        {
+            "group_name": "CASHIER",
+            "attending_time": 5.0,
             "max_attendants": 2
         }
-    }
+    ]
 }

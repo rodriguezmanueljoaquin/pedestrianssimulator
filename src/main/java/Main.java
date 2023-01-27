@@ -13,6 +13,7 @@ import Environment.Wall;
 import GraphGenerator.Graph;
 import OperationalModelModule.CPM;
 import OperationalModelModule.OperationalModelModule;
+import SimulationParameters.SimulationParameters;
 import Utils.Constants;
 import Utils.InputHandler;
 import Utils.Rectangle;
@@ -60,9 +61,7 @@ public class Main {
 //        System.out.println(path);
 
         // -------- CONFIGURATION --------
-        // clase conf ...
-        // MAP<String, TargetConf> mapea por ej: "PRODUCT" con un conf que te indica la duracion
-        // MAP<String, ServerConf> mapea por ej: "CASHIER" con un conf que te indica min agents, max agents, duration, etc
+        SimulationParameters parameters = new SimulationParameters("./input/parameters.json");
 
         // -------- SERVERS --------
         List<Server> servers = new ArrayList<>();
@@ -85,8 +84,8 @@ public class Main {
         // -------- TARGETS --------
         // TODO: DEBERIA ESTAR EN INPUT Y VENIR DEL DXF
         // TODO: Y DEBERIA SER UN MAP<Integer, List<Objective>> PARA DIFERENCIAR LOS DISTINTOS GRUPOS DE TARGETS
-//        List<Target> targets = InputHandler.importTargetFromTxt("./src/Utils/InputExamples/MarketTargets.txt");
-        List<Objective> targets = InputHandler.importTargetsFromTxt("./src/Utils/InputExamples/Plano2Targets.txt");
+//        List<Target> targets = InputHandler.importTargetFromTxt("./src/main/java/Utils/InputExamples/MarketTargets.txt");
+        List<Objective> targets = InputHandler.importTargetsFromTxt("./src/main/java/Utils/InputExamples/Plano2Targets.txt");
 
         // -------- BEHAVIOUR --------
         // ---- STATE MACHINE ----

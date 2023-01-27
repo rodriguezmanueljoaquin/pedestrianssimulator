@@ -11,20 +11,20 @@ import java.util.Random;
 public class AgentsGenerator {
     private final AgentsGeneratorZone zone;
     private final double activeTime;
-    private final double notActiveTime;
+    private final double inactiveTime;
     private final double timeBetweenGenerations;
     private final BehaviourScheme behaviourScheme;
     private final Random random;
     private int minGeneration, maxGeneration;
     private double lastGenerationTime;
 
-    public AgentsGenerator(AgentsGeneratorZone zone, double activeTime, double notActiveTime, double timeBetweenGenerations,
+    public AgentsGenerator(AgentsGeneratorZone zone, double activeTime, double inactiveTime, double timeBetweenGenerations,
                            int minGeneration, int maxGeneration, BehaviourScheme behaviourScheme, long randomSeed) {
         if (minGeneration > maxGeneration || minGeneration < 0)
             throw new IllegalArgumentException("Bad arguments on generator agent creation limits");
 
         this.zone = zone;
-        this.notActiveTime = notActiveTime;
+        this.inactiveTime = inactiveTime;
         this.activeTime = activeTime;
         this.timeBetweenGenerations = timeBetweenGenerations;
         this.minGeneration = minGeneration;
@@ -41,7 +41,7 @@ public class AgentsGenerator {
 
     public List<Agent> generate(double time) {
         List<Agent> agents = new ArrayList<>();
-        if (time % (this.activeTime + this.notActiveTime) < this.activeTime && time - this.lastGenerationTime > this.timeBetweenGenerations) {
+        if (time % (this.activeTime + this.inactiveTime) < this.activeTime && time - this.lastGenerationTime > this.timeBetweenGenerations) {
             this.lastGenerationTime = time;
             // generate is on Active time, and it's time to create another generation
             int agentsToCreate = (int) (this.random.nextDouble() * (this.maxGeneration - this.minGeneration)) + this.minGeneration;
