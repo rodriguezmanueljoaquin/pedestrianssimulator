@@ -5,10 +5,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
 
 // TODO: Tirar excepción si json mal formateado? Por ejemplo algun attending time tiene string en lugar de double
@@ -17,8 +15,8 @@ import java.util.*;
 public class SimulationParameters {
     private AgentsParameters agentsParameters;
     private Map<String, AgentsGeneratorParameters> generatorsParameters;
-    private Map<String, TargetGroupParameters> targetsParameters;
-    private Map<String, ServerGroupParameters> serversParameters;
+    private Map<String, TargetGroupParameters> targetGroupsParameters;
+    private Map<String, ServerGroupParameters> serverGroupsParameters;
 
     public SimulationParameters(String JSONPath) {
         JSONObject jsonObject;
@@ -35,11 +33,11 @@ public class SimulationParameters {
     }
 
     private void initServersParameters(JSONArray serversParametersJSON) {
-        this.serversParameters = new HashMap<>();
+        this.serverGroupsParameters = new HashMap<>();
         for(Object serverParametersObj : serversParametersJSON) {
             JSONObject serverParameters = (JSONObject) serverParametersObj;
 
-            this.serversParameters.put(
+            this.serverGroupsParameters.put(
                     (String) serverParameters.get("group_name"),
                     new ServerGroupParameters(
                             (Double) serverParameters.get("attending_time"),
@@ -50,11 +48,11 @@ public class SimulationParameters {
     }
 
     private void initTargetsParameters(JSONArray targetsParametersJSON) {
-        this.targetsParameters = new HashMap<>();
+        this.targetGroupsParameters = new HashMap<>();
         for(Object targetParametersObj : targetsParametersJSON) {
             JSONObject targetParameters = (JSONObject) targetParametersObj;
 
-            this.targetsParameters.put(
+            this.targetGroupsParameters.put(
                     (String) targetParameters.get("group_name"),
                     new TargetGroupParameters(
                             (Double) targetParameters.get("attending_time")
@@ -98,11 +96,11 @@ public class SimulationParameters {
         return generatorsParameters;
     }
 
-    public Map<String, TargetGroupParameters> getTargetsParameters() {
-        return targetsParameters;
+    public Map<String, TargetGroupParameters> getTargetGroupsParameters() {
+        return targetGroupsParameters;
     }
 
-    public Map<String, ServerGroupParameters> getServersParameters() {
-        return serversParameters;
+    public Map<String, ServerGroupParameters> getServerGroupsParameters() {
+        return serverGroupsParameters;
     }
 }

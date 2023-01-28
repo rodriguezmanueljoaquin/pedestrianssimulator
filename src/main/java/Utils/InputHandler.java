@@ -7,6 +7,7 @@ import Environment.Objectives.Exit;
 import Environment.Objectives.Objective;
 import Environment.Objectives.Target;
 import Environment.Wall;
+import SimulationParameters.TargetGroupParameters;
 
 import java.io.File;
 import java.util.*;
@@ -95,29 +96,35 @@ public class InputHandler {
         return result;
     }
 
-    public static List<Objective> importTargetsFromTxt(String filePath) {
-        //TODO: Ver cuanto le pones de attending time, que tipo de distribucion?
-        Double attendingTime = 5.;
-        File targetFile;
-        Scanner targetScanner;
-
-        try {
-            targetFile = new File(filePath);
-            targetScanner = new Scanner(targetFile);
-        } catch (Exception e) {
-            System.out.println("Encountered exception reading target file, returning null. Exception:" + e);
-            return null;
+    public static Map<String, List<Objective>> importTargetsFromTxt(String filePath, Map<String, TargetGroupParameters> targetGroupsParameters) {
+        Map<String, List<Objective>> targets = new HashMap<>();
+        for (String key : targetGroupsParameters.keySet()) {
+            targets.put(key, new ArrayList<>());
         }
 
-        List<Objective> targets = new ArrayList<>();
-        while (targetScanner.hasNextLine()) {
-            targets.add(new Target(Integer.valueOf(targetScanner.next()),
-                    new Vector(Double.valueOf(targetScanner.next()), Double.valueOf(targetScanner.next())),
-                    attendingTime));
+        Scanner scanner = getCSVScanner(filePath);
+        while (scanner.hasNextLine()) {
+            String[] tokens = scanner.nextLine().split(",");
+
+            String name = tokens[0];
+            int separatorIndex = name.indexOf("_");
+            String targetGroupKey = name.substring(0, separatorIndex);
+            TargetGroupParameters targetGroupParameters = targetGroupsParameters.get(targetGroupKey);
+
+            if(targetGroupParameters == null) {
+                throw new RuntimeException("No parameters found for target group: " + targetGroupKey);
+            } else {
+                targets.get(targetGroupKey).add(
+                        new Target(
+                                name.substring(separatorIndex+1),
+                                new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
+                                targetGroupParameters.getAttendingTime()
+                        )
+                );
+            }
         }
 
-        Collections.shuffle(targets);
-
+        scanner.close();
         return targets;
     }
 

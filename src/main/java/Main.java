@@ -26,16 +26,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class Main {
+    private static final String RESULTS_PATH = "./results/";
     public static void main(String[] args) {
-        String RESULTS_PATH = "./results/";
         Random random = new Random(1);
         if (!Files.exists(Paths.get(RESULTS_PATH))) {
             new File(RESULTS_PATH).mkdir();
         }
-
         // -------- WALLS --------
         List<Wall> walls = InputHandler.importWallsFromTxt("./input/PAREDES.csv");
 
@@ -52,8 +52,7 @@ public class Main {
         List<Exit> exits = InputHandler.importExitsFromTxt("./input/SALIDAS.csv");
 
         // -------- GRAPH --------
-        Graph graph = new Graph(walls);
-        graph.generateGraph(new Vector(1, 1));
+        Graph graph = new Graph(walls, new Vector(1, 1));
 
         // FOR GRAPH NODES PLOT:
 //        graph.generateOutput(RESULTS_PATH);
@@ -82,10 +81,8 @@ public class Main {
 
 
         // -------- TARGETS --------
-        // TODO: DEBERIA ESTAR EN INPUT Y VENIR DEL DXF
         // TODO: Y DEBERIA SER UN MAP<Integer, List<Objective>> PARA DIFERENCIAR LOS DISTINTOS GRUPOS DE TARGETS
-//        List<Target> targets = InputHandler.importTargetFromTxt("./src/main/java/Utils/InputExamples/MarketTargets.txt");
-        List<Objective> targets = InputHandler.importTargetsFromTxt("./src/main/java/Utils/InputExamples/Plano2Targets.txt");
+        Map<String, List<Objective>> targets = InputHandler.importTargetsFromTxt("./input/TARGETS.csv", parameters.getTargetGroupsParameters());
 
         // -------- BEHAVIOUR --------
         // ---- STATE MACHINE ----
@@ -93,14 +90,12 @@ public class Main {
 
         BehaviourScheme studentBehaviourScheme = new BehaviourScheme(stateMachine, exits, graph, random.nextLong());
 
+        // ---- ADD OBJECTIVES GROUP ----
         List<Objective> serverObjectives = new ArrayList<>();
         serverObjectives.addAll(servers);
         studentBehaviourScheme.addObjectiveGroupToScheme(serverObjectives, 1, 3);
 
-        // SEARCH FOR PRODUCTS
-        List<Objective> productsObjectives = new ArrayList<>();
-        productsObjectives.addAll(targets);
-        studentBehaviourScheme.addObjectiveGroupToScheme(productsObjectives, 2, 5);
+        studentBehaviourScheme.addObjectiveGroupToScheme(targets.get("PRODUCT"), 2, 5);
 
         // -------- AGENT GENERATORS --------
         List<AgentsGenerator> studentsGenerators =

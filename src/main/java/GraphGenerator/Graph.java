@@ -24,9 +24,10 @@ public class Graph {
     private Map<Vector, Node> nodes;
     private List<Wall> walls;
 
-    public Graph(List<Wall> walls) {
+    public Graph(List<Wall> walls, Vector initialPosition) {
         this.nodes = new HashMap<>();
         this.walls = walls;
+        this.generateGraph(initialPosition);
     }
 
     public boolean isPositionVisible(Vector origin, Vector destiny) {
@@ -74,7 +75,7 @@ public class Graph {
     }
 
     // initialPosition has to be a valid position, from this node the graph will expand
-    public void generateGraph(Vector initialPosition) {
+    private void generateGraph(Vector initialPosition) {
         Node root = new Node(initialPosition);
         this.nodes.put(initialPosition, root);
         List<Node> notVisitedNodes = new ArrayList<>();

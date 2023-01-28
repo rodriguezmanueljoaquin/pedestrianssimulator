@@ -6,10 +6,10 @@ import Utils.Vector;
 
 public class Target implements Objective {
     private final Vector position;
-    private final Integer id;
+    private final String id;
     private final Double attendingTime; //milliseconds needed to complete task
 
-    public Target(Integer id, Vector position, Double attendingTime) {
+    public Target(String id, Vector position, Double attendingTime) {
         this.position = position;
         this.attendingTime = attendingTime;
         this.id = id;

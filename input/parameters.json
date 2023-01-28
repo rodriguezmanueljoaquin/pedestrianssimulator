@@ -22,6 +22,10 @@
         {
             "group_name": "PRODUCT",
             "attending_time": 5.0
+        },
+        {
+            "group_name": "LETTER",
+            "attending_time": 1.0
         }
     ],
 
