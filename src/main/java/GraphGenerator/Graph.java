@@ -39,19 +39,20 @@ public class Graph {
         return true;
     }
 
-    public Node getClosestVisibleNode(Vector position) {
+    public Node getClosestNode(Vector position) {
         Node bestNode = null;
         double minDistance = Double.MAX_VALUE;
-        double currentDistance;
+        double distanceToNode;
         for (Node node : this.nodes.values()) {
-            currentDistance = node.getPosition().distance(position);
-            if (currentDistance < minDistance) {
+            distanceToNode = node.getPosition().distance(position);
+            if (distanceToNode < minDistance) {
                 bestNode = node;
-                minDistance = currentDistance;
+                minDistance = distanceToNode;
             }
         }
-        if (bestNode == null)
+        if (bestNode == null) {
             throw new RuntimeException("Zero nodes reachable from position: " + position);
+        }
         return bestNode;
     }
 
@@ -62,7 +63,7 @@ public class Graph {
         // first try to get by current position, otherwise get the closest visible
         Node fromNode = this.nodes.get(fromPosition);
         if (fromNode == null) {
-            fromNode = this.getClosestVisibleNode(fromPosition);
+            fromNode = this.getClosestNode(fromPosition);
         }
 
         NodePath fullPath = this.AStar(fromNode, toPosition);

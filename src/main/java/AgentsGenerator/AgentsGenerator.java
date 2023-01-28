@@ -50,7 +50,7 @@ public class AgentsGenerator {
                 // get position to generate agent, which has to be different from the ones the other agents get to avoid overlap
                 int positionIndex;
                 do {
-                    positionIndex = (int) (this.random.nextDouble() * this.zone.getZoneMatrixSize());
+                    positionIndex = this.random.nextInt(this.zone.getZoneMatrixSize());
                 } while (positionsUsed.contains(positionIndex));
                 positionsUsed.add(positionIndex);
                 agents.add(
