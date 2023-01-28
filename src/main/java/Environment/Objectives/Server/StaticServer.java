@@ -7,8 +7,8 @@ import Utils.Vector;
 
 public class StaticServer extends Server {
     //Static event is for an event that has a fixed schedule
-    public StaticServer(int maxCapacity, Rectangle zone, double startTime, double attendingTime) {
-        super(maxCapacity, zone, startTime, attendingTime, null);
+    public StaticServer(String id, int maxCapacity, Rectangle zone, double startTime, double attendingTime) {
+        super(id, maxCapacity, zone, attendingTime, null);
         this.startTime = startTime;
     }
 

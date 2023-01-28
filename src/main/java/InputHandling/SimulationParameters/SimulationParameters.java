@@ -1,4 +1,4 @@
-package SimulationParameters;
+package InputHandling.SimulationParameters;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -7,7 +7,8 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 // TODO: Tirar excepción si json mal formateado? Por ejemplo algun attending time tiene string en lugar de double
 // TODO: Mejorar tratamiento de doubles, ahora si en el JSON llega un 1, o un 1. larga excepcion por que lo reconoce como Long que no puede ser casteado a double
@@ -34,14 +35,16 @@ public class SimulationParameters {
 
     private void initServersParameters(JSONArray serversParametersJSON) {
         this.serverGroupsParameters = new HashMap<>();
-        for(Object serverParametersObj : serversParametersJSON) {
+        for (Object serverParametersObj : serversParametersJSON) {
             JSONObject serverParameters = (JSONObject) serverParametersObj;
 
             this.serverGroupsParameters.put(
                     (String) serverParameters.get("group_name"),
                     new ServerGroupParameters(
                             (Double) serverParameters.get("attending_time"),
-                            ((Long) serverParameters.get("max_attendants")).intValue()
+                            ((Long) serverParameters.get("max_capacity")).intValue(),
+                            (Boolean) serverParameters.get("has_queue"),
+                            (Double) serverParameters.get("start_time")
                     )
             );
         }
@@ -49,7 +52,7 @@ public class SimulationParameters {
 
     private void initTargetsParameters(JSONArray targetsParametersJSON) {
         this.targetGroupsParameters = new HashMap<>();
-        for(Object targetParametersObj : targetsParametersJSON) {
+        for (Object targetParametersObj : targetsParametersJSON) {
             JSONObject targetParameters = (JSONObject) targetParametersObj;
 
             this.targetGroupsParameters.put(
@@ -63,7 +66,7 @@ public class SimulationParameters {
 
     private void initGeneratorsParameters(JSONArray generatorsParametersJSON) {
         this.generatorsParameters = new HashMap<>();
-        for(Object generatorParametersObj : generatorsParametersJSON) {
+        for (Object generatorParametersObj : generatorsParametersJSON) {
             JSONObject generatorParameters = (JSONObject) generatorParametersObj;
             JSONObject generationParameters = (JSONObject) generatorParameters.get("generation");
             this.generatorsParameters.put(

@@ -1,4 +1,4 @@
-package SimulationParameters;
+package InputHandling.SimulationParameters;
 
 public class AgentsGeneratorParameters {
     private final double activeTime;

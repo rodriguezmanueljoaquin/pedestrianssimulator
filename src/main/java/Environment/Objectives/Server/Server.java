@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Server implements Objective {
+    protected final String id;
     protected final int maxAttendants;
     protected final List<Agent> servingAgents;
     protected final ServerPositionHandler serverPositionHandler;
@@ -16,7 +17,8 @@ public abstract class Server implements Objective {
     protected final double attendingTime;
     protected Double startTime = null;
 
-    public Server(int maxCapacity, Rectangle zone, double startTime, double attendingTime, QueueLine queueLine) {
+    public Server(String id, int maxCapacity, Rectangle zone, double attendingTime, QueueLine queueLine) {
+        this.id = id;
         this.serverPositionHandler = new ServerPositionHandler(zone);
         this.queueHandler = new QueueHandler(queueLine, this);
         this.maxAttendants = maxCapacity;

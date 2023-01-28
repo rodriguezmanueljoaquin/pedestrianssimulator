@@ -1,9 +1,9 @@
-package SimulationParameters;
+package InputHandling.SimulationParameters;
 
 public class AgentsParameters {
     private final double maxRadius,
-                        minRadius,
-                        maxVelocity;
+            minRadius,
+            maxVelocity;
 
     public AgentsParameters(double maxRadius, double minRadius, double maxVelocity) {
         this.maxRadius = maxRadius;

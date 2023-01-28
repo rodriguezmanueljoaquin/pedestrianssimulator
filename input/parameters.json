@@ -31,9 +31,17 @@
 
     "servers": [
         {
+            "group_name": "CLASS",
+            "attending_time": 5.0,
+            "max_capacity": 2,
+            "has_queue": false,
+            "start_time": 80.0
+        },
+        {
             "group_name": "CASHIER",
             "attending_time": 5.0,
-            "max_attendants": 2
+            "max_capacity": 2,
+            "has_queue": true
         }
     ]
 }

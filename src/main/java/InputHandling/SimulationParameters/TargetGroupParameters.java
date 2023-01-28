@@ -1,4 +1,4 @@
-package SimulationParameters;
+package InputHandling.SimulationParameters;
 
 public class TargetGroupParameters {
     private final Double attendingTime;

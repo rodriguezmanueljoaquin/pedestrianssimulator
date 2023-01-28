@@ -7,8 +7,8 @@ import Utils.Rectangle;
 public class DynamicServer extends Server {
 
     //Dynamic event is for an event that happens continuously.
-    public DynamicServer(int maxCapacity, Rectangle zone, double attendingTime, QueueLine queueLine) {
-        super(maxCapacity, zone, 0, attendingTime, queueLine);
+    public DynamicServer(String id, int maxCapacity, Rectangle zone, double attendingTime, QueueLine queueLine) {
+        super(id, maxCapacity, zone, attendingTime, queueLine);
     }
 
     @Override
