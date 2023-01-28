@@ -5,8 +5,9 @@
 * [Gastón Donikian](https://github.com/GastonDonikian) (gdonikian@itba.edu.ar)
 
 ## Dependencias
-Java 8 JRE y JDK, o posterior
-pip install ezdxf
++ Java 8 JRE y JDK, o posterior
++ pip install ezdxf
++ Maven
 
 ## Requisitos DXF
 El programa funciona sobre un archivo en formato DXF (versiones aceptadas: R12, R2000, R2004, R2007, R2010, R2013 o R2018) que debe cumplir con las siguientes caracteristicas:
@@ -33,9 +34,9 @@ Desde el directorio pincipal, los comandos de ejecución son:
 Donde DXF_PATH es el archivo de formato DXF donde se realiza la simulación, este debe cumplir con los [requisitos mencionados](#Requisitos DXF) para el correcto funcionamiento del programa, este es un parametro opcional que en caso de no ser indicado tomara el path al archivo de ejemplo: "DXFParser/DXFExamples/Plano2.dxf".
 
 ### Simulación
-javac -sourcepath ./src/ ./src/Main.java
-java -cp ./src/ Main
-find src -type f -name "*.class" -delete
+```mvn install assembly:assembly```\
+```java -cp target/pedestrianssimulator-*-jar-with-dependencies.jar Main```\
+```mvn clean```
 
 ### Visualización
 ```python3 visualization/visualizator.py```
