@@ -5,7 +5,6 @@ import AgentsGenerator.AgentsGenerator;
 import AgentsGenerator.AgentsGeneratorZone;
 import Environment.Objectives.Exit;
 import Environment.Objectives.Server.DynamicServer;
-import Environment.Objectives.Server.QueueLine;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Objectives.Target;
@@ -120,31 +119,9 @@ public class CSVHandler {
             if (serverGroupParameters == null) {
                 throw new RuntimeException("No parameters found for server group: " + serverGroupKey);
             } else {
-                Rectangle area = new Rectangle(
-                        new Utils.Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
-                        new Utils.Vector(Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]))
+                servers.get(serverGroupKey).add(
+                        createServer(serverGroupParameters, tokens)
                 );
-                if (serverGroupParameters.hasQueue()) {
-                    servers.get(serverGroupKey).add(
-                            new DynamicServer(
-                                    name.substring(separatorIndex + 1),
-                                    serverGroupParameters.getMaxCapacity(),
-                                    area,
-                                    serverGroupParameters.getAttendingTime(),
-                                    new QueueLine(new Utils.Vector(5, 4), new Utils.Vector(20, 4)) // FIXME: QUEUE TIENE QUE VENIR DE ALGUN LADO
-                            )
-                    );
-                } else {
-                    servers.get(serverGroupKey).add(
-                            new StaticServer(
-                                    name.substring(separatorIndex + 1),
-                                    serverGroupParameters.getMaxCapacity(),
-                                    area,
-                                    serverGroupParameters.getStartTime(),
-                                    serverGroupParameters.getAttendingTime()
-                            )
-                    );
-                }
             }
         }
 
@@ -196,6 +173,38 @@ public class CSVHandler {
         }
 
         return scanner;
+    }
+
+    private static Server createServer(ServerGroupParameters serverGroupParameters, String[] tokens) {
+        Server server;
+        Rectangle area = new Rectangle(
+                new Utils.Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
+                new Utils.Vector(Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]))
+        );
+        String name = tokens[0]; // format X_Y_Z where X is the groupId, and Z is the queueId in case of existence
+        int firstDelimiterIndex = name.indexOf("_");
+
+        if (serverGroupParameters.hasQueue()) {
+            int lastDelimiterIndex = name.lastIndexOf("_");
+            String queueID = name.substring(lastDelimiterIndex + 1);
+            server = new DynamicServer(
+                    name.substring(firstDelimiterIndex + 1, lastDelimiterIndex),
+                    serverGroupParameters.getMaxCapacity(),
+                    area,
+                    serverGroupParameters.getAttendingTime(),
+                    serverGroupParameters.getQueue(queueID)
+            );
+        } else {
+            server = new StaticServer(
+                    name.substring(firstDelimiterIndex + 1),
+                    serverGroupParameters.getMaxCapacity(),
+                    area,
+                    serverGroupParameters.getStartTime(),
+                    serverGroupParameters.getAttendingTime()
+            );
+        }
+
+        return server;
     }
 
 }

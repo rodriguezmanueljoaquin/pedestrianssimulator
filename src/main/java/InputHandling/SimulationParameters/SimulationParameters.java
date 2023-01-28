@@ -1,5 +1,6 @@
 package InputHandling.SimulationParameters;
 
+import Utils.Vector;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -33,19 +34,36 @@ public class SimulationParameters {
         initServersParameters((JSONArray) jsonObject.get("servers"));
     }
 
+    private Vector getVectorFromString(String s) {
+        String[] tokens = s.split(",");
+        return new Vector(Double.parseDouble(tokens[0]), Double.parseDouble(tokens[1]));
+    }
+
     private void initServersParameters(JSONArray serversParametersJSON) {
         this.serverGroupsParameters = new HashMap<>();
         for (Object serverParametersObj : serversParametersJSON) {
             JSONObject serverParameters = (JSONObject) serverParametersObj;
 
+            ServerGroupParameters newServerGroupParameters = new ServerGroupParameters(
+                    (Double) serverParameters.get("attending_time"),
+                    ((Long) serverParameters.get("max_capacity")).intValue(),
+                    (Double) serverParameters.get("start_time")
+            );
+            JSONArray queuesJSON = (JSONArray) serverParameters.get("queues");
+            if (queuesJSON != null) {
+                for (Object queueParametersObj : queuesJSON) {
+                    JSONObject queueParameters = (JSONObject) queueParametersObj;
+                    newServerGroupParameters.addQueue(
+                            (String) queueParameters.get("id"),
+                            getVectorFromString((String) queueParameters.get("start_position")),
+                            getVectorFromString((String) queueParameters.get("end_position"))
+                    );
+                }
+            }
+
             this.serverGroupsParameters.put(
                     (String) serverParameters.get("group_name"),
-                    new ServerGroupParameters(
-                            (Double) serverParameters.get("attending_time"),
-                            ((Long) serverParameters.get("max_capacity")).intValue(),
-                            (Boolean) serverParameters.get("has_queue"),
-                            (Double) serverParameters.get("start_time")
-                    )
+                    newServerGroupParameters
             );
         }
     }

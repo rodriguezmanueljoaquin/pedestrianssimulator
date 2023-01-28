@@ -38,14 +38,12 @@ public class Main {
         // -------- WALLS --------
         List<Wall> walls = CSVHandler.importWalls("./input/PAREDES.csv");
 
-        // FIXME: CERRAMOS EL CONTORNO PERO DEBERIA SER UN REQUISITO DEL DXF
-        walls.add(new Wall(new Vector(0., 0.), new Vector(50, 0)));
-        walls.add(new Wall(new Vector(50., 0.), new Vector(50, 20)));
-        walls.add(new Wall(new Vector(50., 20.), new Vector(0, 20)));
-        walls.add(new Wall(new Vector(0., 20.), new Vector(0, 0)));
+        // FIXME: AGREGAMOS WALLS EN LAS EXITS QUE EN LOS DXF NO ESTABAN
+        walls.add(new Wall(new Vector(22.5, 0.), new Vector(27.5, 0.)));
+        walls.add(new Wall(new Vector(22.5, 20.), new Vector(27.5, 20.)));
 
-        // BORRAR (TEST PARED DIAGONAL)
         walls.add(new Wall(new Vector(15, 0), new Vector(20, 5)));
+        // BORRAR ESTAS WALLS UNA VEZ Q SE TENGA UN DXF CORRECTO
 
         // -------- EXITS --------
         List<Exit> exits = CSVHandler.importExits("./input/SALIDAS.csv");
@@ -74,7 +72,7 @@ public class Main {
         BehaviourScheme studentBehaviourScheme = new BehaviourScheme(stateMachine, exits, graph, random.nextLong());
 
         // ---- ADD OBJECTIVE GROUPS ----
-        List<Objective> serverObjectives = new ArrayList<>(serversMap.get("CLASS"));
+        List<Objective> serverObjectives = new ArrayList<>(serversMap.get("CASHIER"));
         studentBehaviourScheme.addObjectiveGroupToScheme(serverObjectives, 1, 3);
 
         List<Objective> targetObjectives = new ArrayList<>(targetsMap.get("PRODUCT"));
@@ -92,7 +90,7 @@ public class Main {
         OperationalModelModule operationalModelModule = new CPM(environment);
 
         try {
-            Simulation.createStaticFile(RESULTS_PATH, environment);
+            Simulation.createStaticFile(RESULTS_PATH, walls);
             Simulation sim = new Simulation(Constants.MAX_TIME, environment, operationalModelModule, RESULTS_PATH, random);
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {

@@ -7,7 +7,7 @@
 
     "agents_generators": [
         {
-            "group_name": "GENERATOR_MAIN_ENTRANCE",
+            "group_name": "MAIN-ENTRANCES",
             "active_time": 10.0,
             "inactive_time": 40.0,
             "generation": {
@@ -39,9 +39,16 @@
         },
         {
             "group_name": "CASHIER",
-            "attending_time": 5.0,
+            "attending_time": 500.0,
             "max_capacity": 2,
-            "has_queue": true
+            "has_queue": true,
+            "queues": [
+                {
+                    "id": "1",
+                    "start_position": "5, 4",
+                    "end_position": "15, 4"
+                }
+            ]
         }
     ]
 }

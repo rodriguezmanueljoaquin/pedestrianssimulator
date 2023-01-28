@@ -40,14 +40,14 @@ public class Simulation {
         createDynamicFile(outputDirectoryPath);
     }
 
-    public static void createStaticFile(String outputPath, Environment environment) throws FileNotFoundException, UnsupportedEncodingException {
+    public static void createStaticFile(String outputPath, List<Wall> walls) throws FileNotFoundException, UnsupportedEncodingException {
         System.out.println("\tCreating static file. . .");
 
         PrintWriter writer = new PrintWriter(outputPath + "/static.txt", "UTF-8");
 
         // walls
-        writer.write(String.format(Locale.ENGLISH, "%d\n", environment.getWalls().size()));
-        for (Wall wall : environment.getWalls())
+        writer.write(String.format(Locale.ENGLISH, "%d\n", walls.size()));
+        for (Wall wall : walls)
             writer.write(String.format(Locale.ENGLISH, "%s\n", wall.toString()));
 
         writer.close();
