@@ -88,7 +88,7 @@ public class SimulationParameters {
             JSONObject generatorParameters = (JSONObject) generatorParametersObj;
             JSONObject generationParameters = (JSONObject) generatorParameters.get("generation");
             this.generatorsParameters.put(
-                    (String) generatorParameters.get("name"),
+                    (String) generatorParameters.get("group_name"),
                     new AgentsGeneratorParameters(
                             (double) generatorParameters.get("active_time"),
                             (double) generatorParameters.get("inactive_time"),

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class AgentsGenerator {
+    private final String id;
     private final AgentsGeneratorZone zone;
     private final double activeTime;
     private final double inactiveTime;
@@ -18,11 +19,12 @@ public class AgentsGenerator {
     private int minGeneration, maxGeneration;
     private double lastGenerationTime;
 
-    public AgentsGenerator(AgentsGeneratorZone zone, double activeTime, double inactiveTime, double timeBetweenGenerations,
+    public AgentsGenerator(String id, AgentsGeneratorZone zone, double activeTime, double inactiveTime, double timeBetweenGenerations,
                            int minGeneration, int maxGeneration, BehaviourScheme behaviourScheme, long randomSeed) {
         if (minGeneration > maxGeneration || minGeneration < 0)
             throw new IllegalArgumentException("Bad arguments on generator agent creation limits");
 
+        this.id = id;
         this.zone = zone;
         this.inactiveTime = inactiveTime;
         this.activeTime = activeTime;

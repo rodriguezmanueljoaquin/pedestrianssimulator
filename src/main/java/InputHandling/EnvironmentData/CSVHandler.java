@@ -9,6 +9,7 @@ import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Objectives.Target;
 import Environment.Wall;
+import InputHandling.SimulationParameters.AgentsGeneratorParameters;
 import InputHandling.SimulationParameters.ServerGroupParameters;
 import InputHandling.SimulationParameters.TargetGroupParameters;
 import Utils.Rectangle;
@@ -55,50 +56,41 @@ public class CSVHandler {
         return result;
     }
 
-    private static AgentsGenerator createAgentsGenerator(List<Double> xInputs, List<Double> yInputs, BehaviourScheme behaviourScheme, long randomSeed) {
-        // TODO: SHOULD RECEIVE BEHAVIOUR MODULE WITH AGENTS GENERATORS PARAMETERS AND POSSIBLE TARGETS, IT SHOULDNT RECEIVE IT AS A PARAMETER
-        AgentsGeneratorZone zone = new AgentsGeneratorZone(
-                // rectangle is defined by its lowest and leftest point and highest and rightest point, data is assured to provide rectangles as generators zones
-                new Utils.Vector(Collections.min(xInputs), Collections.min(yInputs)),
-                new Utils.Vector(Collections.max(xInputs), Collections.max(yInputs))
-        );
-
-        return new AgentsGenerator(zone, 2, 50, 1, 1, 2, behaviourScheme, randomSeed);
-    }
-
-    public static List<AgentsGenerator> importAgentsGenerators(String filePath, BehaviourScheme behaviourScheme, long randomSeed) {
+    public static List<AgentsGenerator> importAgentsGenerators(String filePath, BehaviourScheme behaviourScheme,
+                                                               Map<String, AgentsGeneratorParameters> generatorsParameters, long randomSeed) {
+        List<AgentsGenerator> generators = new ArrayList<>();
         Scanner scanner = getCSVScanner(filePath);
 
-        List<AgentsGenerator> result = new ArrayList<>();
-        List<Double> xInputs = new ArrayList<>();
-        List<Double> yInputs = new ArrayList<>();
-        int sidesAnalyzed = 0;
         while (scanner.hasNextLine()) {
             String[] tokens = scanner.nextLine().split(",");
-            // save all x inputs and y inputs separately
-            for (int i = 0; i < 6; i++) {
-                if (i % 3 == 0)
-                    xInputs.add(Double.parseDouble(tokens[i]));
-                else if (i % 3 == 1) {
-                    yInputs.add(Double.parseDouble(tokens[i]));
-                }
-            }
-            sidesAnalyzed++;
 
-            if (sidesAnalyzed > 3) {
-                sidesAnalyzed = 0;
-                result.add(createAgentsGenerator(xInputs, yInputs, behaviourScheme, randomSeed));
-                xInputs.clear();
-                yInputs.clear();
-            }
+            AgentsGeneratorZone zone = new AgentsGeneratorZone(
+                    new Utils.Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
+                    new Utils.Vector(Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]))
+            );
+
+            int delimiterIndex = tokens[0].indexOf('_');
+            String generatorGroupId = tokens[0].substring(0, delimiterIndex);
+
+            AgentsGeneratorParameters agentsGeneratorParameters = generatorsParameters.get(generatorGroupId);
+            if (agentsGeneratorParameters == null)
+                throw new RuntimeException("No parameters found for agent generator group: " + generatorGroupId);
+            AgentsGeneratorParameters.GenerationParameters generationParameters = agentsGeneratorParameters.getGenerationParameters();
+            generators.add(
+                    new AgentsGenerator(
+                            generatorGroupId, zone,
+                            agentsGeneratorParameters.getActiveTime(),
+                            agentsGeneratorParameters.getInactiveTime(),
+                            generationParameters.getTimeBetweenGenerations(),
+                            generationParameters.getMinGeneration(),
+                            generationParameters.getMaxGeneration(),
+                            behaviourScheme, randomSeed
+                    )
+            );
         }
-
-        if (sidesAnalyzed != 0) {
-            throw new RuntimeException("AgentsGenerators creation found extra lines on DXF.");
-        }
-
         scanner.close();
-        return result;
+
+        return generators;
     }
 
     public static Map<String, List<Server>> importServers(String filePath, Map<String, ServerGroupParameters> serverGroupsParameters) {
@@ -112,17 +104,16 @@ public class CSVHandler {
             String[] tokens = scanner.nextLine().split(",");
 
             String name = tokens[0];
-            int separatorIndex = name.indexOf("_");
-            String serverGroupKey = name.substring(0, separatorIndex);
-            ServerGroupParameters serverGroupParameters = serverGroupsParameters.get(serverGroupKey);
+            int delimiterIndex = name.indexOf("_");
+            String serverGroupId = name.substring(0, delimiterIndex);
+            ServerGroupParameters serverGroupParameters = serverGroupsParameters.get(serverGroupId);
 
-            if (serverGroupParameters == null) {
-                throw new RuntimeException("No parameters found for server group: " + serverGroupKey);
-            } else {
-                servers.get(serverGroupKey).add(
-                        createServer(serverGroupParameters, tokens)
-                );
-            }
+            if (serverGroupParameters == null)
+                throw new RuntimeException("No parameters found for server group: " + serverGroupId);
+
+            servers.get(serverGroupId).add(
+                    createServer(serverGroupParameters, tokens)
+            );
         }
 
         scanner.close();
@@ -140,21 +131,20 @@ public class CSVHandler {
             String[] tokens = scanner.nextLine().split(",");
 
             String name = tokens[0];
-            int separatorIndex = name.indexOf("_");
-            String targetGroupKey = name.substring(0, separatorIndex);
-            TargetGroupParameters targetGroupParameters = targetGroupsParameters.get(targetGroupKey);
+            int delimiterIndex = name.indexOf("_");
+            String targetGroupId = name.substring(0, delimiterIndex);
+            TargetGroupParameters targetGroupParameters = targetGroupsParameters.get(targetGroupId);
 
-            if (targetGroupParameters == null) {
-                throw new RuntimeException("No parameters found for target group: " + targetGroupKey);
-            } else {
-                targets.get(targetGroupKey).add(
-                        new Target(
-                                name.substring(separatorIndex + 1),
-                                new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
-                                targetGroupParameters.getAttendingTime()
-                        )
-                );
-            }
+            if (targetGroupParameters == null)
+                throw new RuntimeException("No parameters found for target group: " + targetGroupId);
+
+            targets.get(targetGroupId).add(
+                    new Target(
+                            name.substring(delimiterIndex + 1),
+                            new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
+                            targetGroupParameters.getAttendingTime()
+                    )
+            );
         }
 
         scanner.close();

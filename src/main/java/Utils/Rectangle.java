@@ -1,7 +1,7 @@
 package Utils;
 
 public class Rectangle {
-    private Vector x1, x2;
+    protected Vector x1, x2;
     /*
            ------- x2
         |           |

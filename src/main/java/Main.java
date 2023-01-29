@@ -79,8 +79,10 @@ public class Main {
         studentBehaviourScheme.addObjectiveGroupToScheme(targetObjectives, 2, 5);
 
         // -------- AGENT GENERATORS --------
-        List<AgentsGenerator> studentsGenerators =
-                CSVHandler.importAgentsGenerators("./input/PEATONES.csv", studentBehaviourScheme, random.nextLong());
+        List<AgentsGenerator> studentsGenerators = CSVHandler.importAgentsGenerators(
+                "./input/AGENT_GENERATORS.csv", studentBehaviourScheme,
+                parameters.getGeneratorsParameters(), random.nextLong()
+        );
 
         // -------- ENVIRONMENT --------
         List<Server> servers = serversMap.values().stream().flatMap(List::stream).collect(Collectors.toList());

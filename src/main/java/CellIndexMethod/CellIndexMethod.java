@@ -75,10 +75,9 @@ public class CellIndexMethod {
             }
         }
 
-        //Esto de sumarle el bottomLeft estara bien? ellos ya estan referenciados en el plano
         for (Agent agent : agents) {
-            int i = ((Double) ((this.bottomLeft.getX() + agent.getPosition().getX()) / this.cellSize)).intValue();
-            int j = ((Double) ((this.bottomLeft.getY() + agent.getPosition().getY()) / this.cellSize)).intValue();
+            int i = ((Double) (agent.getPosition().getX() / this.cellSize)).intValue();
+            int j = ((Double) (agent.getPosition().getY() / this.cellSize)).intValue();
             this.matrix[i][j].addAgent(agent);
         }
     }

@@ -7,7 +7,7 @@
 
     "agents_generators": [
         {
-            "group_name": "MAIN-ENTRANCES",
+            "group_name": "MAIN-ENTRANCE",
             "active_time": 10.0,
             "inactive_time": 40.0,
             "generation": {

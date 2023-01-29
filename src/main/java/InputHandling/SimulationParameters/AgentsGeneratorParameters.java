@@ -2,12 +2,12 @@ package InputHandling.SimulationParameters;
 
 public class AgentsGeneratorParameters {
     private final double activeTime;
-    private final double notActiveTime;
+    private final double inactiveTime;
     private final GenerationParameters generationParameters;
 
-    public AgentsGeneratorParameters(double activeTime, double notActiveTime, double timeBetweenGenerations, int minGeneration, int maxGeneration) {
+    public AgentsGeneratorParameters(double activeTime, double inactiveTime, double timeBetweenGenerations, int minGeneration, int maxGeneration) {
         this.activeTime = activeTime;
-        this.notActiveTime = notActiveTime;
+        this.inactiveTime = inactiveTime;
         this.generationParameters = new GenerationParameters(timeBetweenGenerations, minGeneration, maxGeneration);
     }
 
@@ -15,15 +15,15 @@ public class AgentsGeneratorParameters {
         return activeTime;
     }
 
-    public double getNotActiveTime() {
-        return notActiveTime;
+    public double getInactiveTime() {
+        return inactiveTime;
     }
 
     public GenerationParameters getGenerationParameters() {
         return generationParameters;
     }
 
-    private class GenerationParameters {
+    public class GenerationParameters {
         private final double timeBetweenGenerations;
         private int minGeneration, maxGeneration;
 
