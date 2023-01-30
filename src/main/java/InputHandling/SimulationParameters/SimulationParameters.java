@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Tirar excepción si json mal formateado? Por ejemplo algun attending time tiene string en lugar de double
-// TODO: Mejorar tratamiento de doubles, ahora si en el JSON llega un 1, o un 1. larga excepcion por que lo reconoce como Long que no puede ser casteado a double
-// TODO: Mejorar el acceso a las variables del JSON, usar CONSTANTES
 public class SimulationParameters {
     private AgentsParameters agentsParameters;
     private Map<String, AgentsGeneratorParameters> generatorsParameters;

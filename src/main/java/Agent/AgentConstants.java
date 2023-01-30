@@ -7,7 +7,7 @@ public class AgentConstants {
     public static double MAXIMUM_VELOCITY = 1;
     // considers radius
     // used to change state at the state machine, or intermediate node in agent path
-    public static double MINIMUM_DISTANCE_TO_TARGET = MIN_RADIUS / 2;
+    public static double MINIMUM_DISTANCE_TO_TARGET = MIN_RADIUS;
 
 
     // For SuperMarketClient behaviour:

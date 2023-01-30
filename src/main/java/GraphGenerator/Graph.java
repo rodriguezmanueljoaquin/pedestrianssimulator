@@ -9,7 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class Graph {
-    private final static double STEP_SIZE = 2;
+    private final static double STEP_SIZE = 1.8; // Found empirically, TODO: AUTOMATIZE STEP SIZE SELECTION
 
     // CLOCKWISE
     private final static Vector[] POSSIBLE_NEIGHBORS_POSITION_DIFFERENCE = {
@@ -39,15 +39,17 @@ public class Graph {
         return true;
     }
 
-    public Node getClosestNode(Vector position) {
+    public Node getClosestVisibleNode(Vector position) {
         Node bestNode = null;
         double minDistance = Double.MAX_VALUE;
         double distanceToNode;
         for (Node node : this.nodes.values()) {
-            distanceToNode = node.getPosition().distance(position);
-            if (distanceToNode < minDistance) {
-                bestNode = node;
-                minDistance = distanceToNode;
+            if(isPositionVisible(position, node.getPosition())) {
+                distanceToNode = node.getPosition().distance(position);
+                if (distanceToNode < minDistance) {
+                    bestNode = node;
+                    minDistance = distanceToNode;
+                }
             }
         }
         if (bestNode == null) {
@@ -63,7 +65,7 @@ public class Graph {
         // first try to get by current position, otherwise get the closest visible
         Node fromNode = this.nodes.get(fromPosition);
         if (fromNode == null) {
-            fromNode = this.getClosestNode(fromPosition);
+            fromNode = this.getClosestVisibleNode(fromPosition);
         }
 
         NodePath fullPath = this.AStar(fromNode, toPosition);
@@ -130,7 +132,8 @@ public class Graph {
                     minDistance = pathTotalDistance;
                     closestDestination = possibleDestinations.get(i);
                 }
-            }
+            } else
+                System.out.println("Possible destination unaccessible");
         }
 
         return closestDestination;
