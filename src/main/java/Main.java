@@ -38,9 +38,6 @@ public class Main {
         // -------- WALLS --------
         List<Wall> walls = CSVHandler.importWalls("./input/PAREDES.csv");
 
-        // FIXME: AGREGAMOS WALLS EN LAS EXITS QUE EN LOS DXF NO ESTABAN
-        walls.add(new Wall(new Vector(22.5, 0.), new Vector(27.5, 0.)));
-        walls.add(new Wall(new Vector(22.5, 20.), new Vector(27.5, 20.)));
 
         walls.add(new Wall(new Vector(15, 0), new Vector(20, 5)));
         // BORRAR ESTAS WALLS UNA VEZ Q SE TENGA UN DXF CORRECTO
@@ -49,7 +46,10 @@ public class Main {
         List<Exit> exits = CSVHandler.importExits("./input/SALIDAS.csv");
 
         // -------- GRAPH --------
-        Graph graph = new Graph(walls, new Vector(1, 1));
+        List<Wall> wallsAndExits = new ArrayList<>();
+        wallsAndExits.addAll(walls);
+        wallsAndExits.addAll(exits.stream().map(Exit::getExitWall).collect(Collectors.toList()));
+        Graph graph = new Graph(wallsAndExits, new Vector(1, 1));
 
         // FOR GRAPH NODES PLOT:
 //        graph.generateOutput(RESULTS_PATH);

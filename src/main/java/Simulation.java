@@ -6,6 +6,7 @@ import OperationalModelModule.Collisions.AgentsCollision;
 import OperationalModelModule.Collisions.CollisionsFinder;
 import OperationalModelModule.Collisions.WallCollision;
 import OperationalModelModule.OperationalModelModule;
+import Utils.Constants;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -72,7 +73,7 @@ public class Simulation {
             // remove agents that left and update the velocity of the rest
             List<Agent> leavingAgents = new ArrayList<>();
             for (Agent agent : this.agents) {
-                if (agent.getState() == AgentStates.LEAVING)
+                if (agent.getState() == AgentStates.LEAVING && this.time - agent.getStartedAttendingAt() > Constants.LEAVING_TIME)
                     leavingAgents.add(agent);
                 else
                     agent.updateVelocity();
