@@ -22,7 +22,7 @@ public class CPM implements OperationalModelModule {
             AGENT_AP = 100,
             AGENT_BP = 1,
             WALL_AP = 400,
-            WALL_BP = 2, // cuanto mas grande, a mayor distancia reacciona más
+            WALL_BP = 2, // cuanto mas grande, a mayor distancia reacciona mas
             AP_VARIATION = 25,
             BP_VARIATION = 0.1,
             NON_MOVING_AGENT_REPULSION_MULTIPLIER = 3;

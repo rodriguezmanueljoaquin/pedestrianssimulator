@@ -11,6 +11,10 @@ public class Exit implements Objective {
         this.exit = exit;
     }
 
+    public Wall getExitWall(){
+        return exit;
+    }
+
     @Override
     public Vector getPosition(Agent agent) {//Devuelvo el punto del medio, esto para tratr que extienda de objective
         return this.exit.getA().add(this.exit.getB()).scalarMultiply(0.5);

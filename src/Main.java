@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -38,17 +39,17 @@ public class Main {
         // -------- WALLS --------
         List<Wall> walls = InputHandler.importWallsFromTxt("./input/PAREDES.csv");
 
-        // FIXME: CERRAMOS EL CONTORNO PERO DEBERIA SER UN REQUISITO DEL DXF
-        walls.add(new Wall(new Vector(0., 0.), new Vector(50, 0)));
-        walls.add(new Wall(new Vector(50., 0.), new Vector(50, 20)));
-        walls.add(new Wall(new Vector(50., 20.), new Vector(0, 20)));
-        walls.add(new Wall(new Vector(0., 20.), new Vector(0, 0)));
+//        // FIXME: CERRAMOS EL CONTORNO PERO DEBERIA SER UN REQUISITO DEL DXF
+//        walls.add(new Wall(new Vector(0., 0.), new Vector(50, 0)));
+//        walls.add(new Wall(new Vector(50., 0.), new Vector(50, 20)));
+//        walls.add(new Wall(new Vector(50., 20.), new Vector(0, 20)));
+//        walls.add(new Wall(new Vector(0., 20.), new Vector(0, 0)));
 
         // BORRAR (TEST PARED DIAGONAL)
         walls.add(new Wall(new Vector(15, 0), new Vector(20, 5)));
 
-        List<Exit> exits = InputHandler.importExitsFromTxt("./input/SALIDAS.csv");
 
+        List<Exit> exits = InputHandler.importExitsFromTxt("./input/SALIDAS.csv");
         // -------- SERVERS --------
         List<Server> servers = new ArrayList<>();
 
@@ -74,7 +75,12 @@ public class Main {
         List<Objective> targets = InputHandler.importTargetsFromTxt("./src/Utils/InputExamples/Plano2Targets.txt");
 
         // -------- GRAPH --------
-        Graph graph = new Graph(walls);
+        List<Wall> wallsAndExits = new ArrayList<>();
+        wallsAndExits.addAll(walls);
+        wallsAndExits.addAll(exits.stream().map(Exit::getExitWall).collect(Collectors.toList()));
+
+
+        Graph graph = new Graph(wallsAndExits);
         graph.generateGraph(new Vector(1, 1));
 
         // FOR GRAPH NODES PLOT:

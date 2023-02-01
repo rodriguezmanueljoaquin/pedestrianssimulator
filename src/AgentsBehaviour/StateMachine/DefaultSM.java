@@ -39,6 +39,7 @@ public class DefaultSM implements StateMachine {
                 agent.setState(AgentStates.MOVING);
             }
         } else {
+            agent.setStartedAttendingAt(currentTime);
             agent.setState(AgentStates.LEAVING);
         }
     }

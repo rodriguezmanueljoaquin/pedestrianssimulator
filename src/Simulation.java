@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import static Utils.Constants.DELTA_T;
+import static Utils.Constants.LEAVING_TIME;
 
 public class Simulation {
     private double time;
@@ -73,13 +74,14 @@ public class Simulation {
             // remove agents that left and update the velocity of the rest
             List<Agent> leavingAgents = new ArrayList<>();
             for (Agent agent : this.agents) {
-                if (agent.getState() == AgentStates.LEAVING)
+                //No pude hacer lo de que sigan caminando,
+                //No es un bug es feature: La puerta es giratoria y estan ahi paraditos.
+                if (agent.getState() == AgentStates.LEAVING && time - agent.getStartedAttendingAt() > LEAVING_TIME)
                     leavingAgents.add(agent);
                 else
                     agent.updateVelocity();
             }
             this.agents.removeAll(leavingAgents);
-
             this.executeOperationalModelModule();
 
             // escribir output
