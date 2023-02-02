@@ -1,0 +1,54 @@
+{
+    "agents": {
+        "max_radius": 0.5,
+        "min_radius": 0.2,
+        "max_velocity": 1.0
+    },
+
+    "agents_generators": [
+        {
+            "group_name": "MAIN-ENTRANCE",
+            "active_time": 10.0,
+            "inactive_time": 40.0,
+            "generation": {
+                "frequency": 5.0,
+                "min_agents": 1,
+                "max_agents": 1
+            }
+        }
+    ],
+
+    "targets": [
+        {
+            "group_name": "PRODUCT",
+            "attending_time": 5.0
+        },
+        {
+            "group_name": "LETTER",
+            "attending_time": 1.0
+        }
+    ],
+
+    "servers": [
+        {
+            "group_name": "CLASS",
+            "attending_time": 5.0,
+            "max_capacity": 2,
+            "has_queue": false,
+            "start_time": 80.0
+        },
+        {
+            "group_name": "CASHIER",
+            "attending_time": 15.0,
+            "max_capacity": 2,
+            "has_queue": true,
+            "queues": [
+                {
+                    "id": "1",
+                    "start_position": "8, 4",
+                    "end_position": "15, 4"
+                }
+            ]
+        }
+    ]
+}
