@@ -1,7 +1,6 @@
 package OperationalModelModule;
 
 import Agent.Agent;
-import Agent.AgentConstants;
 import CellIndexMethod.CellIndexMethod;
 import Environment.Environment;
 import OperationalModelModule.Collisions.AgentsCollision;
@@ -42,7 +41,7 @@ public class CPM implements OperationalModelModule {
     }
 
     private static void collapseAgent(Agent agent) {
-        agent.setRadius(AgentConstants.MIN_RADIUS);
+        agent.setRadius(agent.getMinRadius());
     }
 
     private static double getRandomDoubleInRange(double mean, double variation, Random random) {
@@ -98,8 +97,8 @@ public class CPM implements OperationalModelModule {
     }
 
     public void expandAgent(Agent agent) {
-        if (agent.getRadius() < AgentConstants.MAX_RADIUS) {
-            agent.setRadius(agent.getRadius() + AgentConstants.MAX_RADIUS / CPMConstants.DTS_NEEDED_FOR_EXPANSION);
+        if (agent.getRadius() < agent.getMaxRadius()) {
+            agent.setRadius(agent.getRadius() + agent.getMaxRadius() / CPMConstants.DTS_NEEDED_FOR_EXPANSION);
         }
     }
 

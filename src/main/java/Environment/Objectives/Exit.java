@@ -11,7 +11,7 @@ public class Exit implements Objective {
         this.exit = exit;
     }
 
-    public Wall getExitWall(){
+    public Wall getExitWall() {
         return exit;
     }
 

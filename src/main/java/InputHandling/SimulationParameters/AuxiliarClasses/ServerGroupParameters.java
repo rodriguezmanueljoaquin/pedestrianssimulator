@@ -1,4 +1,4 @@
-package InputHandling.SimulationParameters;
+package InputHandling.SimulationParameters.AuxiliarClasses;
 
 import Environment.Objectives.Server.QueueLine;
 import Utils.Vector;

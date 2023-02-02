@@ -26,7 +26,7 @@ def visualize_graph_results():
 
 
     color_map = []
-    visited = [1,2,3,5,8,12,17,22,27,33,39,45,52,59]
+    visited = []
     for node in G:
         if node in visited:
             color_map.append('blue')
@@ -51,4 +51,4 @@ def visualize_graph_results():
 
 if __name__ == "__main__":
     visualize_simulation_results()
-    # visualize_graph_results()
+#     visualize_graph_results()

@@ -104,10 +104,10 @@ public class CellIndexMethod {
         double matrixHeight = this.topRight.getY() - this.bottomLeft.getY();
         // use the highest dimension to make the matrix square
         if (matrixHeight > matrixLength) {
-            this.M = (int) Math.ceil(matrixHeight / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS));
+            this.M = (int) Math.ceil(matrixHeight / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS));
             this.cellSize = matrixHeight / this.M;
         } else {
-            this.M = (int) Math.ceil(matrixLength / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS));
+            this.M = (int) Math.ceil(matrixLength / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS));
             this.cellSize = matrixLength / this.M;
         }
 

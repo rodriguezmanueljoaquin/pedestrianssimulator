@@ -53,7 +53,7 @@ public class Main {
 
         // FOR GRAPH NODES PLOT:
 //        graph.generateOutput(RESULTS_PATH);
-//        NodePath path = graph.AStar(graph.getNodes().get(new Vector(1,3)), new Vector(25,1));
+//        NodePath path = graph.AStar(graph.getClosestVisibleNode(new Vector(16.07,9.65)), new Vector(34.5, 12.0));
 //        System.out.println(path);
 
         // -------- CONFIGURATION --------
@@ -69,24 +69,24 @@ public class Main {
         // ---- STATE MACHINE ----
         StateMachine stateMachine = new SuperMarketClientSM(graph);
 
-        BehaviourScheme studentBehaviourScheme = new BehaviourScheme(stateMachine, exits, graph, random.nextLong());
+        BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(stateMachine, exits, graph, random.nextLong());
 
         // ---- ADD OBJECTIVE GROUPS ----
         List<Objective> serverObjectives = new ArrayList<>(serversMap.get("CASHIER"));
-        studentBehaviourScheme.addObjectiveGroupToScheme(serverObjectives, 1, 3);
+        marketClientBehaviourScheme.addObjectiveGroupToScheme(serverObjectives, 1, 3);
 
         List<Objective> targetObjectives = new ArrayList<>(targetsMap.get("PRODUCT"));
-        studentBehaviourScheme.addObjectiveGroupToScheme(targetObjectives, 2, 5);
+        marketClientBehaviourScheme.addObjectiveGroupToScheme(targetObjectives, 2, 5);
 
         // -------- AGENT GENERATORS --------
-        List<AgentsGenerator> studentsGenerators = CSVHandler.importAgentsGenerators(
-                "./input/AGENT_GENERATORS.csv", studentBehaviourScheme,
+        List<AgentsGenerator> generators = CSVHandler.importAgentsGenerators(
+                "./input/AGENT_GENERATORS.csv", marketClientBehaviourScheme,
                 parameters.getGeneratorsParameters(), random.nextLong()
         );
 
         // -------- ENVIRONMENT --------
         List<Server> servers = serversMap.values().stream().flatMap(List::stream).collect(Collectors.toList());
-        Environment environment = new Environment(walls, servers, studentsGenerators, exits);
+        Environment environment = new Environment(walls, servers, generators, exits);
 
         // -------- OPERATIONAL MODEL MODULE --------
         OperationalModelModule operationalModelModule = new CPM(environment);

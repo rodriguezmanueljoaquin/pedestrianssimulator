@@ -9,9 +9,9 @@ import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Objectives.Target;
 import Environment.Wall;
-import InputHandling.SimulationParameters.AgentsGeneratorParameters;
-import InputHandling.SimulationParameters.ServerGroupParameters;
-import InputHandling.SimulationParameters.TargetGroupParameters;
+import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
+import InputHandling.SimulationParameters.AuxiliarClasses.ServerGroupParameters;
+import InputHandling.SimulationParameters.AuxiliarClasses.TargetGroupParameters;
 import Utils.Rectangle;
 import Utils.Vector;
 
@@ -75,15 +75,10 @@ public class CSVHandler {
             AgentsGeneratorParameters agentsGeneratorParameters = generatorsParameters.get(generatorGroupId);
             if (agentsGeneratorParameters == null)
                 throw new RuntimeException("No parameters found for agent generator group: " + generatorGroupId);
-            AgentsGeneratorParameters.GenerationParameters generationParameters = agentsGeneratorParameters.getGenerationParameters();
+
             generators.add(
                     new AgentsGenerator(
-                            generatorGroupId, zone,
-                            agentsGeneratorParameters.getActiveTime(),
-                            agentsGeneratorParameters.getInactiveTime(),
-                            generationParameters.getTimeBetweenGenerations(),
-                            generationParameters.getMinGeneration(),
-                            generationParameters.getMaxGeneration(),
+                            generatorGroupId, zone, agentsGeneratorParameters,
                             behaviourScheme, randomSeed
                     )
             );

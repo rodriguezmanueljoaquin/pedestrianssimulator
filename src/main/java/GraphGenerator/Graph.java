@@ -44,7 +44,7 @@ public class Graph {
         double minDistance = Double.MAX_VALUE;
         double distanceToNode;
         for (Node node : this.nodes.values()) {
-            if(isPositionVisible(position, node.getPosition())) {
+            if (isPositionVisible(position, node.getPosition())) {
                 distanceToNode = node.getPosition().distance(position);
                 if (distanceToNode < minDistance) {
                     bestNode = node;

@@ -31,16 +31,16 @@ public class CIMTest {
         StateMachine stateMachine = new SuperMarketClientSM(new Graph(walls, new Vector(1, 1)));
 
         List<Agent> agents = new ArrayList<>();
-        Agent analyzedAgent = new Agent(new Vector(10, 10), 0.1, stateMachine, new ArrayList<>());
+        Agent analyzedAgent = new Agent(new Vector(10, 10), 0.1, 0.2, 1, stateMachine, new ArrayList<>());
         double neighbourhoodRadius = 9;
 
         agents.add(analyzedAgent);
-        agents.add(new Agent(new Vector(5, 5), 0.1, stateMachine, new ArrayList<>()));
-        agents.add(new Agent(new Vector(10, 5), 0.1, stateMachine, new ArrayList<>()));
-        agents.add(new Agent(new Vector(10, 15), 0.1, stateMachine, new ArrayList<>()));
-        agents.add(new Agent(new Vector(5, 10), 0.1, stateMachine, new ArrayList<>()));
-        agents.add(new Agent(new Vector(15, 10), 0.1, stateMachine, new ArrayList<>()));
-        agents.add(new Agent(new Vector(15, 15), 0.1, stateMachine, new ArrayList<>()));
+        agents.add(new Agent(new Vector(5, 5), 0.1, 0.2, 1, stateMachine, new ArrayList<>()));
+        agents.add(new Agent(new Vector(10, 5), 0.1, 0.2, 1, stateMachine, new ArrayList<>()));
+        agents.add(new Agent(new Vector(10, 15), 0.1, 0.2, 1, stateMachine, new ArrayList<>()));
+        agents.add(new Agent(new Vector(5, 10), 0.1, 0.2, 1, stateMachine, new ArrayList<>()));
+        agents.add(new Agent(new Vector(15, 10), 0.1, 0.2, 1, stateMachine, new ArrayList<>()));
+        agents.add(new Agent(new Vector(15, 15), 0.1, 0.2, 1, stateMachine, new ArrayList<>()));
         CellIndexMethod cim = new CellIndexMethod(walls, neighbourhoodRadius);
         cim.updateAgentsPosition(agents);
 

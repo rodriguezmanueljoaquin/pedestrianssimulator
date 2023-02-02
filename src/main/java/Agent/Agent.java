@@ -14,6 +14,9 @@ public class Agent {
     private final StateMachine stateMachine;
     private final Integer id;
     private final List<? extends Objective> objectives;
+    private final double maxRadius;
+    private final double minRadius;
+    private final double maxVelocity;
     private Vector position;
     private Vector velocity;
     private double radius;
@@ -22,10 +25,13 @@ public class Agent {
     private NodePath currentPath;
     private Node currentIntermediateObjectiveNode;
 
-    public Agent(Vector x, double radius, StateMachine stateMachine, List<? extends Objective> objectives) {
+    public Agent(Vector x, double minRadius, double maxRadius, double maxVelocity, StateMachine stateMachine, List<? extends Objective> objectives) {
         this.position = x;
         this.velocity = new Vector(0, 0);
-        this.radius = radius;
+        this.minRadius = minRadius;
+        this.maxRadius = maxRadius;
+        this.radius = maxRadius;
+        this.maxVelocity = maxVelocity;
         this.stateMachine = stateMachine;
         this.state = AgentStates.STARTING; //just started
         this.id = count++;
@@ -144,8 +150,20 @@ public class Agent {
 
     public double getVelocityModule() {
         double maxVelocity = this.getState().getVelocity();
-        return maxVelocity * (Math.pow((this.getRadius() - AgentConstants.MIN_RADIUS) /
-                (AgentConstants.MAX_RADIUS - AgentConstants.MIN_RADIUS), AgentConstants.B));
+        return maxVelocity * (Math.pow((this.getRadius() - this.minRadius) /
+                (this.maxRadius - this.minRadius), AgentConstants.B));
+    }
+
+    public double getMaxRadius() {
+        return maxRadius;
+    }
+
+    public double getMinRadius() {
+        return minRadius;
+    }
+
+    public double getMaxVelocity() {
+        return maxVelocity;
     }
 
     public AgentStates getState() {

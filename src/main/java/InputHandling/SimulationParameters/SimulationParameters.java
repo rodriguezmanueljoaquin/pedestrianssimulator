@@ -1,5 +1,8 @@
 package InputHandling.SimulationParameters;
 
+import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
+import InputHandling.SimulationParameters.AuxiliarClasses.ServerGroupParameters;
+import InputHandling.SimulationParameters.AuxiliarClasses.TargetGroupParameters;
 import Utils.Vector;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -12,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SimulationParameters {
-    private AgentsParameters agentsParameters;
     private Map<String, AgentsGeneratorParameters> generatorsParameters;
     private Map<String, TargetGroupParameters> targetGroupsParameters;
     private Map<String, ServerGroupParameters> serverGroupsParameters;
@@ -25,7 +27,6 @@ public class SimulationParameters {
             throw new RuntimeException("Exception when parsing SimulationParametersJSON: " + e);
         }
 
-        initAgentsParameters((JSONObject) jsonObject.get("agents"));
         initGeneratorsParameters((JSONArray) jsonObject.get("agents_generators"));
         initTargetsParameters((JSONArray) jsonObject.get("targets"));
         initServersParameters((JSONArray) jsonObject.get("servers"));
@@ -84,30 +85,25 @@ public class SimulationParameters {
         for (Object generatorParametersObj : generatorsParametersJSON) {
             JSONObject generatorParameters = (JSONObject) generatorParametersObj;
             JSONObject generationParameters = (JSONObject) generatorParameters.get("generation");
+            JSONObject agentsParameters = (JSONObject) generatorParameters.get("agents");
             this.generatorsParameters.put(
                     (String) generatorParameters.get("group_name"),
                     new AgentsGeneratorParameters(
                             (double) generatorParameters.get("active_time"),
                             (double) generatorParameters.get("inactive_time"),
 
+                            // AgentsParameters
+                            (double) agentsParameters.get("min_radius"),
+                            (double) agentsParameters.get("max_radius"),
+                            (double) agentsParameters.get("max_velocity"),
+
+                            // GenerationParameters
                             (double) generationParameters.get("frequency"),
                             ((Long) generationParameters.get("min_agents")).intValue(),
                             ((Long) generationParameters.get("max_agents")).intValue()
                     )
             );
         }
-    }
-
-    private void initAgentsParameters(JSONObject agentParameters) {
-        this.agentsParameters = new AgentsParameters(
-                (double) agentParameters.get("max_radius"),
-                (double) agentParameters.get("min_radius"),
-                (double) agentParameters.get("max_velocity")
-        );
-    }
-
-    public AgentsParameters getAgentsParameters() {
-        return agentsParameters;
     }
 
     public Map<String, AgentsGeneratorParameters> getGeneratorsParameters() {

@@ -9,8 +9,8 @@ public class AgentsGeneratorZone extends Rectangle {
 
     public AgentsGeneratorZone(Vector x1, Vector x2) {
         super(x1, x2);
-        this.rowsQty = (int) ((x2.getY() - x1.getY()) / (AgentConstants.MAX_RADIUS * 3)); // *3 because we want the agent to have some free space on the cell
-        this.colsQty = (int) ((x2.getX() - x1.getX()) / (AgentConstants.MAX_RADIUS * 3));
+        this.rowsQty = (int) ((x2.getY() - x1.getY()) / (AgentConstants.MAX_RADIUS_OF_ALL_AGENTS * 3)); // *3 because we want the agent to have some free space on the cell
+        this.colsQty = (int) ((x2.getX() - x1.getX()) / (AgentConstants.MAX_RADIUS_OF_ALL_AGENTS * 3));
     }
 
     public int getZoneMatrixSize() {
@@ -23,8 +23,8 @@ public class AgentsGeneratorZone extends Rectangle {
         Vector difference = this.x2.substract(this.x1).multiply(new Vector(1. / (this.rowsQty), 1. / (this.colsQty)));
         Vector pos = this.x1.add(difference.multiply(new Vector(row, col)));
         return pos.add(new Vector(
-                this.getRandomDoubleInRange(AgentConstants.MAX_RADIUS, 2 * AgentConstants.MAX_RADIUS),
-                this.getRandomDoubleInRange(AgentConstants.MAX_RADIUS, 2 * AgentConstants.MAX_RADIUS)
+                this.getRandomDoubleInRange(AgentConstants.MAX_RADIUS_OF_ALL_AGENTS, 2 * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
+                this.getRandomDoubleInRange(AgentConstants.MAX_RADIUS_OF_ALL_AGENTS, 2 * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS)
         ));
     }
 }

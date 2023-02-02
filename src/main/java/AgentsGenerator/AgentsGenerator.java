@@ -1,8 +1,8 @@
 package AgentsGenerator;
 
 import Agent.Agent;
-import Agent.AgentConstants;
 import AgentsBehaviour.BehaviourScheme;
+import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,39 +11,31 @@ import java.util.Random;
 public class AgentsGenerator {
     private final String id;
     private final AgentsGeneratorZone zone;
-    private final double activeTime;
-    private final double inactiveTime;
-    private final double timeBetweenGenerations;
+    private final AgentsGeneratorParameters generatorParameters;
     private final BehaviourScheme behaviourScheme;
     private final Random random;
     private int minGeneration, maxGeneration;
     private double lastGenerationTime;
 
-    public AgentsGenerator(String id, AgentsGeneratorZone zone, double activeTime, double inactiveTime, double timeBetweenGenerations,
-                           int minGeneration, int maxGeneration, BehaviourScheme behaviourScheme, long randomSeed) {
-        if (minGeneration > maxGeneration || minGeneration < 0)
-            throw new IllegalArgumentException("Bad arguments on generator agent creation limits");
-
+    public AgentsGenerator(String id, AgentsGeneratorZone zone, AgentsGeneratorParameters generatorParameters, BehaviourScheme behaviourScheme, long randomSeed) {
         this.id = id;
         this.zone = zone;
-        this.inactiveTime = inactiveTime;
-        this.activeTime = activeTime;
-        this.timeBetweenGenerations = timeBetweenGenerations;
-        this.minGeneration = minGeneration;
-        this.maxGeneration = maxGeneration;
-        this.behaviourScheme = behaviourScheme;
-
-        if (maxGeneration > zone.getZoneMatrixSize())
+        this.generatorParameters = generatorParameters;
+        this.maxGeneration = generatorParameters.getGenerationParameters().getMaxGeneration();
+        this.minGeneration = generatorParameters.getGenerationParameters().getMinGeneration();
+        if (this.maxGeneration > zone.getZoneMatrixSize())
             this.maxGeneration = zone.getZoneMatrixSize();
-        if (minGeneration > zone.getZoneMatrixSize())
+        if (this.minGeneration > zone.getZoneMatrixSize())
             this.minGeneration = zone.getZoneMatrixSize();
 
+        this.behaviourScheme = behaviourScheme;
         this.random = new Random(randomSeed);
     }
 
     public List<Agent> generate(double time) {
         List<Agent> agents = new ArrayList<>();
-        if (time % (this.activeTime + this.inactiveTime) < this.activeTime && time - this.lastGenerationTime > this.timeBetweenGenerations) {
+        if (time % (this.generatorParameters.getActiveTime() + this.generatorParameters.getInactiveTime()) < this.generatorParameters.getActiveTime()
+                && time - this.lastGenerationTime > this.generatorParameters.getGenerationParameters().getTimeBetweenGenerations()) {
             this.lastGenerationTime = time;
             // generate is on Active time, and it's time to create another generation
             int agentsToCreate = (int) (this.random.nextDouble() * (this.maxGeneration - this.minGeneration)) + this.minGeneration;
@@ -55,9 +47,15 @@ public class AgentsGenerator {
                     positionIndex = this.random.nextInt(this.zone.getZoneMatrixSize());
                 } while (positionsUsed.contains(positionIndex));
                 positionsUsed.add(positionIndex);
+
+                AgentsGeneratorParameters.AgentsParameters agentsParameters = generatorParameters.getAgentsParameters();
                 agents.add(
-                        new Agent(this.zone.getPositionByIndex(positionIndex),
-                                AgentConstants.MAX_RADIUS, this.behaviourScheme.getStateMachine(),
+                        new Agent(
+                                this.zone.getPositionByIndex(positionIndex),
+                                agentsParameters.getMinRadius(),
+                                agentsParameters.getMaxRadius(),
+                                agentsParameters.getMaxVelocity(),
+                                this.behaviourScheme.getStateMachine(),
                                 this.behaviourScheme.getObjectivesSample()
                         )
                 );
