@@ -3,13 +3,15 @@ package InputHandling.SimulationParameters.AuxiliarClasses;
 public class AgentsGeneratorParameters {
     private final double activeTime;
     private final double inactiveTime;
+    private final String behaviourSchemeKey;
     private final AgentsParameters agentsParameters;
     private final GenerationParameters generationParameters;
 
-    public AgentsGeneratorParameters(double activeTime, double inactiveTime, double minRadius, double maxRadius,
+    public AgentsGeneratorParameters(double activeTime, double inactiveTime, String behaviourSchemeKey, double minRadius, double maxRadius,
                                      double maxVelocity, double timeBetweenGenerations, int minGeneration, int maxGeneration) {
         this.activeTime = activeTime;
         this.inactiveTime = inactiveTime;
+        this.behaviourSchemeKey = behaviourSchemeKey;
         this.agentsParameters = new AgentsParameters(minRadius, maxRadius, maxVelocity);
         this.generationParameters = new GenerationParameters(timeBetweenGenerations, minGeneration, maxGeneration);
     }
@@ -20,6 +22,10 @@ public class AgentsGeneratorParameters {
 
     public double getInactiveTime() {
         return inactiveTime;
+    }
+
+    public String getBehaviourSchemeKey() {
+        return behaviourSchemeKey;
     }
 
     public GenerationParameters getGenerationParameters() {

@@ -56,7 +56,8 @@ public class CSVHandler {
         return result;
     }
 
-    public static List<AgentsGenerator> importAgentsGenerators(String filePath, BehaviourScheme behaviourScheme,
+    public static List<AgentsGenerator> importAgentsGenerators(String filePath,
+                                                               Map<String, BehaviourScheme> possibleBehaviourSchemes,
                                                                Map<String, AgentsGeneratorParameters> generatorsParameters, long randomSeed) {
         List<AgentsGenerator> generators = new ArrayList<>();
         Scanner scanner = getCSVScanner(filePath);
@@ -75,6 +76,9 @@ public class CSVHandler {
             AgentsGeneratorParameters agentsGeneratorParameters = generatorsParameters.get(generatorGroupId);
             if (agentsGeneratorParameters == null)
                 throw new RuntimeException("No parameters found for agent generator group: " + generatorGroupId);
+            BehaviourScheme behaviourScheme = possibleBehaviourSchemes.get(agentsGeneratorParameters.getBehaviourSchemeKey());
+            if (behaviourScheme == null)
+                throw new RuntimeException("Behaviour scheme: '" + agentsGeneratorParameters.getBehaviourSchemeKey() + "' not found.");
 
             generators.add(
                     new AgentsGenerator(

@@ -1,5 +1,4 @@
 import AgentsBehaviour.BehaviourScheme;
-import AgentsBehaviour.StateMachine.StateMachine;
 import AgentsBehaviour.StateMachine.SuperMarketClientSM;
 import AgentsGenerator.AgentsGenerator;
 import Environment.Environment;
@@ -10,6 +9,7 @@ import Environment.Objectives.Target;
 import Environment.Wall;
 import GraphGenerator.Graph;
 import InputHandling.EnvironmentData.CSVHandler;
+import InputHandling.ParametersNames;
 import InputHandling.SimulationParameters.SimulationParameters;
 import OperationalModelModule.CPM;
 import OperationalModelModule.OperationalModelModule;
@@ -21,14 +21,30 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
     private static final String RESULTS_PATH = "./results/";
+
+    private static Map<String, BehaviourScheme> getBehaviourSchemes(Graph graph, List<Exit> exits,
+                                                                    Map<String, List<Server>> serversMap, Map<String, List<Target>> targetsMap,
+                                                                    Random random) {
+        Map<String, BehaviourScheme> behaviourSchemes = new HashMap<>();
+
+        // --- MARKET-CLIENT ---
+        BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(new SuperMarketClientSM(graph), exits, graph, random.nextLong());
+
+        List<Objective> targetObjectives = new ArrayList<>(targetsMap.get("PRODUCT"));
+        marketClientBehaviourScheme.addObjectiveGroupToScheme(targetObjectives, 2, 5);
+        List<Objective> serverObjectives = new ArrayList<>(serversMap.get("CASHIER"));
+        marketClientBehaviourScheme.addObjectiveGroupToScheme(serverObjectives, 1, 1);
+
+        behaviourSchemes.put(ParametersNames.MARKET_CLIENT_BEHAVIOUR_SCHEME_KEY, marketClientBehaviourScheme);
+        // ---   ---
+
+        return behaviourSchemes;
+    }
 
     public static void main(String[] args) {
         Random random = new Random(1);
@@ -66,21 +82,11 @@ public class Main {
         Map<String, List<Target>> targetsMap = CSVHandler.importTargets("./input/TARGETS.csv", parameters.getTargetGroupsParameters());
 
         // -------- BEHAVIOUR --------
-        // ---- STATE MACHINE ----
-        StateMachine stateMachine = new SuperMarketClientSM(graph);
-
-        BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(stateMachine, exits, graph, random.nextLong());
-
-        // ---- ADD OBJECTIVE GROUPS ----
-        List<Objective> serverObjectives = new ArrayList<>(serversMap.get("CASHIER"));
-        marketClientBehaviourScheme.addObjectiveGroupToScheme(serverObjectives, 1, 3);
-
-        List<Objective> targetObjectives = new ArrayList<>(targetsMap.get("PRODUCT"));
-        marketClientBehaviourScheme.addObjectiveGroupToScheme(targetObjectives, 2, 5);
+        Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exits, serversMap, targetsMap, random);
 
         // -------- AGENT GENERATORS --------
         List<AgentsGenerator> generators = CSVHandler.importAgentsGenerators(
-                "./input/AGENT_GENERATORS.csv", marketClientBehaviourScheme,
+                "./input/AGENT_GENERATORS.csv", behaviours,
                 parameters.getGeneratorsParameters(), random.nextLong()
         );
 

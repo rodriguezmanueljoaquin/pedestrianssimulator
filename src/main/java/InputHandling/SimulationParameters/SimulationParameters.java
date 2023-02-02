@@ -91,6 +91,7 @@ public class SimulationParameters {
                     new AgentsGeneratorParameters(
                             (double) generatorParameters.get("active_time"),
                             (double) generatorParameters.get("inactive_time"),
+                            (String) generatorParameters.get("behaviour_scheme"),
 
                             // AgentsParameters
                             (double) agentsParameters.get("min_radius"),
