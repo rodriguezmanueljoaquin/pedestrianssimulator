@@ -36,7 +36,7 @@ public class Main {
         BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(new SuperMarketClientSM(graph), exits, graph, random.nextLong());
 
         List<Objective> targetObjectives = new ArrayList<>(targetsMap.get("PRODUCT"));
-        marketClientBehaviourScheme.addObjectiveGroupToScheme(targetObjectives, 2, 5);
+        marketClientBehaviourScheme.addObjectiveGroupToScheme(targetObjectives, 2, 3);
         List<Objective> serverObjectives = new ArrayList<>(serversMap.get("CASHIER"));
         marketClientBehaviourScheme.addObjectiveGroupToScheme(serverObjectives, 1, 1);
 
@@ -52,20 +52,13 @@ public class Main {
             new File(RESULTS_PATH).mkdir();
         }
         // -------- WALLS --------
-        List<Wall> walls = CSVHandler.importWalls("./input/PAREDES.csv");
-
-
-        walls.add(new Wall(new Vector(15, 0), new Vector(20, 5)));
-        // BORRAR ESTAS WALLS UNA VEZ Q SE TENGA UN DXF CORRECTO
+        List<Wall> walls = CSVHandler.importWalls("./input/WALLS.csv");
 
         // -------- EXITS --------
-        List<Exit> exits = CSVHandler.importExits("./input/SALIDAS.csv");
+        List<Exit> exits = CSVHandler.importExits("./input/EXITS.csv");
 
         // -------- GRAPH --------
-        List<Wall> wallsAndExits = new ArrayList<>();
-        wallsAndExits.addAll(walls);
-        wallsAndExits.addAll(exits.stream().map(Exit::getExitWall).collect(Collectors.toList()));
-        Graph graph = new Graph(wallsAndExits, new Vector(1, 1));
+        Graph graph = new Graph(walls, exits.stream().map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1));
 
         // FOR GRAPH NODES PLOT:
 //        graph.generateOutput(RESULTS_PATH);
@@ -75,18 +68,18 @@ public class Main {
         // -------- CONFIGURATION --------
         SimulationParameters parameters = new SimulationParameters("./input/parameters.json");
 
-        // -------- SERVERS --------
-        Map<String, List<Server>> serversMap = CSVHandler.importServers("./input/SERVERS.csv", parameters.getServerGroupsParameters());
-
         // -------- TARGETS --------
-        Map<String, List<Target>> targetsMap = CSVHandler.importTargets("./input/TARGETS.csv", parameters.getTargetGroupsParameters());
+        Map<String, List<Target>> targetsMap = CSVHandler.importTargets("./input/old/TARGETS.csv", parameters.getTargetGroupsParameters());
+
+        // -------- SERVERS --------
+        Map<String, List<Server>> serversMap = CSVHandler.importServers("./input/old/SERVERS.csv", parameters.getServerGroupsParameters());
 
         // -------- BEHAVIOUR --------
         Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exits, serversMap, targetsMap, random);
 
         // -------- AGENT GENERATORS --------
         List<AgentsGenerator> generators = CSVHandler.importAgentsGenerators(
-                "./input/AGENT_GENERATORS.csv", behaviours,
+                "./input/GENERATORS.csv", behaviours,
                 parameters.getGeneratorsParameters(), random.nextLong()
         );
 

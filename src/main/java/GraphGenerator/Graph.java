@@ -21,17 +21,21 @@ public class Graph {
     };
 
     // Map because we avoid recreating nodes on positions (key in map) already visited
-    private Map<Vector, Node> nodes;
-    private List<Wall> walls;
+    private final Map<Vector, Node> nodes;
+    private final List<Wall> walls;
 
-    public Graph(List<Wall> walls, Vector initialPosition) {
+    public Graph(List<Wall> walls, List<Wall> exits, Vector initialPosition) {
         this.nodes = new HashMap<>();
         this.walls = walls;
-        this.generateGraph(initialPosition);
+        this.generateGraph(initialPosition, exits);
     }
 
     public boolean isPositionVisible(Vector origin, Vector destiny) {
-        for (Wall wall : this.walls)
+        return isPositionVisibleWithinWalls(origin, destiny, this.walls);
+    }
+
+    private boolean isPositionVisibleWithinWalls(Vector origin, Vector destiny, List<Wall> walls) {
+        for (Wall wall : walls)
             if (wall.intersectsLine(origin, destiny) && !wall.contains(destiny))
                 // wall intersects the path from origin and destiny, and destiny is not in the wall
                 return false;
@@ -78,9 +82,14 @@ public class Graph {
     }
 
     // initialPosition has to be a valid position, from this node the graph will expand
-    private void generateGraph(Vector initialPosition) {
+    // considers exits in order to avoid the nodes from going out of the environment indefinitely, this way they stop before going through the exit
+    private void generateGraph(Vector initialPosition, List<Wall> extraWalls) {
+        List<Wall> wallsToConsider = new ArrayList<>(this.walls);
+        wallsToConsider.addAll(extraWalls);
+
         Node root = new Node(initialPosition);
         this.nodes.put(initialPosition, root);
+
         List<Node> notVisitedNodes = new ArrayList<>();
         notVisitedNodes.add(root);
 
@@ -98,10 +107,10 @@ public class Graph {
                     neighbor = this.nodes.get(possibleNeighbourPosition);
 
                     // check if its visible
-                    if (isPositionVisible(startPosition, possibleNeighbourPosition))
+                    if (isPositionVisibleWithinWalls(startPosition, possibleNeighbourPosition, wallsToConsider))
                         currentNeighbours.add(neighbor);
 
-                } else if (isPositionVisible(startPosition, possibleNeighbourPosition)) {
+                } else if (isPositionVisibleWithinWalls(startPosition, possibleNeighbourPosition, wallsToConsider)) {
                     // position not considered and valid
                     neighbor = new Node(possibleNeighbourPosition);
                     this.nodes.put(possibleNeighbourPosition, neighbor);
