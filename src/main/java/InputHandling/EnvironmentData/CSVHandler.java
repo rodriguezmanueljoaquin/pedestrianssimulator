@@ -67,7 +67,7 @@ public class CSVHandler {
 
             AgentsGeneratorZone zone = new AgentsGeneratorZone(
                     new Utils.Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
-                    new Utils.Vector(Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]))
+                    new Utils.Vector(Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]))
             );
 
             int delimiterIndex = tokens[0].indexOf('_');
@@ -76,6 +76,7 @@ public class CSVHandler {
             AgentsGeneratorParameters agentsGeneratorParameters = generatorsParameters.get(generatorGroupId);
             if (agentsGeneratorParameters == null)
                 throw new RuntimeException("No parameters found for agent generator group: " + generatorGroupId);
+
             BehaviourScheme behaviourScheme = possibleBehaviourSchemes.get(agentsGeneratorParameters.getBehaviourSchemeKey());
             if (behaviourScheme == null)
                 throw new RuntimeException("Behaviour scheme: '" + agentsGeneratorParameters.getBehaviourSchemeKey() + "' not found.");
