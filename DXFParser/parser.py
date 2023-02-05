@@ -44,9 +44,10 @@ def get_layer_figures(msp, layer_prefix, expected_types, with_name=False, figure
 
         for new_figure in new_figures:
             if with_name:
-                array.append([e.dxf.layer.split('_', 1)[1]].extend(new_figure))
-            else:
-                array.append(new_figure)
+                new_figure.insert(0, e.dxf.layer.split('_', 1)[1])
+
+            array.append(new_figure)
+
 
 
     if len(array) == 0:
@@ -85,6 +86,8 @@ def parse_dxf(in_file_path, out_path):
     print("\tParsing generators...")
     get_layer_figures_and_write_to_file(msp, GENERATORS_LAYER_PREFIX, ['LINE', 'POLYLINE'], out_path, 
                 with_name=True, figures_are_rectangles=True)
+
+    print("Parsing of dxf file finished...")
 
 
 EXAMPLE_PATH = "DXFParser/DXFExamples/Plano_prueba_simulacion_V02.dxf"
