@@ -34,6 +34,7 @@ public class AgentsGenerator {
 
     public List<Agent> generate(double time) {
         List<Agent> agents = new ArrayList<>();
+
         if (time % (this.generatorParameters.getActiveTime() + this.generatorParameters.getInactiveTime()) < this.generatorParameters.getActiveTime()
                 && time - this.lastGenerationTime > this.generatorParameters.getGenerationParameters().getTimeBetweenGenerations()) {
             this.lastGenerationTime = time;

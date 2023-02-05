@@ -9,12 +9,14 @@ public class Rectangle {
      */
 
     public Rectangle(Vector x1, Vector x2) {
-        // check dots are as expected
-        if (x1.getX() >= x2.getX() || x1.getY() >= x2.getY())
-            throw new IllegalArgumentException("Rectangle arguments are not as expected.");
-
-        this.x1 = x1;
-        this.x2 = x2;
+        if (x1.getX() > x2.getX() || (x1.getX() == x2.getX() && x1.getY() > x2.getY())) {
+            // arguments are inverted
+            this.x1 = x2;
+            this.x2 = x1;
+        } else {
+            this.x1 = x1;
+            this.x2 = x2;
+        }
     }
 
     public Vector getMiddlePoint() {

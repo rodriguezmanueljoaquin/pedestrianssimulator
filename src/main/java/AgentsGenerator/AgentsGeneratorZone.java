@@ -11,6 +11,10 @@ public class AgentsGeneratorZone extends Rectangle {
         super(x1, x2);
         this.rowsQty = (int) ((x2.getY() - x1.getY()) / (AgentConstants.MAX_RADIUS_OF_ALL_AGENTS * 3)); // *3 because we want the agent to have some free space on the cell
         this.colsQty = (int) ((x2.getX() - x1.getX()) / (AgentConstants.MAX_RADIUS_OF_ALL_AGENTS * 3));
+        if (this.rowsQty == 0)
+            this.rowsQty = 1;
+        if (this.colsQty == 0)
+            this.colsQty = 1;
     }
 
     public int getZoneMatrixSize() {
