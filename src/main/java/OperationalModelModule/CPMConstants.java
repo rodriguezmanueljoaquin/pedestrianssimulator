@@ -11,5 +11,6 @@ public class CPMConstants {
             WALL_BP = 1, // cuanto mas grande, a mayor distancia reacciona más
             AP_VARIATION = 100,
             BP_VARIATION = 0.1,
-            NON_MOVING_AGENT_REPULSION_MULTIPLIER = 1;
+            NON_MOVING_AGENT_REPULSION_MULTIPLIER = 1,
+            WALL_DISTANCE_CONSIDERATION = 5;
 }

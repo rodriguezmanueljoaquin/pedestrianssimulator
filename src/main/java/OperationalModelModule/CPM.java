@@ -9,6 +9,9 @@ import Utils.Vector;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+
+import static OperationalModelModule.CPMConstants.WALL_DISTANCE_CONSIDERATION;
 
 public class CPM implements OperationalModelModule {
     private final CellIndexMethod CIM;
@@ -79,15 +82,20 @@ public class CPM implements OperationalModelModule {
                     )
             );
         }
-
-        Vector closestWallPosition = this.environment.getClosestWall(agent.getPosition()).getClosestPoint(agent.getPosition());
-        Vector wallRepulsion = calculateRepulsionForce(
-                agent.getPosition(), closestWallPosition, agent.getVelocity(),
-                getRandomDoubleInRange(CPMConstants.WALL_AP, CPMConstants.AP_VARIATION, random),
-                getRandomDoubleInRange(CPMConstants.WALL_BP, CPMConstants.BP_VARIATION, random)
-        );
-        resultantNc = resultantNc.add(wallRepulsion);
-
+        List<Vector> closestWallsPosition = this.environment.getWalls()
+                .stream()
+                .map((a) -> a.getClosestPoint(agent.getPosition()))
+                .filter((a) -> a.distance(agent.getPosition()) <= WALL_DISTANCE_CONSIDERATION)
+                .collect(Collectors.toList());
+//        Vector closestWallPosition = this.environment.getClosestWall(agent.getPosition()).getClosestPoint(agent.getPosition());
+        for(Vector closestWallPosition : closestWallsPosition) {
+            Vector wallRepulsion = calculateRepulsionForce(
+                    agent.getPosition(), closestWallPosition, agent.getVelocity(),
+                    getRandomDoubleInRange(CPMConstants.WALL_AP, CPMConstants.AP_VARIATION, random),
+                    getRandomDoubleInRange(CPMConstants.WALL_BP, CPMConstants.BP_VARIATION, random)
+            );
+            resultantNc = resultantNc.add(wallRepulsion);
+        }
         return resultantNc.normalize();
     }
 
