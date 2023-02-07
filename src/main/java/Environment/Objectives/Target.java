@@ -8,11 +8,13 @@ public class Target implements Objective {
     private final Vector position;
     private final String id;
     private final Double attendingTime; //milliseconds needed to complete task
+    private final Double attendingRadius; //radius at which the target can be attended
 
-    public Target(String id, Vector position, Double attendingTime) {
+    public Target(String id, Vector position, Double attendingTime, Double attendingRadius) {
         this.position = position;
         this.attendingTime = attendingTime;
         this.id = id;
+        this.attendingRadius = attendingRadius;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class Target implements Objective {
 
     @Override
     public Boolean canAttend(Agent agent) {
-        return true;
+        return agent.distance(getCentroidPosition()) < this.attendingRadius;
     }
 
     @Override

@@ -20,6 +20,10 @@
 
     "targets": [
         {
+            "group_name": "-",
+            "attending_time": 5.0
+        },
+        {
             "group_name": "PRODUCT",
             "attending_time": 5.0
         },

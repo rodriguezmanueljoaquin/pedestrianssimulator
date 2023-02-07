@@ -93,6 +93,38 @@ public class CSVHandler {
         return generators;
     }
 
+    public static Map<String, List<Target>> importTargets(String filePath, Map<String, TargetGroupParameters> targetGroupsParameters) {
+        Map<String, List<Target>> targets = new HashMap<>();
+        for (String key : targetGroupsParameters.keySet()) {
+            targets.put(key, new ArrayList<>());
+        }
+
+        Scanner scanner = getCSVScanner(filePath);
+        while (scanner.hasNextLine()) {
+            String[] tokens = scanner.nextLine().split(",");
+
+            String name = tokens[0];
+            int delimiterIndex = name.indexOf("_");
+            String targetGroupId = name.substring(0, delimiterIndex);
+            TargetGroupParameters targetGroupParameters = targetGroupsParameters.get(targetGroupId);
+
+            if (targetGroupParameters == null)
+                throw new RuntimeException("No parameters found for target group: " + targetGroupId);
+
+            targets.get(targetGroupId).add(
+                    new Target(
+                            name.substring(delimiterIndex + 1),
+                            new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
+                            targetGroupParameters.getAttendingTime(),
+                            Double.parseDouble(tokens[4])
+                    )
+            );
+        }
+
+        scanner.close();
+        return targets;
+    }
+
     public static Map<String, List<Server>> importServers(String filePath, Map<String, ServerGroupParameters> serverGroupsParameters) {
         Map<String, List<Server>> servers = new HashMap<>();
         for (String key : serverGroupsParameters.keySet()) {
@@ -118,37 +150,6 @@ public class CSVHandler {
 
         scanner.close();
         return servers;
-    }
-
-    public static Map<String, List<Target>> importTargets(String filePath, Map<String, TargetGroupParameters> targetGroupsParameters) {
-        Map<String, List<Target>> targets = new HashMap<>();
-        for (String key : targetGroupsParameters.keySet()) {
-            targets.put(key, new ArrayList<>());
-        }
-
-        Scanner scanner = getCSVScanner(filePath);
-        while (scanner.hasNextLine()) {
-            String[] tokens = scanner.nextLine().split(",");
-
-            String name = tokens[0];
-            int delimiterIndex = name.indexOf("_");
-            String targetGroupId = name.substring(0, delimiterIndex);
-            TargetGroupParameters targetGroupParameters = targetGroupsParameters.get(targetGroupId);
-
-            if (targetGroupParameters == null)
-                throw new RuntimeException("No parameters found for target group: " + targetGroupId);
-
-            targets.get(targetGroupId).add(
-                    new Target(
-                            name.substring(delimiterIndex + 1),
-                            new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
-                            targetGroupParameters.getAttendingTime()
-                    )
-            );
-        }
-
-        scanner.close();
-        return targets;
     }
 
     private static Scanner getCSVScanner(String filePath) {

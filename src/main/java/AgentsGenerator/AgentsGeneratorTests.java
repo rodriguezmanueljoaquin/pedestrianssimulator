@@ -21,7 +21,7 @@ public class AgentsGeneratorTests {
         AgentsGeneratorZone agentZone = new AgentsGeneratorZone(new Vector(0,0),new Vector(5,5));
         AgentsGeneratorParameters agentsGeneratorParameters = new AgentsGeneratorParameters(500,1,"",0.5,2.0,3.0,5,1000,5000);
         BehaviourScheme behaviourScheme = mock(BehaviourScheme.class);
-        Objective obj = new Target("aasdf",new Vector(2,2),1.);
+        Objective obj = new Target("aasdf",new Vector(2,2),1., 0.4);
         List<Objective> objectives = new ArrayList<>();
         objectives.add(obj);
         when(behaviourScheme.getObjectivesSample()).thenReturn(objectives);
