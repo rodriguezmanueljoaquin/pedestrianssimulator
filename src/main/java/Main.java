@@ -35,7 +35,7 @@ public class Main {
         // --- MARKET-CLIENT ---
         BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(new SuperMarketClientSM(graph), exits, graph, random.nextLong());
 
-        List<Objective> targetObjectives = new ArrayList<>(targetsMap.get("PRODUCT"));
+        List<Objective> targetObjectives = new ArrayList<>(targetsMap.get("-"));
         marketClientBehaviourScheme.addObjectiveGroupToScheme(targetObjectives, 2, 3);
         List<Objective> serverObjectives = new ArrayList<>(serversMap.get("CASHIER"));
         marketClientBehaviourScheme.addObjectiveGroupToScheme(serverObjectives, 1, 1);
@@ -69,7 +69,7 @@ public class Main {
         SimulationParameters parameters = new SimulationParameters("./input/parameters.json");
 
         // -------- TARGETS --------
-        Map<String, List<Target>> targetsMap = CSVHandler.importTargets("./input/old/TARGETS.csv", parameters.getTargetGroupsParameters());
+        Map<String, List<Target>> targetsMap = CSVHandler.importTargets("./input/TARGETS.csv", parameters.getTargetGroupsParameters());
 
         // -------- SERVERS --------
         Map<String, List<Server>> serversMap = CSVHandler.importServers("./input/old/SERVERS.csv", parameters.getServerGroupsParameters());
