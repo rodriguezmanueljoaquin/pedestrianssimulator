@@ -223,7 +223,7 @@ public class Graph {
         }
 
         for (Node node : this.nodes.values()) {
-            StringBuilder neighboursIds = new StringBuilder("");
+            StringBuilder neighboursIds = new StringBuilder();
             node.getNeighbors().forEach(node1 -> neighboursIds.append(String.format(Locale.ENGLISH, "%d;", node1.getId())));
             writer.write(String.format(Locale.ENGLISH, "%d;%s;%s\n", node.getId(), node.getPosition().toString(), neighboursIds));
         }

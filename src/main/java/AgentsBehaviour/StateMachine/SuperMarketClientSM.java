@@ -4,6 +4,7 @@ import Agent.Agent;
 import Agent.AgentConstants;
 import Agent.AgentStates;
 import Environment.Objectives.ObjectiveType;
+import Environment.Objectives.Target;
 import GraphGenerator.Graph;
 
 public class SuperMarketClientSM extends DefaultSM {
@@ -19,8 +20,8 @@ public class SuperMarketClientSM extends DefaultSM {
     @Override
     public void movingBehaviour(Agent agent, double currentTime) {
         if (agent.getCurrentObjective().getType().equals(ObjectiveType.TARGET)) {
-            // only approximates slowly to targets
-            if (agent.getPosition().distance(agent.getCurrentObjective().getPosition(agent)) < AgentConstants.MINIMUM_DISTANCE_TO_APPROXIMATING) {
+            //
+            if (agent.getPosition().distance(agent.getCurrentObjective().getPosition(agent)) < ((Target) agent.getCurrentObjective()).getAttendingRadius() +  AgentConstants.MINIMUM_DISTANCE_TO_APPROXIMATING) {
                 agent.setState(AgentStates.APPROXIMATING);
             }
         } else {

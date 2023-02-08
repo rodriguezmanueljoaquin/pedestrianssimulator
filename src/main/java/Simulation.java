@@ -73,10 +73,12 @@ public class Simulation {
             // remove agents that left and update the velocity of the rest
             List<Agent> leavingAgents = new ArrayList<>();
             for (Agent agent : this.agents) {
-                if (agent.getState() == AgentStates.LEAVING && this.time - agent.getStartedAttendingAt() > Constants.LEAVING_TIME) {
-                    System.out.println("Agent started attending time: " + agent.getStartedAttendingAt().toString());
+//                if (agent.getState() == AgentStates.LEAVING && this.time - agent.getStartedAttendingAt() > Constants.LEAVING_TIME) {
+//                    System.out.println("Agent started attending time: " + agent.getStartedAttendingAt().toString());
+//                    leavingAgents.add(agent);
+//                }
+                if(agent.getState() == AgentStates.LEAVING)
                     leavingAgents.add(agent);
-                }
                 else
                     agent.updateVelocity();
             }

@@ -1,4 +1,5 @@
 import AgentsBehaviour.BehaviourScheme;
+import AgentsBehaviour.StateMachine.DefaultSM;
 import AgentsBehaviour.StateMachine.SuperMarketClientSM;
 import AgentsGenerator.AgentsGenerator;
 import Environment.Environment;

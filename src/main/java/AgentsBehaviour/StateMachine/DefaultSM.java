@@ -67,8 +67,10 @@ public class DefaultSM implements StateMachine {
 
     @Override
     public void movingBehaviour(Agent agent, double currentTime) {
-        if (agent.reachedObjective()) {
+        if (agent.getCurrentObjective().reachedObjective(agent)) {
             // when agent has arrived to objective
+//            if(agent.getCurrentObjective().getType() == ObjectiveType.TARGET)
+//                System.out.println("AGENT IN RADIUS " + agent.getPosition().toString() + " FOR TARGET " + agent.getCurrentObjective().getCentroidPosition().toString() + " DISTANCE BEING " + agent.distance(agent.getCurrentObjective().getCentroidPosition()));
             agent.setStartedAttendingAt(currentTime);
             agent.setState(AgentStates.ATTENDING);
         }
@@ -105,7 +107,7 @@ public class DefaultSM implements StateMachine {
             case WAITING_IN_QUEUE:
                 if (agent.getCurrentObjective().hasFinishedAttending(agent, currentTime)) {
                     this.removeFromQueueAndUpdate(agent, currentTime);
-                } else if (!agent.reachedObjective()) {
+                } else if (!agent.getCurrentObjective().reachedObjective(agent)) {
                     // update in queue, has to move
                     this.updateAgentCurrentPath(agent);
                     agent.setState(AgentStates.MOVING_TO_QUEUE_POSITION);

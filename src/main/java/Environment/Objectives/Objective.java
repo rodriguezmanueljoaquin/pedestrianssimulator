@@ -1,6 +1,7 @@
 package Environment.Objectives;
 
 import Agent.Agent;
+import Agent.AgentConstants;
 import Utils.Vector;
 
 public interface Objective {
@@ -13,4 +14,8 @@ public interface Objective {
     ObjectiveType getType();
 
     Vector getCentroidPosition();
+
+    default Boolean reachedObjective(Agent agent){
+        return agent.distance(this.getPosition(agent)) < AgentConstants.MINIMUM_DISTANCE_TO_TARGET;
+    }
 }

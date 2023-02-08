@@ -5,7 +5,7 @@ import java.util.List;
 
 // necessary for AStar heuristic
 public class NodePath {
-    private List<Node> path;
+    private final List<Node> path;
     private Double functionValue;
     private Double distance;
 

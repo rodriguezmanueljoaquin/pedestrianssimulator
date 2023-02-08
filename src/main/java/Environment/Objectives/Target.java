@@ -17,6 +17,10 @@ public class Target implements Objective {
         this.attendingRadius = attendingRadius;
     }
 
+    public Double getAttendingRadius(){
+        return attendingRadius;
+    }
+
     @Override
     public Vector getPosition(Agent agent) {
         return position;
@@ -30,7 +34,7 @@ public class Target implements Objective {
 
     @Override
     public Boolean canAttend(Agent agent) {
-        return agent.distance(getCentroidPosition()) < this.attendingRadius;
+        return true;
     }
 
     @Override
@@ -41,5 +45,11 @@ public class Target implements Objective {
     @Override
     public Vector getCentroidPosition() {
         return position;
+    }
+
+    @Override
+    public Boolean reachedObjective(Agent agent) {
+//        System.out.println(agent.getPosition().toString() + " " + this.attendingRadius.toString());
+        return agent.distance(getCentroidPosition()) < this.attendingRadius;
     }
 }

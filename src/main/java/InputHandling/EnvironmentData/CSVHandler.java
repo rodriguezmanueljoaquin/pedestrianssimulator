@@ -116,7 +116,7 @@ public class CSVHandler {
                             name.substring(delimiterIndex + 1),
                             new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
                             targetGroupParameters.getAttendingTime(),
-                            Double.parseDouble(tokens[4])
+                            Double.parseDouble(tokens[4]) + 5
                     )
             );
         }

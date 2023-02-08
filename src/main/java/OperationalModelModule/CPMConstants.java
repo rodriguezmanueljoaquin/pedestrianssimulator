@@ -1,7 +1,7 @@
 package OperationalModelModule;
 
 public class CPMConstants {
-    public static final double DTS_NEEDED_FOR_EXPANSION = 5;
+    public static final double DTS_NEEDED_FOR_EXPANSION = 50;
     public static final double NEIGHBOURS_RADIUS = 5.0;
     public static final double
             ORIGINAL_DIRECTION_AP = 200,

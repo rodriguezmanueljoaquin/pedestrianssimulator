@@ -62,7 +62,8 @@ public class AgentsGeneratorParameters {
 
     public class GenerationParameters {
         private final double timeBetweenGenerations;
-        private int minGeneration, maxGeneration;
+        private final int minGeneration;
+        private final int maxGeneration;
 
         public GenerationParameters(double timeBetweenGenerations, int minGeneration, int maxGeneration) {
             if (minGeneration > maxGeneration || minGeneration < 0)

@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Environment {
-    private List<Wall> walls;
-    private List<Server> servers;
-    private List<AgentsGenerator> generators;
-    private List<Exit> exits;
+    private final List<Wall> walls;
+    private final List<Server> servers;
+    private final List<AgentsGenerator> generators;
+    private final List<Exit> exits;
 
     public Environment(List<Wall> walls, List<Server> servers, List<AgentsGenerator> generators, List<Exit> exits) {
         this.walls = walls;
