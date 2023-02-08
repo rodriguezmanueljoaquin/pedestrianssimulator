@@ -24,7 +24,7 @@ public class Simulation {
     private final double dt;
     private final Environment environment;
     private final Random random;
-    private final OperationalModelModule operationalModelModule;
+    private final OperationalModelModule  operationalModelModule;
     private double time;
     private PrintWriter writer;
 
@@ -73,8 +73,10 @@ public class Simulation {
             // remove agents that left and update the velocity of the rest
             List<Agent> leavingAgents = new ArrayList<>();
             for (Agent agent : this.agents) {
-                if (agent.getState() == AgentStates.LEAVING && this.time - agent.getStartedAttendingAt() > Constants.LEAVING_TIME)
+                if (agent.getState() == AgentStates.LEAVING && this.time - agent.getStartedAttendingAt() > Constants.LEAVING_TIME) {
+                    System.out.println("Agent started attending time: " + agent.getStartedAttendingAt().toString());
                     leavingAgents.add(agent);
+                }
                 else
                     agent.updateVelocity();
             }

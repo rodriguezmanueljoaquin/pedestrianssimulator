@@ -40,16 +40,9 @@ public class Agent {
 
     public void updateVelocity() {
         if (this.getState() == AgentStates.LEAVING) {
-            // will be destroyed next iteration
-            //TODO: PODEMOS HACER UNA PROYECCION A 5 METROS,
-            //HACIENDO POSICION_AGENTE - POSICION_CENTROID_EXIT
-            //PROYECTAR Y HACERLO CAMINAR HASTA AHI
-            //COMO EL AGENTE ESTA ADENTRO Y LA EXIT LO MAS AFUERA DEBERIA APUNTAR PARA AFUERA
-            //TAL VEZNO IGUAL PQ SE PASA POR POCO Y TIENE QUE 'VOLVER'
-            this.setVelocity(new Vector(0, 0));
+            this.setVelocity(new Vector(0,0));
             return;
         }
-
         // first check if intermediate node has to be updated
         if (currentIntermediateObjectiveNode != null && this.reachedPosition(this.currentIntermediateObjectiveNode.getPosition())) {
             // intermediate node reached, update it
@@ -63,7 +56,6 @@ public class Agent {
         else {
             objectivePosition = this.currentIntermediateObjectiveNode.getPosition();
         }
-
         Vector r = objectivePosition.substract(this.getPosition()).normalize();
         this.setVelocity(r.scalarMultiply(this.getVelocityModule()));
     }

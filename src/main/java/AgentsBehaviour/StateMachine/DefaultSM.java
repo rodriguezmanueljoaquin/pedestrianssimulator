@@ -121,7 +121,7 @@ public class DefaultSM implements StateMachine {
                 break;
 
             case LEAVING:
-                // does nothing as agent will be removed in next iteration
+                System.out.println("Agent velocity at LEAVING: " + agent.getVelocity().toString());
             default:
         }
     }
