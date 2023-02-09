@@ -111,7 +111,7 @@ def parse_dxf(in_file_path, out_path):
     parse_layer_figures_and_write_to_file(msp, EXITS_LAYER_PREFIX, ['LINE', 'POLYLINE'], out_path)
 
     print("\tParsing generators...")
-    parse_layer_figures_and_write_to_file(msp, GENERATORS_LAYER_PREFIX, ['LINE', 'POLYLINE'], out_path, 
+    parse_layer_figures_and_write_to_file(msp, GENERATORS_LAYER_PREFIX, ['POLYLINE'], out_path, 
                 with_name=True, figures_are_rectangles=True)
 
     print("\tParsing targets...")
@@ -125,15 +125,24 @@ def parse_dxf(in_file_path, out_path):
     print("Parsing of dxf file finished...")
 
 
-EXAMPLE_PATH = "DXFParser/DXFExamples/Plano prueba simulacion V03.dxf"
+EXAMPLE_DXF_PATH = "DXFParser/DXFExamples/Plano prueba simulacion V03.dxf"
+EXAMPLE_JSON_PATH = "input/parameters.json"
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Parse a .dxf file to a the .csv files necessary for the program.")
+    
     parser.add_argument("-dxf", 
-    help="Path to the .dxf file to be used by the programs. \
-This file has to follow the five layers requirements of this program indicated on the README. \
-Defaults to: " + EXAMPLE_PATH, 
-    type=str, default=EXAMPLE_PATH, required=False)
+    help="Path to the .dxf file to be used by the program to define the environment of the simulation. \
+This file has to follow the requirements indicated on the README. \
+Defaults to: " + EXAMPLE_DXF_PATH, 
+    type=str, default=EXAMPLE_DXF_PATH, required=False)
+
+    parser.add_argument("-params", 
+    help="Path to the .json file to be used by the program to define the behavior of the components of the simulation. \
+This file requirements indicated on the README. \
+Defaults to: " + EXAMPLE_JSON_PATH, 
+    type=str, default=EXAMPLE_JSON_PATH, required=False)
+
     args = parser.parse_args()
 
     parse_dxf(args.dxf, "input/")
