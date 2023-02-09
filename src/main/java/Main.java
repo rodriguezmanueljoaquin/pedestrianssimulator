@@ -36,10 +36,9 @@ public class Main {
         // --- MARKET-CLIENT ---
         BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(new SuperMarketClientSM(graph), exits, graph, random.nextLong());
 
-        List<Objective> targetObjectives = new ArrayList<>(targetsMap.get("-"));
-        marketClientBehaviourScheme.addObjectiveGroupToScheme(targetObjectives, 2, 3);
-        List<Objective> serverObjectives = new ArrayList<>(serversMap.get("CASHIER"));
-        marketClientBehaviourScheme.addObjectiveGroupToScheme(serverObjectives, 1, 1);
+        marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCTS")), 2, 3);
+        marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("LETTERS")), 1, 1);
+        marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(serversMap.get("CASHIER")), 1, 1);
 
         behaviourSchemes.put(ParametersNames.MARKET_CLIENT_BEHAVIOUR_SCHEME_KEY, marketClientBehaviourScheme);
         // ---   ---

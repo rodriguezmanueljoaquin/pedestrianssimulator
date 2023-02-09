@@ -70,8 +70,7 @@ public class CSVHandler {
                     new Utils.Vector(Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]))
             );
 
-            int delimiterIndex = tokens[0].indexOf('_');
-            String generatorGroupId = tokens[0].substring(0, delimiterIndex);
+            String generatorGroupId = tokens[0];
 
             AgentsGeneratorParameters agentsGeneratorParameters = generatorsParameters.get(generatorGroupId);
             if (agentsGeneratorParameters == null)
@@ -103,9 +102,7 @@ public class CSVHandler {
         while (scanner.hasNextLine()) {
             String[] tokens = scanner.nextLine().split(",");
 
-            String name = tokens[0];
-            int delimiterIndex = name.indexOf("_");
-            String targetGroupId = name.substring(0, delimiterIndex);
+            String targetGroupId = tokens[0];
             TargetGroupParameters targetGroupParameters = targetGroupsParameters.get(targetGroupId);
 
             if (targetGroupParameters == null)
@@ -113,10 +110,10 @@ public class CSVHandler {
 
             targets.get(targetGroupId).add(
                     new Target(
-                            name.substring(delimiterIndex + 1),
+                            targetGroupId,
                             new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
                             targetGroupParameters.getAttendingTime(),
-                            Double.parseDouble(tokens[4]) + 5
+                            Double.parseDouble(tokens[4])
                     )
             );
         }

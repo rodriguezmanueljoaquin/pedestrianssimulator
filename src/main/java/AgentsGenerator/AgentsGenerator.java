@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class AgentsGenerator {
-    private final String id;
+    private final String groupId;
     private final AgentsGeneratorZone zone;
     private final AgentsGeneratorParameters generatorParameters;
     private final BehaviourScheme behaviourScheme;
@@ -17,8 +17,8 @@ public class AgentsGenerator {
     private int minGeneration, maxGeneration;
     private double lastGenerationTime;
 
-    public AgentsGenerator(String id, AgentsGeneratorZone zone, AgentsGeneratorParameters generatorParameters, BehaviourScheme behaviourScheme, long randomSeed) {
-        this.id = id;
+    public AgentsGenerator(String groupId, AgentsGeneratorZone zone, AgentsGeneratorParameters generatorParameters, BehaviourScheme behaviourScheme, long randomSeed) {
+        this.groupId = groupId;
         this.zone = zone;
         this.generatorParameters = generatorParameters;
         this.maxGeneration = generatorParameters.getGenerationParameters().getMaxGeneration();

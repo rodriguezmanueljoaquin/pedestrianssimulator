@@ -79,7 +79,6 @@ def get_layer_figures(msp, layer_prefix, expected_types, with_name=False, figure
 
 def write_to_file(file, array, with_name=False):
     for value in array:
-        print(value)
         if with_name:
             file.write(f'{value[0]}, ')
 
@@ -126,7 +125,7 @@ def parse_dxf(in_file_path, out_path):
     print("Parsing of dxf file finished...")
 
 
-EXAMPLE_PATH = "DXFParser/DXFExamples/Plano_prueba_simulacion_V02.dxf"
+EXAMPLE_PATH = "DXFParser/DXFExamples/Plano prueba simulacion V03.dxf"
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Parse a .dxf file to a the .csv files necessary for the program.")

@@ -19,11 +19,8 @@ public class SuperMarketClientSM extends DefaultSM {
 
     @Override
     public void movingBehaviour(Agent agent, double currentTime) {
-        if (agent.getCurrentObjective().getType().equals(ObjectiveType.TARGET)) {
-            //
-            if (agent.getPosition().distance(agent.getCurrentObjective().getPosition(agent)) < ((Target) agent.getCurrentObjective()).getAttendingRadius() +  AgentConstants.MINIMUM_DISTANCE_TO_APPROXIMATING) {
-                agent.setState(AgentStates.APPROXIMATING);
-            }
+        if (agent.getCurrentObjective().getType().equals(ObjectiveType.TARGET) && agent.getCurrentObjective().reachedObjective(agent)) {
+            agent.setState(AgentStates.APPROXIMATING);
         } else {
             super.movingBehaviour(agent, currentTime);
         }

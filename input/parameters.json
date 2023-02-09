@@ -1,7 +1,7 @@
 {
     "agents_generators": [
         {
-            "group_name": "-",
+            "group_name": "BOTTOM",
             "behaviour_scheme": "MARKET-CLIENT",
             "agents": {
                 "min_radius": 0.2,
@@ -15,6 +15,22 @@
                 "min_agents": 1,
                 "max_agents": 1
             }
+        },
+        {
+            "group_name": "TOP",
+            "behaviour_scheme": "MARKET-CLIENT",
+            "agents": {
+                "min_radius": 0.2,
+                "max_radius": 0.6,
+                "max_velocity": 1.0
+            },
+            "active_time": 10.0,
+            "inactive_time": 40.0,
+            "generation": {
+                "frequency": 5.0,
+                "min_agents": 1,
+                "max_agents": 4
+            }
         }
     ],
 
@@ -24,11 +40,11 @@
             "attending_time": 5.0
         },
         {
-            "group_name": "PRODUCT",
+            "group_name": "PRODUCTS",
             "attending_time": 5.0
         },
         {
-            "group_name": "LETTER",
+            "group_name": "LETTERS",
             "attending_time": 1.0
         }
     ],
