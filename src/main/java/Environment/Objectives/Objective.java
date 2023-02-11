@@ -15,7 +15,7 @@ public interface Objective {
 
     Vector getCentroidPosition();
 
-    default Boolean reachedObjective(Agent agent){
+    default Boolean reachedObjective(Agent agent) {
         return agent.distance(this.getPosition(agent)) < AgentConstants.MINIMUM_DISTANCE_TO_TARGET;
     }
 }

@@ -6,7 +6,6 @@ import OperationalModelModule.Collisions.AgentsCollision;
 import OperationalModelModule.Collisions.CollisionsFinder;
 import OperationalModelModule.Collisions.WallCollision;
 import OperationalModelModule.OperationalModelModule;
-import Utils.Constants;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -24,7 +23,7 @@ public class Simulation {
     private final double dt;
     private final Environment environment;
     private final Random random;
-    private final OperationalModelModule  operationalModelModule;
+    private final OperationalModelModule operationalModelModule;
     private double time;
     private PrintWriter writer;
 
@@ -77,7 +76,7 @@ public class Simulation {
 //                    System.out.println("Agent started attending time: " + agent.getStartedAttendingAt().toString());
 //                    leavingAgents.add(agent);
 //                }
-                if(agent.getState() == AgentStates.LEAVING)
+                if (agent.getState() == AgentStates.LEAVING)
                     leavingAgents.add(agent);
                 else
                     agent.updateVelocity();

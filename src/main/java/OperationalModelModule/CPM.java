@@ -88,7 +88,7 @@ public class CPM implements OperationalModelModule {
                 .filter((a) -> a.distance(agent.getPosition()) <= WALL_DISTANCE_CONSIDERATION)
                 .collect(Collectors.toList());
 //        Vector closestWallPosition = this.environment.getClosestWall(agent.getPosition()).getClosestPoint(agent.getPosition());
-        for(Vector closestWallPosition : closestWallsPosition) {
+        for (Vector closestWallPosition : closestWallsPosition) {
             Vector wallRepulsion = calculateRepulsionForce(
                     agent.getPosition(), closestWallPosition, agent.getVelocity(),
                     getRandomDoubleInRange(CPMConstants.WALL_AP, CPMConstants.AP_VARIATION, random),

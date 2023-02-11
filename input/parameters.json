@@ -51,24 +51,15 @@
 
     "servers": [
         {
-            "group_name": "CLASS",
+            "group_name": "PRESENTATION",
             "attending_time": 5.0,
             "max_capacity": 2,
-            "has_queue": false,
             "start_time": 80.0
         },
         {
             "group_name": "CASHIER",
-            "attending_time": 15.0,
-            "max_capacity": 2,
-            "has_queue": true,
-            "queues": [
-                {
-                    "id": "1",
-                    "start_position": "8, 4",
-                    "end_position": "15, 4"
-                }
-            ]
+            "attending_time": 30.0,
+            "max_capacity": 2
         }
     ]
 }

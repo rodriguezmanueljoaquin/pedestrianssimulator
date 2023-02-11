@@ -47,17 +47,6 @@ public class SimulationParameters {
                     ((Long) serverParameters.get("max_capacity")).intValue(),
                     (Double) serverParameters.get("start_time")
             );
-            JSONArray queuesJSON = (JSONArray) serverParameters.get("queues");
-            if (queuesJSON != null) {
-                for (Object queueParametersObj : queuesJSON) {
-                    JSONObject queueParameters = (JSONObject) queueParametersObj;
-                    newServerGroupParameters.addQueue(
-                            (String) queueParameters.get("id"),
-                            getVectorFromString((String) queueParameters.get("start_position")),
-                            getVectorFromString((String) queueParameters.get("end_position"))
-                    );
-                }
-            }
 
             this.serverGroupsParameters.put(
                     (String) serverParameters.get("group_name"),

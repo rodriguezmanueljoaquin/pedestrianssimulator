@@ -40,7 +40,7 @@ public class Agent {
 
     public void updateVelocity() {
         if (this.getState() == AgentStates.LEAVING) {
-            this.setVelocity(new Vector(0,0));
+            this.setVelocity(new Vector(0, 0));
             return;
         }
         // first check if intermediate node has to be updated

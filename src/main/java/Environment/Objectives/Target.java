@@ -17,7 +17,7 @@ public class Target implements Objective {
         this.attendingRadius = attendingRadius;
     }
 
-    public Double getAttendingRadius(){
+    public Double getAttendingRadius() {
         return attendingRadius;
     }
 

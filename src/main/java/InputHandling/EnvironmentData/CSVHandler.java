@@ -5,6 +5,7 @@ import AgentsGenerator.AgentsGenerator;
 import AgentsGenerator.AgentsGeneratorZone;
 import Environment.Objectives.Exit;
 import Environment.Objectives.Server.DynamicServer;
+import Environment.Objectives.Server.QueueLine;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Objectives.Target;
@@ -123,30 +124,79 @@ public class CSVHandler {
     }
 
     public static Map<String, List<Server>> importServers(String filePath, Map<String, ServerGroupParameters> serverGroupsParameters) {
-        Map<String, List<Server>> servers = new HashMap<>();
+        Map<String, List<Server>> serversMap = new HashMap<>();
         for (String key : serverGroupsParameters.keySet()) {
-            servers.put(key, new ArrayList<>());
+            serversMap.put(key, new ArrayList<>());
         }
 
         Scanner scanner = getCSVScanner(filePath);
+        // First, sort CSV rows so that we have the queue line before its server line that has the same name, but _SERVER instead of _QUEUE at the end
+        List<String[]> rows = new ArrayList<>();
         while (scanner.hasNextLine()) {
-            String[] tokens = scanner.nextLine().split(",");
+            rows.add(scanner.nextLine().split(","));
+        }
+        scanner.close();
 
-            String name = tokens[0];
-            int delimiterIndex = name.indexOf("_");
-            String serverGroupId = name.substring(0, delimiterIndex);
+        rows.sort(Comparator.comparing(o -> o[0]));
+        findServers(serversMap, rows, serverGroupsParameters);
+
+        return serversMap;
+    }
+
+    private static void findServers(Map<String, List<Server>> serversMap, List<String[]> rows, Map<String, ServerGroupParameters> serverGroupsParameters) {
+        QueueLine queue = null;
+        for (String[] row : rows) {
+            Vector start = new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2]));
+            Vector end = new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]));
+
+            // in CSV servers first element follows the format: NAME_ID_TYPE
+            String serverGroupId = row[0].substring(0, row[0].indexOf('_'));
+            String name = row[0].substring(serverGroupId.length() + 1, row[0].lastIndexOf('_'));
+            String type = row[0].substring(serverGroupId.length() + 1 + name.length() + 1);
+
             ServerGroupParameters serverGroupParameters = serverGroupsParameters.get(serverGroupId);
-
             if (serverGroupParameters == null)
                 throw new RuntimeException("No parameters found for server group: " + serverGroupId);
 
-            servers.get(serverGroupId).add(
-                    createServer(serverGroupParameters, tokens)
-            );
-        }
+            switch (type) {
+                case "SERVER":
+                    Server server;
+                    Rectangle area = new Rectangle(start, end);
+                    if (queue != null) {
+                        server = new DynamicServer(
+                                name,
+                                serverGroupParameters.getMaxCapacity(),
+                                area,
+                                serverGroupParameters.getAttendingTime(),
+                                queue
+                        );
+                        queue = null;
+                    } else {
+                        server = new StaticServer(
+                                name,
+                                serverGroupParameters.getMaxCapacity(),
+                                area,
+                                serverGroupParameters.getStartTime(),
+                                serverGroupParameters.getAttendingTime()
+                        );
+                    }
 
-        scanner.close();
-        return servers;
+                    serversMap.get(serverGroupId).add(
+                            server
+                    );
+                    break;
+
+                case "QUEUE":
+                    if (queue != null)
+                        throw new RuntimeException("ERROR IN SERVERS.csv queue without server associated");
+
+                    queue = new QueueLine(start, end);
+                    break;
+
+                default:
+                    throw new RuntimeException("ERROR IN SERVERS.csv on row: " + Arrays.toString(row));
+            }
+        }
     }
 
     private static Scanner getCSVScanner(String filePath) {
@@ -161,38 +211,6 @@ public class CSVHandler {
         }
 
         return scanner;
-    }
-
-    private static Server createServer(ServerGroupParameters serverGroupParameters, String[] tokens) {
-        Server server;
-        Rectangle area = new Rectangle(
-                new Utils.Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
-                new Utils.Vector(Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]))
-        );
-        String name = tokens[0]; // format X_Y_Z where X is the groupId, and Z is the queueId in case of existence
-        int firstDelimiterIndex = name.indexOf("_");
-
-        if (serverGroupParameters.hasQueue()) {
-            int lastDelimiterIndex = name.lastIndexOf("_");
-            String queueID = name.substring(lastDelimiterIndex + 1);
-            server = new DynamicServer(
-                    name.substring(firstDelimiterIndex + 1, lastDelimiterIndex),
-                    serverGroupParameters.getMaxCapacity(),
-                    area,
-                    serverGroupParameters.getAttendingTime(),
-                    serverGroupParameters.getQueue(queueID)
-            );
-        } else {
-            server = new StaticServer(
-                    name.substring(firstDelimiterIndex + 1),
-                    serverGroupParameters.getMaxCapacity(),
-                    area,
-                    serverGroupParameters.getStartTime(),
-                    serverGroupParameters.getAttendingTime()
-            );
-        }
-
-        return server;
     }
 
 }

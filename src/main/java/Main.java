@@ -1,10 +1,8 @@
 import AgentsBehaviour.BehaviourScheme;
-import AgentsBehaviour.StateMachine.DefaultSM;
 import AgentsBehaviour.StateMachine.SuperMarketClientSM;
 import AgentsGenerator.AgentsGenerator;
 import Environment.Environment;
 import Environment.Objectives.Exit;
-import Environment.Objectives.Objective;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Target;
 import Environment.Wall;
@@ -36,8 +34,8 @@ public class Main {
         // --- MARKET-CLIENT ---
         BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(new SuperMarketClientSM(graph), exits, graph, random.nextLong());
 
-        marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCTS")), 2, 3);
-        marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("LETTERS")), 1, 1);
+//        marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCTS")), 2, 3);
+//        marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("LETTERS")), 1, 1);
         marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(serversMap.get("CASHIER")), 1, 1);
 
         behaviourSchemes.put(ParametersNames.MARKET_CLIENT_BEHAVIOUR_SCHEME_KEY, marketClientBehaviourScheme);
@@ -72,7 +70,7 @@ public class Main {
         Map<String, List<Target>> targetsMap = CSVHandler.importTargets("./input/TARGETS.csv", parameters.getTargetGroupsParameters());
 
         // -------- SERVERS --------
-        Map<String, List<Server>> serversMap = CSVHandler.importServers("./input/old/SERVERS.csv", parameters.getServerGroupsParameters());
+        Map<String, List<Server>> serversMap = CSVHandler.importServers("./input/SERVERS_FIXED.csv", parameters.getServerGroupsParameters());
 
         // -------- BEHAVIOUR --------
         Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exits, serversMap, targetsMap, random);
