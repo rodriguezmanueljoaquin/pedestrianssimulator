@@ -8,11 +8,14 @@ import Environment.Objectives.Server.DynamicServer;
 import Environment.Objectives.Server.QueueLine;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
-import Environment.Objectives.Target;
+import Environment.Objectives.Target.BorderTarget;
+import Environment.Objectives.Target.RandomPointTarget;
+import Environment.Objectives.Target.Target;
 import Environment.Wall;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.ServerGroupParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.TargetGroupParameters;
+import Utils.Circle;
 import Utils.Rectangle;
 import Utils.Vector;
 
@@ -110,11 +113,10 @@ public class CSVHandler {
                 throw new RuntimeException("No parameters found for target group: " + targetGroupId);
 
             targets.get(targetGroupId).add(
-                    new Target(
+                    new BorderTarget(
                             targetGroupId,
-                            new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
-                            targetGroupParameters.getAttendingTime(),
-                            Double.parseDouble(tokens[4])
+                            new Circle(new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),Double.parseDouble(tokens[4])),
+                            targetGroupParameters.getAttendingTime()
                     )
             );
         }

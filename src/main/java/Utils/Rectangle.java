@@ -1,6 +1,6 @@
 package Utils;
 
-public class Rectangle {
+public class Rectangle implements Zone{
     protected Vector x1, x2;
     /*
            ------- x2
@@ -18,7 +18,7 @@ public class Rectangle {
             this.x2 = x2;
         }
     }
-
+    @Override
     public Vector getMiddlePoint() {
         return x1.add(x2).scalarMultiply(1 / 2.);
     }
@@ -27,10 +27,12 @@ public class Rectangle {
         return Math.random() * (max - min) + min;
     }
 
+    @Override
     public Vector getRandomPointInside() {
         return new Vector(getRandomDoubleInRange(x1.getX(), x2.getX()), getRandomDoubleInRange(x1.getY(), x2.getY()));
     }
 
+    @Override
     public boolean isPointInside(Vector point) {
         return this.x1.getX() <= point.getX() && point.getX() <= this.x2.getX() && this.x1.getY() <= point.getY() && point.getY() <= this.x2.getY();
     }

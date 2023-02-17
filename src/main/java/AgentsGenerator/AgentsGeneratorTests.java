@@ -3,8 +3,10 @@ package AgentsGenerator;
 import Agent.Agent;
 import AgentsBehaviour.BehaviourScheme;
 import Environment.Objectives.Objective;
-import Environment.Objectives.Target;
+import Environment.Objectives.Target.BorderTarget;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
+import Utils.Circle;
+import Utils.Rectangle;
 import Utils.Vector;
 import org.junit.Test;
 
@@ -22,7 +24,7 @@ public class AgentsGeneratorTests {
         AgentsGeneratorZone agentZone = new AgentsGeneratorZone(new Vector(-5, -5), new Vector(0, 0));
         AgentsGeneratorParameters agentsGeneratorParameters = new AgentsGeneratorParameters(500, 1, "", 0.5, 0.6, 3.0, 5, 4000, 5000);
         BehaviourScheme behaviourScheme = mock(BehaviourScheme.class);
-        Objective obj = new Target("aasdf", new Vector(2, 2), 1., 0.4);
+        Objective obj = new BorderTarget("aasdf", new Circle(new Vector(2,2), 2.0), 1.);
         List<Objective> objectives = new ArrayList<>();
         objectives.add(obj);
         when(behaviourScheme.getObjectivesSample()).thenReturn(objectives);
