@@ -9,6 +9,7 @@ import Environment.Objectives.Server.QueueLine;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Objectives.Target.BorderTarget;
+import Environment.Objectives.Target.DotTarget;
 import Environment.Objectives.Target.RandomPointTarget;
 import Environment.Objectives.Target.Target;
 import Environment.Wall;
@@ -113,7 +114,7 @@ public class CSVHandler {
                 throw new RuntimeException("No parameters found for target group: " + targetGroupId);
 
             targets.get(targetGroupId).add(
-                    new BorderTarget(
+                    new DotTarget(
                             targetGroupId,
                             new Circle(new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),Double.parseDouble(tokens[4])),
                             targetGroupParameters.getAttendingTime()

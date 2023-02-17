@@ -63,6 +63,6 @@ public class RandomPointTarget implements Target {
             getPosition(agent);
             return false;
         }
-        return positionMap.get(agent.getId()).distance(agent.getPosition()) <= Constants.DOUBLE_EPSILON;
+        return positionMap.get(agent.getId()).distance(agent.getPosition()) <= Constants.DOUBLE_EPSILON + agent.getRadius() * 2;
     }
 }
