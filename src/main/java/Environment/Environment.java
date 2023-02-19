@@ -2,13 +2,11 @@ package Environment;
 
 import Agent.Agent;
 import AgentsGenerator.AgentsGenerator;
-import Environment.Objectives.Exit;
 import Environment.Objectives.Server.Server;
 import Utils.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Environment {
     private final List<Wall> walls;

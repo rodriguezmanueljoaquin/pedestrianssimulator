@@ -8,9 +8,7 @@ import Environment.Objectives.Server.DynamicServer;
 import Environment.Objectives.Server.QueueLine;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
-import Environment.Objectives.Target.BorderTarget;
 import Environment.Objectives.Target.DotTarget;
-import Environment.Objectives.Target.RandomPointTarget;
 import Environment.Objectives.Target.Target;
 import Environment.Wall;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
@@ -22,7 +20,6 @@ import Utils.Vector;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.Function;
 
 public class CSVHandler {
     public static List<Wall> importWalls(String filePath) {
@@ -90,9 +87,9 @@ public class CSVHandler {
             Vector end = new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]));
 
             String exitGroupId = row[0];
-            if(!exitsMap.containsKey(exitGroupId))
+            if (!exitsMap.containsKey(exitGroupId))
                 exitsMap.put(exitGroupId, new ArrayList<>());
-            
+
             exitsMap.get(exitGroupId).add(
                     new Exit(
                             new Wall(start, end)
@@ -124,7 +121,7 @@ public class CSVHandler {
             targets.get(targetGroupId).add(
                     new DotTarget(
                             targetGroupId,
-                            new Circle(new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),Double.parseDouble(row[4])),
+                            new Circle(new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])), Double.parseDouble(row[4])),
                             targetGroupParameters.getAttendingTime()
                     )
             );
@@ -146,7 +143,7 @@ public class CSVHandler {
             // group data by server name and id, so queue and zone are together
             String[] row = scanner.nextLine().split(",");
             String fullName = row[0].substring(0, row[0].lastIndexOf('_'));
-            if(!rowsMap.containsKey(fullName))
+            if (!rowsMap.containsKey(fullName))
                 rowsMap.put(fullName, new ArrayList<>());
 
             rowsMap.get(fullName).add(row);
@@ -159,7 +156,7 @@ public class CSVHandler {
     }
 
     private static void parseServers(Map<String, List<Server>> serversMap, Map<String, List<String[]>> rowsMap, Map<String, ServerGroupParameters> serverGroupsParameters) {
-        for(String serverFullName : rowsMap.keySet()) {
+        for (String serverFullName : rowsMap.keySet()) {
             String serverGroupId = serverFullName.substring(0, serverFullName.indexOf('_'));
             ServerGroupParameters serverGroupParameters = serverGroupsParameters.get(serverGroupId);
             if (serverGroupParameters == null)
@@ -171,10 +168,10 @@ public class CSVHandler {
             QueueLine queue = null;
             String name = serverFullName.substring(serverGroupId.length() + 1);
 
-            for(String[] row : serverRows) {
+            for (String[] row : serverRows) {
                 Vector start = new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2]));
                 Vector end = new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]));
-                String type = row[0].substring(serverFullName.length() +1); // skip '_'
+                String type = row[0].substring(serverFullName.length() + 1); // skip '_'
 
                 switch (type) {
                     case "SERVER":

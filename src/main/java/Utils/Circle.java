@@ -1,13 +1,14 @@
 package Utils;
 
-public class Circle implements Zone{
+public class Circle implements Zone {
     Vector middlePoint;
     Double radius;
 
-    public Circle(Vector middlePoint, Double radius){
+    public Circle(Vector middlePoint, Double radius) {
         this.middlePoint = middlePoint;
         this.radius = radius;
     }
+
     @Override
     public Vector getMiddlePoint() {
         return middlePoint;

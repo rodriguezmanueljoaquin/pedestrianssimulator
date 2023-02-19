@@ -4,7 +4,6 @@ import Agent.Agent;
 import Agent.AgentConstants;
 import Agent.AgentStates;
 import Environment.Objectives.ObjectiveType;
-import Environment.Objectives.Target.BorderTarget;
 import Environment.Objectives.Target.Target;
 import GraphGenerator.Graph;
 

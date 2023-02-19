@@ -1,6 +1,6 @@
 package Utils;
 
-public class Rectangle implements Zone{
+public class Rectangle implements Zone {
     protected Vector x1, x2;
     /*
            ------- x2
@@ -18,6 +18,7 @@ public class Rectangle implements Zone{
             this.x2 = x2;
         }
     }
+
     @Override
     public Vector getMiddlePoint() {
         return x1.add(x2).scalarMultiply(1 / 2.);

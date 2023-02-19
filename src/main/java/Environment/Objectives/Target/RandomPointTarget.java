@@ -2,7 +2,6 @@ package Environment.Objectives.Target;
 
 
 import Agent.Agent;
-import Environment.Objectives.Objective;
 import Environment.Objectives.ObjectiveType;
 import Utils.Constants;
 import Utils.Vector;
@@ -25,13 +24,12 @@ public class RandomPointTarget implements Target {
     }
 
 
-
     @Override
     public Vector getPosition(Agent agent) {
-        if(positionMap.containsKey(agent.getId()))
+        if (positionMap.containsKey(agent.getId()))
             return positionMap.get(agent.getId());
         Vector position = zone.getRandomPointInside();
-        positionMap.put(agent.getId(),position);
+        positionMap.put(agent.getId(), position);
         return position;
     }
 
@@ -59,7 +57,7 @@ public class RandomPointTarget implements Target {
     @Override
     public Boolean reachedObjective(Agent agent) {
         //just in case should never reach here
-        if(!positionMap.containsKey(agent.getId())) {
+        if (!positionMap.containsKey(agent.getId())) {
             getPosition(agent);
             return false;
         }

@@ -4,7 +4,6 @@ import AgentsGenerator.AgentsGenerator;
 import Environment.Environment;
 import Environment.Objectives.Exit;
 import Environment.Objectives.Server.Server;
-import Environment.Objectives.Target.BorderTarget;
 import Environment.Objectives.Target.Target;
 import Environment.Wall;
 import GraphGenerator.Graph;
@@ -34,7 +33,7 @@ public class Main {
 
         // --- MARKET-CLIENT ---
         BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(new SuperMarketClientSM(graph), exitsMap.get("NORMAL"),
-                                                                            graph, random.nextLong());
+                graph, random.nextLong());
 
         marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCT1")), 2, 3);
         marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCT2")), 1, 1);
