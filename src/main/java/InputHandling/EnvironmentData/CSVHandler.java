@@ -141,71 +141,78 @@ public class CSVHandler {
         }
 
         Scanner scanner = getCSVScanner(filePath);
-        // First, sort CSV rows so that we have the queue line before its server line that has the same name, but _SERVER instead of _QUEUE at the end
-        List<String[]> rows = new ArrayList<>();
+        Map<String, List<String[]>> rowsMap = new HashMap<>();
         while (scanner.hasNextLine()) {
-            rows.add(scanner.nextLine().split(","));
+            // group data by server name and id, so queue and zone are together
+            String[] row = scanner.nextLine().split(",");
+            String fullName = row[0].substring(0, row[0].lastIndexOf('_'));
+            if(!rowsMap.containsKey(fullName))
+                rowsMap.put(fullName, new ArrayList<>());
+
+            rowsMap.get(fullName).add(row);
         }
         scanner.close();
 
-        rows.sort(Comparator.comparing(o -> o[0])); // TODO: CHECK IF SORT IS CORRECTLY DONE
-        findServers(serversMap, rows, serverGroupsParameters);
+        parseServers(serversMap, rowsMap, serverGroupsParameters);
 
         return serversMap;
     }
 
-    private static void findServers(Map<String, List<Server>> serversMap, List<String[]> rows, Map<String, ServerGroupParameters> serverGroupsParameters) {
-        QueueLine queue = null;
-        for (String[] row : rows) {
-            Vector start = new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2]));
-            Vector end = new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]));
-
-            // in CSV servers first element follows the format: NAME_ID_TYPE
-            String serverGroupId = row[0].substring(0, row[0].indexOf('_'));
-            String name = row[0].substring(serverGroupId.length() + 1, row[0].lastIndexOf('_'));
-            String type = row[0].substring(serverGroupId.length() + 1 + name.length() + 1);
-
+    private static void parseServers(Map<String, List<Server>> serversMap, Map<String, List<String[]>> rowsMap, Map<String, ServerGroupParameters> serverGroupsParameters) {
+        for(String serverFullName : rowsMap.keySet()) {
+            String serverGroupId = serverFullName.substring(0, serverFullName.indexOf('_'));
             ServerGroupParameters serverGroupParameters = serverGroupsParameters.get(serverGroupId);
             if (serverGroupParameters == null)
                 throw new RuntimeException("No parameters found for server group: " + serverGroupId);
 
-            switch (type) {
-                case "SERVER":
-                    Server server;
-                    Rectangle area = new Rectangle(start, end);
-                    if (queue != null) {
-                        server = new DynamicServer(
-                                name,
-                                serverGroupParameters.getMaxCapacity(),
-                                area,
-                                serverGroupParameters.getAttendingTime(),
-                                queue
+            List<String[]> serverRows = rowsMap.get(serverFullName);
+            // sort so first que QUEUE are analyzed, and then the SERVER
+            serverRows.sort(Comparator.comparing(o -> o[0].charAt(serverFullName.length() + 1))); // skip '_'
+            QueueLine queue = null;
+            String name = serverFullName.substring(serverGroupId.length() + 1);
+
+            for(String[] row : serverRows) {
+                Vector start = new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2]));
+                Vector end = new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]));
+                String type = row[0].substring(serverFullName.length() +1); // skip '_'
+
+                switch (type) {
+                    case "SERVER":
+                        Server server;
+                        Rectangle area = new Rectangle(start, end);
+                        if (queue != null) {
+                            server = new DynamicServer(
+                                    name,
+                                    serverGroupParameters.getMaxCapacity(),
+                                    area,
+                                    serverGroupParameters.getAttendingTime(),
+                                    queue
+                            );
+                        } else {
+                            server = new StaticServer(
+                                    name,
+                                    serverGroupParameters.getMaxCapacity(),
+                                    area,
+                                    serverGroupParameters.getStartTime(),
+                                    serverGroupParameters.getAttendingTime()
+                            );
+                        }
+
+                        serversMap.get(serverGroupId).add(
+                                server
                         );
-                        queue = null;
-                    } else {
-                        server = new StaticServer(
-                                name,
-                                serverGroupParameters.getMaxCapacity(),
-                                area,
-                                serverGroupParameters.getStartTime(),
-                                serverGroupParameters.getAttendingTime()
-                        );
-                    }
+                        break;
 
-                    serversMap.get(serverGroupId).add(
-                            server
-                    );
-                    break;
+                    case "QUEUE":
+                        if (queue != null)
+                            throw new RuntimeException("ERROR IN SERVERS.csv queue without server associated");
 
-                case "QUEUE":
-                    if (queue != null)
-                        throw new RuntimeException("ERROR IN SERVERS.csv queue without server associated");
+                        queue = new QueueLine(start, end);
+                        break;
 
-                    queue = new QueueLine(start, end);
-                    break;
-
-                default:
-                    throw new RuntimeException("ERROR IN SERVERS.csv on row: " + Arrays.toString(row));
+                    default:
+                        throw new RuntimeException("ERROR IN SERVERS.csv on row: " + Arrays.toString(row));
+                }
             }
         }
     }

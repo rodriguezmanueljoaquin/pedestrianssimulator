@@ -73,7 +73,7 @@ public class Main {
         Map<String, List<Target>> targetsMap = CSVHandler.importTargets("./input/TARGETS.csv", parameters.getTargetGroupsParameters());
 
         // -------- SERVERS --------
-        Map<String, List<Server>> serversMap = CSVHandler.importServers("./input/SERVERS_FIXED.csv", parameters.getServerGroupsParameters());
+        Map<String, List<Server>> serversMap = CSVHandler.importServers("./input/SERVERS.csv", parameters.getServerGroupsParameters());
 
         // -------- BEHAVIOUR --------
         Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exits, serversMap, targetsMap, random);

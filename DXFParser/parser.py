@@ -95,10 +95,36 @@ def get_walls(msp, expected_types):
 
     return figures
 
+def get_servers(msp):
+    servers_map = {}
+    # retrieve all blocks in the servers layer, grouping by name
+    for server in msp.query('INSERT').filter(lambda block: regex.match(r"{}*".format(SERVERS_LAYER), block.dxfattribs()['layer'])):
+        if server.dxf.name not in servers_map:
+            servers_map[server.dxf.name] = []
+        
+        servers_map[server.dxf.name].append(server)
+
+    figures = []
+    # retrieve queue and server for each server, together with an id depending on its group size so we can identify the server and its queue on the csv
+    for key in servers_map:
+        id = 0
+        for server in servers_map[key]:
+            id += 1
+            for e in server.virtual_entities():
+                # TODO: ADD SUPPORT FOR POLYLINE QUEUES!
+                if e.dxftype() == 'POLYLINE':
+                    figures.append([key + "_" + str(id) + "_SERVER", *get_rectangle_figure(e, SERVERS_LAYER)])
+                elif e.dxftype() == 'LINE':
+                    figures.append([key + "_" + str(id) + "_QUEUE", e.dxf.start[0], e.dxf.start[1], e.dxf.start[2],
+                                                                            e.dxf.end[0], e.dxf.end[1], e.dxf.end[2]])
+
+    return figures
 
 def parse_layer_and_write_to_file(msp, layer, expected_types, out_file_path, figures_are_rectangles=False):
     if layer == WALLS_LAYER:
         array = get_walls(msp, expected_types)
+    elif layer == SERVERS_LAYER:
+        array = get_servers(msp)
     else:
         array = get_blocks_figures(msp, layer, expected_types, figures_are_rectangles)
 
@@ -124,7 +150,7 @@ def parse_dxf(in_file_path, out_path):
     parse_layer_and_write_to_file(msp, TARGETS_LAYER, ['CIRCLE'], out_path)
 
     print("\tParsing servers...")
-    # parse_layer_and_write_to_file(msp, SERVERS_LAYER, ['LINE', 'POLYLINE'], out_path, figures_are_rectangles=True) 
+    parse_layer_and_write_to_file(msp, SERVERS_LAYER, ['LINE', 'POLYLINE'], out_path, figures_are_rectangles=True) 
 
     print("Parsing of dxf file finished...")
 
