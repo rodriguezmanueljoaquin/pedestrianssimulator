@@ -30,8 +30,30 @@ public class Graph {
         this.generateGraph(initialPosition, exits);
     }
 
-    public boolean isPositionVisible(Vector origin, Vector destiny) {
-        return isPositionVisibleWithinWalls(origin, destiny, this.walls);
+    public boolean isPositionAccessible(Vector origin, Vector destiny, double radius) {
+        // checks if whole circumference of the circle can access to destiny
+        // for this, picks "highest" point in circumferences and checks if it can see the "highest" point in destination
+        // with "highest", we refer to the perpendicular point to the distance vector in the circumference
+        // find angle of distance vector
+        Vector dist = destiny.substract(origin);
+        double distTheta = Math.atan2(dist.getY(), dist.getX()); // in (-PI, PI]
+
+        double highestPointTheta = distTheta + Math.PI / 2;
+        if (highestPointTheta > Math.PI)
+            highestPointTheta -= Math.PI * 2;
+
+        Vector originHighestPoint = origin.add(new Vector(Math.cos(highestPointTheta), Math.sin(highestPointTheta)).scalarMultiply(radius));
+        Vector destinyHighestPoint = destiny.add(new Vector(Math.cos(highestPointTheta), Math.sin(highestPointTheta)).scalarMultiply(radius));
+        if (!isPositionVisibleWithinWalls(originHighestPoint, destinyHighestPoint, this.walls))
+            return false;
+
+        double lowestPointTheta = distTheta - Math.PI / 2;
+        if (lowestPointTheta <= -Math.PI)
+            lowestPointTheta += Math.PI * 2;
+
+        Vector originLowestPoint = origin.add(new Vector(Math.cos(lowestPointTheta), Math.sin(lowestPointTheta)).scalarMultiply(radius));
+        Vector destinyLowestPoint = destiny.add(new Vector(Math.cos(highestPointTheta), Math.sin(highestPointTheta)).scalarMultiply(radius));
+        return isPositionVisibleWithinWalls(originLowestPoint, destinyLowestPoint, this.walls);
     }
 
     private boolean isPositionVisibleWithinWalls(Vector origin, Vector destiny, List<Wall> walls) {
@@ -43,12 +65,12 @@ public class Graph {
         return true;
     }
 
-    public Node getClosestVisibleNode(Vector position) {
+    public Node getClosestAccessibleNode(Vector position, double radius) {
         Node bestNode = null;
         double minDistance = Double.MAX_VALUE;
         double distanceToNode;
         for (Node node : this.nodes.values()) {
-            if (isPositionVisible(position, node.getPosition())) {
+            if (isPositionAccessible(position, node.getPosition(), radius)) {
                 distanceToNode = node.getPosition().distance(position);
                 if (distanceToNode < minDistance) {
                     bestNode = node;
@@ -62,23 +84,23 @@ public class Graph {
         return bestNode;
     }
 
-    public NodePath getPathToPosition(Vector fromPosition, Vector toPosition) {
-        if (this.isPositionVisible(fromPosition, toPosition))
+    public NodePath getPathToPosition(Vector fromPosition, Vector toPosition, double radius) {
+        if (this.isPositionAccessible(fromPosition, toPosition, radius))
             return new NodePath();
 
         // first try to get by current position, otherwise get the closest visible
         Node fromNode = this.nodes.get(fromPosition);
         if (fromNode == null) {
-            fromNode = this.getClosestVisibleNode(fromPosition);
+            fromNode = this.getClosestAccessibleNode(fromPosition, radius);
         }
 
-        NodePath fullPath = this.AStar(fromNode, toPosition);
+        NodePath fullPath = this.AStar(fromNode, toPosition, radius);
         if (fullPath == null) {
             // none path found
             return null;
         }
 
-        return pathReducer(fromPosition, toPosition, fullPath);
+        return pathReducer(fromPosition, toPosition, fullPath, radius);
     }
 
     // initialPosition has to be a valid position, from this node the graph will expand
@@ -124,31 +146,31 @@ public class Graph {
         }
     }
 
-    public Vector getClosestDestination(Vector fromPosition, List<Vector> possibleDestinations) {
+    public Vector getClosestDestination(Vector fromPosition, List<Vector> possibleDestinations, double radius) {
         double minDistance = Double.MAX_VALUE;
         Vector closestDestination = null;
-        for (int i = 0; i < possibleDestinations.size(); i++) {
-            NodePath path = this.getPathToPosition(fromPosition, possibleDestinations.get(i));
+        for (Vector possibleDestination : possibleDestinations) {
+            NodePath path = this.getPathToPosition(fromPosition, possibleDestination, radius);
             if (path != null) {
                 double pathTotalDistance;
                 if (path.getFirstNode() != null)
                     // path has at least one node
                     pathTotalDistance = fromPosition.distance(path.getFirstNode().getPosition()) + path.getDistance() +
-                            path.getLastNode().getPosition().distance(possibleDestinations.get(i));
-                else pathTotalDistance = fromPosition.distance(possibleDestinations.get(i));
+                            path.getLastNode().getPosition().distance(possibleDestination);
+                else pathTotalDistance = fromPosition.distance(possibleDestination);
 
                 if (minDistance > pathTotalDistance) {
                     minDistance = pathTotalDistance;
-                    closestDestination = possibleDestinations.get(i);
+                    closestDestination = possibleDestination;
                 }
             } else
-                System.out.println("Possible destination unaccessible");
+                System.out.println("Possible destination inaccessible");
         }
 
         return closestDestination;
     }
 
-    private NodePath pathReducer(Vector fromPosition, Vector toPosition, NodePath path) {
+    private NodePath pathReducer(Vector fromPosition, Vector toPosition, NodePath path, double radius) {
         Node currentNode = path.getFirstNode();
         if (currentNode == null)
             // path has 0 nodes between ends
@@ -158,7 +180,7 @@ public class Graph {
         NodePath reducedPath = new NodePath();
 
         // keep last visible node from fromPosition
-        while (currentNode != null && isPositionVisible(fromPosition, currentNode.getPosition())) {
+        while (currentNode != null && isPositionAccessible(fromPosition, currentNode.getPosition(), radius)) {
             prevNode = currentNode;
             currentNode = path.getNodeAfter(prevNode);
         }
@@ -166,12 +188,12 @@ public class Graph {
 
         currentNode = prevNode; // reset current
         // keep only essential in between nodes  (erase those that are between nodes (and toPosition) that can see each other)
-        while (!isPositionVisible(currentNode.getPosition(), toPosition)) {
+        while (!isPositionAccessible(currentNode.getPosition(), toPosition, radius)) {
             prevNode = currentNode;
             currentNode = path.getNodeAfter(currentNode);
 
-            // current node is not visible from last saved node, save the previous one that is neighbour of current so it can see it
-            if (!isPositionVisible(reducedPath.getLastNode().getPosition(), currentNode.getPosition()))
+            // current node is not visible from last saved node, save the previous one that is neighbour of current, so it can see it
+            if (!isPositionAccessible(reducedPath.getLastNode().getPosition(), currentNode.getPosition(), radius))
                 reducedPath.add(prevNode);
         }
         // case where last visible node from fromPosition is the first node that is visible from toPosition
@@ -181,7 +203,7 @@ public class Graph {
         return reducedPath;
     }
 
-    public NodePath AStar(Node from, Vector to) {
+    public NodePath AStar(Node from, Vector to, double radius) {
         PriorityQueue<NodePath> frontierPaths = new PriorityQueue<>(Comparator.comparingDouble(NodePath::getFunctionValue));
         Node currentNode = from;
         NodePath currentPath = new NodePath();
@@ -189,7 +211,7 @@ public class Graph {
 
         HashSet<Integer> visitedNodesId = new HashSet<>();
 
-        while (!isPositionVisible(currentNode.getPosition(), to)) {
+        while (!isPositionAccessible(currentNode.getPosition(), to, radius)) {
             // once target is visible from the last node of the path, return it
             visitedNodesId.add(currentNode.getId());
 

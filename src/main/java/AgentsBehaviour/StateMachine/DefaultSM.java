@@ -14,7 +14,7 @@ public class DefaultSM implements StateMachine {
     }
 
     public void updateAgentCurrentPath(Agent agent) {
-        NodePath path = this.graph.getPathToPosition(agent.getPosition(), agent.getCurrentObjective().getPosition(agent));
+        NodePath path = this.graph.getPathToPosition(agent.getPosition(), agent.getCurrentObjective().getPosition(agent), agent.getMaxRadius());
 
         if (path == null) {
             // FIXME! Checkear por que a veces da null
@@ -96,7 +96,7 @@ public class DefaultSM implements StateMachine {
                 break;
 
             case MOVING_TO_QUEUE_POSITION:
-                if (!graph.isPositionVisible(agent.getPosition(), agent.getCurrentObjective().getPosition(agent)))
+                if (!graph.isPositionAccessible(agent.getPosition(), agent.getCurrentObjective().getPosition(agent), agent.getMaxRadius()))
                     // objective position in queue changed while going to it
                     this.updateAgentCurrentPath(agent);
 

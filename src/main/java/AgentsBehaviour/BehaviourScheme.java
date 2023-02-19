@@ -1,5 +1,6 @@
 package AgentsBehaviour;
 
+import Agent.AgentConstants;
 import AgentsBehaviour.StateMachine.StateMachine;
 import Environment.Objectives.Exit;
 import Environment.Objectives.Objective;
@@ -61,7 +62,7 @@ public class BehaviourScheme {
         Map<Vector, Exit> exitsByCentroid = exits.stream()
                 .collect(Collectors.toMap(Exit::getCentroidPosition, Function.identity()));
         Exit closestExitFromLastObjective = exitsByCentroid
-                .get(graph.getClosestDestination(lastObjectivePosition, new ArrayList<>(exitsByCentroid.keySet())));
+                .get(graph.getClosestDestination(lastObjectivePosition, new ArrayList<>(exitsByCentroid.keySet()), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS));
 
         objectives.add(closestExitFromLastObjective);
         return objectives;
