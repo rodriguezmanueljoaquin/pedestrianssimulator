@@ -4,6 +4,7 @@ import Agent.Agent;
 import Agent.AgentStates;
 import Environment.Objectives.ObjectiveType;
 import GraphGenerator.Graph;
+import GraphGenerator.Node;
 import GraphGenerator.NodePath;
 
 public class DefaultSM implements StateMachine {
@@ -96,8 +97,11 @@ public class DefaultSM implements StateMachine {
                 break;
 
             case MOVING_TO_QUEUE_POSITION:
-                if (!graph.isPositionAccessible(agent.getPosition(), agent.getCurrentObjective().getPosition(agent), agent.getMaxRadius()))
-                    // objective position in queue changed while going to it
+                Node lastNode = agent.getCurrentPath().getLastNode();
+                if (lastNode != null && !graph.isPositionAccessible(lastNode.getPosition(),
+                                                agent.getCurrentObjective().getPosition(agent),
+                                                agent.getMaxRadius()))
+                    // objective position in queue changed while going to it and the position is not accessible from current path
                     this.updateAgentCurrentPath(agent);
 
                 if (agent.getCurrentObjective().canAttend(agent))
