@@ -96,7 +96,7 @@ public class Simulation {
 
 
     private void executeOperationalModelModule() {
-        this.operationalModelModule.updateAgentsPosition(this.agents);
+        this.operationalModelModule.updateAgents(this.agents);
         List<WallCollision> wallCollisions = new ArrayList<>();
         List<AgentsCollision> agentsCollisions = new ArrayList<>();
         List<Agent> nonCollisionAgents = new ArrayList<>();

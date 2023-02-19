@@ -5,7 +5,8 @@ public class CPMConstants {
     public static final double NEIGHBOURS_RADIUS = 5.0;
     public static final double
             ORIGINAL_DIRECTION_AP = 400,
-            AGENT_AP = 200,
+            NEW_DIRECTION_AP = 100,
+            AGENT_AP = 250,
             AGENT_BP = 1,
             WALL_AP = 300,
             WALL_BP = 0.8, // cuanto mas grande, a mayor distancia reacciona más

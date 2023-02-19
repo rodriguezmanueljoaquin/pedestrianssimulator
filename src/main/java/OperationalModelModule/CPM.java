@@ -7,8 +7,7 @@ import OperationalModelModule.Collisions.AgentsCollision;
 import OperationalModelModule.Collisions.WallCollision;
 import Utils.Vector;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static OperationalModelModule.CPMConstants.WALL_DISTANCE_CONSIDERATION;
@@ -16,10 +15,12 @@ import static OperationalModelModule.CPMConstants.WALL_DISTANCE_CONSIDERATION;
 public class CPM implements OperationalModelModule {
     private final CellIndexMethod CIM;
     private final Environment environment;
+    private final Map<Integer, Vector> agentsPreviousVelocity;
 
     public CPM(Environment environment) {
         this.environment = environment;
         this.CIM = new CellIndexMethod(this.environment.getWalls(), CPMConstants.NEIGHBOURS_RADIUS);
+        this.agentsPreviousVelocity = new HashMap<>();
     }
 
     private static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector originalVelocity, double Ap, double Bp) {
@@ -52,14 +53,28 @@ public class CPM implements OperationalModelModule {
     }
 
     @Override
-    public void updateAgentsPosition(List<Agent> agents) {
+    public void updateAgents(List<Agent> agents) {
         this.CIM.updateAgentsPosition(agents);
+
+        // remove from map those agent that left
+        List<Integer> agentsIdToRemove = new ArrayList<>();
+        for(Integer agentId : this.agentsPreviousVelocity.keySet()) {
+            if(agents.stream().noneMatch(a -> Objects.equals(a.getId(), agentId)))
+                agentsIdToRemove.add(agentId);
+        }
+        agentsIdToRemove.forEach(this.agentsPreviousVelocity::remove);
     }
 
     private Vector calculateHeuristicDirection(Agent agent, Random random) {
         //initialize with original direction
-        Vector resultantNc = agent.getVelocity().normalize()
+        Vector resultantNc = new Vector(0,0);
+        if(this.agentsPreviousVelocity.containsKey(agent.getId()))
+            resultantNc = resultantNc.add(this.agentsPreviousVelocity.get(agent.getId())).normalize()
                 .scalarMultiply(getRandomDoubleInRange(CPMConstants.ORIGINAL_DIRECTION_AP, CPMConstants.AP_VARIATION, random));
+
+        //add new direction
+        resultantNc = resultantNc.add(agent.getVelocity().normalize()
+                .scalarMultiply(getRandomDoubleInRange(CPMConstants.NEW_DIRECTION_AP, CPMConstants.AP_VARIATION, random)));
 
         List<Agent> neighbours = this.CIM.getAgentNeighbours(agent);
 
@@ -87,7 +102,7 @@ public class CPM implements OperationalModelModule {
                 .map((a) -> a.getClosestPoint(agent.getPosition()))
                 .filter((a) -> a.distance(agent.getPosition()) <= WALL_DISTANCE_CONSIDERATION)
                 .collect(Collectors.toList());
-//        Vector closestWallPosition = this.environment.getClosestWall(agent.getPosition()).getClosestPoint(agent.getPosition());
+
         for (Vector closestWallPosition : closestWallsPosition) {
             Vector wallRepulsion = calculateRepulsionForce(
                     agent.getPosition(), closestWallPosition, agent.getVelocity(),
@@ -102,6 +117,8 @@ public class CPM implements OperationalModelModule {
     public void updateNonCollisionAgent(Agent agent, double dt, Random random) {
         Vector heuristicDirection = calculateHeuristicDirection(agent, random);
         agent.setVelocity(heuristicDirection.scalarMultiply(agent.getVelocityModule()));
+
+        saveAgentVelocity(agent);
     }
 
     public void expandAgent(Agent agent) {
@@ -117,10 +134,19 @@ public class CPM implements OperationalModelModule {
         collapseAgent(agent2);
         escapeFromObstacle(agent1, agent2.getPosition());
         escapeFromObstacle(agent2, agent1.getPosition());
+
+        saveAgentVelocity(agent1);
+        saveAgentVelocity(agent2);
     }
 
     public void updateWallCollidingAgent(WallCollision wallCollision) {
         collapseAgent(wallCollision.getAgent());
         escapeFromObstacle(wallCollision.getAgent(), wallCollision.getWallClosestPoint());
+
+        saveAgentVelocity(wallCollision.getAgent());
+    }
+
+    private void saveAgentVelocity(Agent agent) {
+        this.agentsPreviousVelocity.put(agent.getId(), agent.getVelocity());
     }
 }
