@@ -97,11 +97,11 @@ def get_walls(msp, expected_types):
 
 
 def parse_layer_and_write_to_file(msp, layer, expected_types, out_file_path, figures_are_rectangles=False):
-
     if layer == WALLS_LAYER:
         array = get_walls(msp, expected_types)
     else:
         array = get_blocks_figures(msp, layer, expected_types, figures_are_rectangles)
+        
     file = open(out_file_path + layer + ".csv", "w")
     write_to_file(file, array)
     file.close()
@@ -114,8 +114,8 @@ def parse_dxf(in_file_path, out_path):
     print("\tParsing walls...")
     parse_layer_and_write_to_file(msp, WALLS_LAYER, ['LINE', 'POLYLINE'], out_path)
     
-    # print("\tParsing exits...")
-    # parse_layer_figures_and_write_to_file(msp, EXITS_LAYER_PREFIX, ['LINE', 'POLYLINE'], out_path)
+    print("\tParsing exits...")
+    parse_layer_and_write_to_file(msp, EXITS_LAYER, ['LINE', 'POLYLINE'], out_path)
 
     # print("\tParsing generators...")
     # parse_layer_figures_and_write_to_file(msp, GENERATORS_LAYER_PREFIX, ['POLYLINE'], out_path, 

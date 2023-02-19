@@ -25,38 +25,21 @@ import java.util.*;
 import java.util.function.Function;
 
 public class CSVHandler {
-    private static void readWallsAndApplyFunction(String filePath, Function<Wall, Void> function) {
+    public static List<Wall> importWalls(String filePath) {
+        List<Wall> result = new ArrayList<>();
         Scanner scanner = getCSVScanner(filePath);
 
         List<Double> inputs = new ArrayList<>(Arrays.asList(0., 0., 0., 0., 0., 0.));
         while (scanner.hasNextLine()) {
-            String[] tokens = scanner.nextLine().split(",");
+            String[] row = scanner.nextLine().split(",");
             for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Double.parseDouble(tokens[i]));
+                inputs.set(i, Double.parseDouble(row[i]));
             }
 
-            function.apply(new Wall(new Utils.Vector(inputs.get(0), inputs.get(1)), new Utils.Vector(inputs.get(3), inputs.get(4))));
+            result.add(new Wall(new Utils.Vector(inputs.get(0), inputs.get(1)), new Utils.Vector(inputs.get(3), inputs.get(4))));
         }
 
         scanner.close();
-    }
-
-    public static List<Exit> importExits(String filePath) {
-        List<Exit> result = new ArrayList<>();
-        CSVHandler.readWallsAndApplyFunction(filePath, (Wall wall) -> {
-            result.add(new Exit(wall));
-            return null;
-        });
-
-        return result;
-    }
-
-    public static List<Wall> importWalls(String filePath) {
-        List<Wall> result = new ArrayList<>();
-        CSVHandler.readWallsAndApplyFunction(filePath, (Wall wall) -> {
-            result.add(wall);
-            return null;
-        });
 
         return result;
     }
@@ -68,14 +51,14 @@ public class CSVHandler {
         Scanner scanner = getCSVScanner(filePath);
 
         while (scanner.hasNextLine()) {
-            String[] tokens = scanner.nextLine().split(",");
+            String[] row = scanner.nextLine().split(",");
 
             AgentsGeneratorZone zone = new AgentsGeneratorZone(
-                    new Utils.Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
-                    new Utils.Vector(Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]))
+                    new Utils.Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),
+                    new Utils.Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]))
             );
 
-            String generatorGroupId = tokens[0];
+            String generatorGroupId = row[0];
 
             AgentsGeneratorParameters agentsGeneratorParameters = generatorsParameters.get(generatorGroupId);
             if (agentsGeneratorParameters == null)
@@ -97,6 +80,30 @@ public class CSVHandler {
         return generators;
     }
 
+    public static Map<String, List<Exit>> importExits(String filePath) {
+        Map<String, List<Exit>> exitsMap = new HashMap<>();
+
+        Scanner scanner = getCSVScanner(filePath);
+        while (scanner.hasNextLine()) {
+            String[] row = scanner.nextLine().split(",");
+            Vector start = new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2]));
+            Vector end = new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]));
+
+            String exitGroupId = row[0];
+            if(!exitsMap.containsKey(exitGroupId))
+                exitsMap.put(exitGroupId, new ArrayList<>());
+            
+            exitsMap.get(exitGroupId).add(
+                    new Exit(
+                            new Wall(start, end)
+                    )
+            );
+        }
+
+        scanner.close();
+        return exitsMap;
+    }
+
     public static Map<String, List<Target>> importTargets(String filePath, Map<String, TargetGroupParameters> targetGroupsParameters) {
         Map<String, List<Target>> targets = new HashMap<>();
         for (String key : targetGroupsParameters.keySet()) {
@@ -105,18 +112,19 @@ public class CSVHandler {
 
         Scanner scanner = getCSVScanner(filePath);
         while (scanner.hasNextLine()) {
-            String[] tokens = scanner.nextLine().split(",");
+            String[] row = scanner.nextLine().split(",");
 
-            String targetGroupId = tokens[0];
+            String targetGroupId = row[0];
             TargetGroupParameters targetGroupParameters = targetGroupsParameters.get(targetGroupId);
 
             if (targetGroupParameters == null)
                 throw new RuntimeException("No parameters found for target group: " + targetGroupId);
 
+            //TODO: add support for rectangles
             targets.get(targetGroupId).add(
                     new DotTarget(
                             targetGroupId,
-                            new Circle(new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),Double.parseDouble(tokens[4])),
+                            new Circle(new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),Double.parseDouble(row[4])),
                             targetGroupParameters.getAttendingTime()
                     )
             );
@@ -140,7 +148,7 @@ public class CSVHandler {
         }
         scanner.close();
 
-        rows.sort(Comparator.comparing(o -> o[0]));
+        rows.sort(Comparator.comparing(o -> o[0])); // TODO: CHECK IF SORT IS CORRECTLY DONE
         findServers(serversMap, rows, serverGroupsParameters);
 
         return serversMap;

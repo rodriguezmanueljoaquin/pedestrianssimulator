@@ -8,22 +8,17 @@ import Utils.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Environment {
     private final List<Wall> walls;
     private final List<Server> servers;
     private final List<AgentsGenerator> generators;
-    private final List<Exit> exits;
 
-    public Environment(List<Wall> walls, List<Server> servers, List<AgentsGenerator> generators, List<Exit> exits) {
+    public Environment(List<Wall> walls, List<Server> servers, List<AgentsGenerator> generators) {
         this.walls = walls;
         this.servers = servers;
         this.generators = generators;
-        this.exits = exits;
-    }
-
-    public List<Exit> getExits() {
-        return exits;
     }
 
     public List<Wall> getWalls() {
@@ -32,22 +27,6 @@ public class Environment {
 
     public List<Server> getServers() {
         return servers;
-    }
-
-    public Exit getNearestExit(Vector position) {
-        //TODO: Update with Graph function getPathLengthToObjective(Vector fromPostion, Vector toPosition)
-        //Once we have behaviour module
-        Exit minExit = getExits().get(0);
-        Double minDistance = position.distance(minExit.getPosition(null));
-        Double currentDistance;
-        for (Exit currentExit : getExits()) {
-            currentDistance = position.distance(currentExit.getPosition(null));
-            if (currentDistance < minDistance) {
-                minExit = currentExit;
-                minDistance = currentDistance;
-            }
-        }
-        return minExit;
     }
 
     public Wall getClosestWall(Vector position) {
