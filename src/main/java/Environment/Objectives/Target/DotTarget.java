@@ -48,6 +48,6 @@ public class DotTarget implements Target {
 
     @Override
     public Boolean reachedObjective(Agent agent) {
-        return zone.getMiddlePoint().distance(agent.getPosition()) < Constants.DOUBLE_EPSILON + agent.getRadius() * 2;
+        return agent.distance(zone.getMiddlePoint()) < Constants.DOUBLE_EPSILON;
     }
 }
