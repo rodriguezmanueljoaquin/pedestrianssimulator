@@ -1,7 +1,7 @@
 {
     "agents_generators": [
         {
-            "group_name": "BOTTOM",
+            "group_name": "SLOW",
             "behaviour_scheme": "MARKET-CLIENT",
             "agents": {
                 "min_radius": 0.2,
@@ -11,13 +11,13 @@
             "active_time": 10.0,
             "inactive_time": 40.0,
             "generation": {
-                "frequency": 5.0,
+                "frequency": 7.5,
                 "min_agents": 1,
                 "max_agents": 1
             }
         },
         {
-            "group_name": "TOP",
+            "group_name": "FAST",
             "behaviour_scheme": "MARKET-CLIENT",
             "agents": {
                 "min_radius": 0.2,
@@ -36,15 +36,11 @@
 
     "targets": [
         {
-            "group_name": "-",
-            "attending_time": 10.0
-        },
-        {
-            "group_name": "PRODUCTS",
+            "group_name": "PRODUCT1",
             "attending_time": 5.0
         },
         {
-            "group_name": "LETTERS",
+            "group_name": "PRODUCT2",
             "attending_time": 10.0
         }
     ],

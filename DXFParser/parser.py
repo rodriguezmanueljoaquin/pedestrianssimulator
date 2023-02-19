@@ -101,7 +101,7 @@ def parse_layer_and_write_to_file(msp, layer, expected_types, out_file_path, fig
         array = get_walls(msp, expected_types)
     else:
         array = get_blocks_figures(msp, layer, expected_types, figures_are_rectangles)
-        
+
     file = open(out_file_path + layer + ".csv", "w")
     write_to_file(file, array)
     file.close()
@@ -117,16 +117,14 @@ def parse_dxf(in_file_path, out_path):
     print("\tParsing exits...")
     parse_layer_and_write_to_file(msp, EXITS_LAYER, ['LINE', 'POLYLINE'], out_path)
 
-    # print("\tParsing generators...")
-    # parse_layer_figures_and_write_to_file(msp, GENERATORS_LAYER_PREFIX, ['POLYLINE'], out_path, 
-    #             with_name=True, figures_are_rectangles=True)
+    print("\tParsing generators...")
+    parse_layer_and_write_to_file(msp, GENERATORS_LAYER, ['POLYLINE'], out_path, figures_are_rectangles=True)
 
     print("\tParsing targets...")
     parse_layer_and_write_to_file(msp, TARGETS_LAYER, ['CIRCLE'], out_path)
 
-    # print("\tParsing servers...")
-    # parse_layer_figures_and_write_to_file(msp, SERVERS_LAYER_PREFIX, ['LINE', 'POLYLINE'], out_path, 
-    #             with_name=True, figures_are_rectangles=True) 
+    print("\tParsing servers...")
+    # parse_layer_and_write_to_file(msp, SERVERS_LAYER, ['LINE', 'POLYLINE'], out_path, figures_are_rectangles=True) 
 
     print("Parsing of dxf file finished...")
 
