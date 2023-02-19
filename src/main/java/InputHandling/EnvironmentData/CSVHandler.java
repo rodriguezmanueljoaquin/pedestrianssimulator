@@ -25,38 +25,21 @@ import java.util.*;
 import java.util.function.Function;
 
 public class CSVHandler {
-    private static void readWallsAndApplyFunction(String filePath, Function<Wall, Void> function) {
+    public static List<Wall> importWalls(String filePath) {
+        List<Wall> result = new ArrayList<>();
         Scanner scanner = getCSVScanner(filePath);
 
         List<Double> inputs = new ArrayList<>(Arrays.asList(0., 0., 0., 0., 0., 0.));
         while (scanner.hasNextLine()) {
-            String[] tokens = scanner.nextLine().split(",");
+            String[] row = scanner.nextLine().split(",");
             for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Double.parseDouble(tokens[i]));
+                inputs.set(i, Double.parseDouble(row[i]));
             }
 
-            function.apply(new Wall(new Utils.Vector(inputs.get(0), inputs.get(1)), new Utils.Vector(inputs.get(3), inputs.get(4))));
+            result.add(new Wall(new Utils.Vector(inputs.get(0), inputs.get(1)), new Utils.Vector(inputs.get(3), inputs.get(4))));
         }
 
         scanner.close();
-    }
-
-    public static List<Exit> importExits(String filePath) {
-        List<Exit> result = new ArrayList<>();
-        CSVHandler.readWallsAndApplyFunction(filePath, (Wall wall) -> {
-            result.add(new Exit(wall));
-            return null;
-        });
-
-        return result;
-    }
-
-    public static List<Wall> importWalls(String filePath) {
-        List<Wall> result = new ArrayList<>();
-        CSVHandler.readWallsAndApplyFunction(filePath, (Wall wall) -> {
-            result.add(wall);
-            return null;
-        });
 
         return result;
     }
@@ -68,14 +51,14 @@ public class CSVHandler {
         Scanner scanner = getCSVScanner(filePath);
 
         while (scanner.hasNextLine()) {
-            String[] tokens = scanner.nextLine().split(",");
+            String[] row = scanner.nextLine().split(",");
 
             AgentsGeneratorZone zone = new AgentsGeneratorZone(
-                    new Utils.Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),
-                    new Utils.Vector(Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]))
+                    new Utils.Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),
+                    new Utils.Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]))
             );
 
-            String generatorGroupId = tokens[0];
+            String generatorGroupId = row[0];
 
             AgentsGeneratorParameters agentsGeneratorParameters = generatorsParameters.get(generatorGroupId);
             if (agentsGeneratorParameters == null)
@@ -97,6 +80,30 @@ public class CSVHandler {
         return generators;
     }
 
+    public static Map<String, List<Exit>> importExits(String filePath) {
+        Map<String, List<Exit>> exitsMap = new HashMap<>();
+
+        Scanner scanner = getCSVScanner(filePath);
+        while (scanner.hasNextLine()) {
+            String[] row = scanner.nextLine().split(",");
+            Vector start = new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2]));
+            Vector end = new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]));
+
+            String exitGroupId = row[0];
+            if(!exitsMap.containsKey(exitGroupId))
+                exitsMap.put(exitGroupId, new ArrayList<>());
+            
+            exitsMap.get(exitGroupId).add(
+                    new Exit(
+                            new Wall(start, end)
+                    )
+            );
+        }
+
+        scanner.close();
+        return exitsMap;
+    }
+
     public static Map<String, List<Target>> importTargets(String filePath, Map<String, TargetGroupParameters> targetGroupsParameters) {
         Map<String, List<Target>> targets = new HashMap<>();
         for (String key : targetGroupsParameters.keySet()) {
@@ -105,18 +112,19 @@ public class CSVHandler {
 
         Scanner scanner = getCSVScanner(filePath);
         while (scanner.hasNextLine()) {
-            String[] tokens = scanner.nextLine().split(",");
+            String[] row = scanner.nextLine().split(",");
 
-            String targetGroupId = tokens[0];
+            String targetGroupId = row[0];
             TargetGroupParameters targetGroupParameters = targetGroupsParameters.get(targetGroupId);
 
             if (targetGroupParameters == null)
                 throw new RuntimeException("No parameters found for target group: " + targetGroupId);
 
+            //TODO: add support for rectangles
             targets.get(targetGroupId).add(
                     new DotTarget(
                             targetGroupId,
-                            new Circle(new Vector(Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2])),Double.parseDouble(tokens[4])),
+                            new Circle(new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),Double.parseDouble(row[4])),
                             targetGroupParameters.getAttendingTime()
                     )
             );
@@ -133,71 +141,78 @@ public class CSVHandler {
         }
 
         Scanner scanner = getCSVScanner(filePath);
-        // First, sort CSV rows so that we have the queue line before its server line that has the same name, but _SERVER instead of _QUEUE at the end
-        List<String[]> rows = new ArrayList<>();
+        Map<String, List<String[]>> rowsMap = new HashMap<>();
         while (scanner.hasNextLine()) {
-            rows.add(scanner.nextLine().split(","));
+            // group data by server name and id, so queue and zone are together
+            String[] row = scanner.nextLine().split(",");
+            String fullName = row[0].substring(0, row[0].lastIndexOf('_'));
+            if(!rowsMap.containsKey(fullName))
+                rowsMap.put(fullName, new ArrayList<>());
+
+            rowsMap.get(fullName).add(row);
         }
         scanner.close();
 
-        rows.sort(Comparator.comparing(o -> o[0]));
-        findServers(serversMap, rows, serverGroupsParameters);
+        parseServers(serversMap, rowsMap, serverGroupsParameters);
 
         return serversMap;
     }
 
-    private static void findServers(Map<String, List<Server>> serversMap, List<String[]> rows, Map<String, ServerGroupParameters> serverGroupsParameters) {
-        QueueLine queue = null;
-        for (String[] row : rows) {
-            Vector start = new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2]));
-            Vector end = new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]));
-
-            // in CSV servers first element follows the format: NAME_ID_TYPE
-            String serverGroupId = row[0].substring(0, row[0].indexOf('_'));
-            String name = row[0].substring(serverGroupId.length() + 1, row[0].lastIndexOf('_'));
-            String type = row[0].substring(serverGroupId.length() + 1 + name.length() + 1);
-
+    private static void parseServers(Map<String, List<Server>> serversMap, Map<String, List<String[]>> rowsMap, Map<String, ServerGroupParameters> serverGroupsParameters) {
+        for(String serverFullName : rowsMap.keySet()) {
+            String serverGroupId = serverFullName.substring(0, serverFullName.indexOf('_'));
             ServerGroupParameters serverGroupParameters = serverGroupsParameters.get(serverGroupId);
             if (serverGroupParameters == null)
                 throw new RuntimeException("No parameters found for server group: " + serverGroupId);
 
-            switch (type) {
-                case "SERVER":
-                    Server server;
-                    Rectangle area = new Rectangle(start, end);
-                    if (queue != null) {
-                        server = new DynamicServer(
-                                name,
-                                serverGroupParameters.getMaxCapacity(),
-                                area,
-                                serverGroupParameters.getAttendingTime(),
-                                queue
+            List<String[]> serverRows = rowsMap.get(serverFullName);
+            // sort so first que QUEUE are analyzed, and then the SERVER
+            serverRows.sort(Comparator.comparing(o -> o[0].charAt(serverFullName.length() + 1))); // skip '_'
+            QueueLine queue = null;
+            String name = serverFullName.substring(serverGroupId.length() + 1);
+
+            for(String[] row : serverRows) {
+                Vector start = new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2]));
+                Vector end = new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]));
+                String type = row[0].substring(serverFullName.length() +1); // skip '_'
+
+                switch (type) {
+                    case "SERVER":
+                        Server server;
+                        Rectangle area = new Rectangle(start, end);
+                        if (queue != null) {
+                            server = new DynamicServer(
+                                    name,
+                                    serverGroupParameters.getMaxCapacity(),
+                                    area,
+                                    serverGroupParameters.getAttendingTime(),
+                                    queue
+                            );
+                        } else {
+                            server = new StaticServer(
+                                    name,
+                                    serverGroupParameters.getMaxCapacity(),
+                                    area,
+                                    serverGroupParameters.getStartTime(),
+                                    serverGroupParameters.getAttendingTime()
+                            );
+                        }
+
+                        serversMap.get(serverGroupId).add(
+                                server
                         );
-                        queue = null;
-                    } else {
-                        server = new StaticServer(
-                                name,
-                                serverGroupParameters.getMaxCapacity(),
-                                area,
-                                serverGroupParameters.getStartTime(),
-                                serverGroupParameters.getAttendingTime()
-                        );
-                    }
+                        break;
 
-                    serversMap.get(serverGroupId).add(
-                            server
-                    );
-                    break;
+                    case "QUEUE":
+                        if (queue != null)
+                            throw new RuntimeException("ERROR IN SERVERS.csv queue without server associated");
 
-                case "QUEUE":
-                    if (queue != null)
-                        throw new RuntimeException("ERROR IN SERVERS.csv queue without server associated");
+                        queue = new QueueLine(start, end);
+                        break;
 
-                    queue = new QueueLine(start, end);
-                    break;
-
-                default:
-                    throw new RuntimeException("ERROR IN SERVERS.csv on row: " + Arrays.toString(row));
+                    default:
+                        throw new RuntimeException("ERROR IN SERVERS.csv on row: " + Arrays.toString(row));
+                }
             }
         }
     }

@@ -27,16 +27,17 @@ import java.util.stream.Collectors;
 public class Main {
     private static final String RESULTS_PATH = "./results/";
 
-    private static Map<String, BehaviourScheme> getBehaviourSchemes(Graph graph, List<Exit> exits,
+    private static Map<String, BehaviourScheme> getBehaviourSchemes(Graph graph, Map<String, List<Exit>> exitsMap,
                                                                     Map<String, List<Server>> serversMap, Map<String, List<Target>> targetsMap,
                                                                     Random random) {
         Map<String, BehaviourScheme> behaviourSchemes = new HashMap<>();
 
         // --- MARKET-CLIENT ---
-        BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(new SuperMarketClientSM(graph), exits, graph, random.nextLong());
+        BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(new SuperMarketClientSM(graph), exitsMap.get("NORMAL"),
+                                                                            graph, random.nextLong());
 
-        marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCTS")), 2, 3);
-        marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("LETTERS")), 1, 1);
+        marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCT1")), 2, 3);
+        marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCT2")), 1, 1);
         marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(serversMap.get("CASHIER")), 1, 1);
 
         behaviourSchemes.put(ParametersNames.MARKET_CLIENT_BEHAVIOUR_SCHEME_KEY, marketClientBehaviourScheme);
@@ -54,10 +55,11 @@ public class Main {
         List<Wall> walls = CSVHandler.importWalls("./input/WALLS.csv");
 
         // -------- EXITS --------
-        List<Exit> exits = CSVHandler.importExits("./input/EXITS.csv");
+        Map<String, List<Exit>> exits = CSVHandler.importExits("./input/EXITS.csv");
 
         // -------- GRAPH --------
-        Graph graph = new Graph(walls, exits.stream().map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1));
+        Graph graph = new Graph(walls, exits.values().stream().flatMap(List::stream)
+                .map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1));
 
         // FOR GRAPH NODES PLOT:
 //        graph.generateOutput(RESULTS_PATH);
@@ -71,7 +73,7 @@ public class Main {
         Map<String, List<Target>> targetsMap = CSVHandler.importTargets("./input/TARGETS.csv", parameters.getTargetGroupsParameters());
 
         // -------- SERVERS --------
-        Map<String, List<Server>> serversMap = CSVHandler.importServers("./input/SERVERS_FIXED.csv", parameters.getServerGroupsParameters());
+        Map<String, List<Server>> serversMap = CSVHandler.importServers("./input/SERVERS.csv", parameters.getServerGroupsParameters());
 
         // -------- BEHAVIOUR --------
         Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exits, serversMap, targetsMap, random);
@@ -84,7 +86,7 @@ public class Main {
 
         // -------- ENVIRONMENT --------
         List<Server> servers = serversMap.values().stream().flatMap(List::stream).collect(Collectors.toList());
-        Environment environment = new Environment(walls, servers, generators, exits);
+        Environment environment = new Environment(walls, servers, generators);
 
         // -------- OPERATIONAL MODEL MODULE --------
         OperationalModelModule operationalModelModule = new CPM(environment);
