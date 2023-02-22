@@ -1,6 +1,9 @@
 package AgentsBehaviour.StateMachine;
 
 import Agent.Agent;
+import Environment.Objectives.Exit;
+
+import java.util.List;
 
 public interface StateMachine {
     void updateAgentCurrentPath(Agent agent);
@@ -11,4 +14,6 @@ public interface StateMachine {
     void movingBehaviour(Agent agent, double currentTime);
 
     void approximatingBehaviour(Agent agent, double currentTime);
+
+    void evacuate(Agent agent, List<Exit> exits);
 }

@@ -128,7 +128,7 @@ public class CSVHandler {
                 case 7:
                     //Rectangle
                     targetZone = new Rectangle(new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),
-                                               new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5])));
+                            new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5])));
                     break;
                 default:
                     throw new RuntimeException("Target.CSV row wrong formatted: " + Arrays.toString(row));

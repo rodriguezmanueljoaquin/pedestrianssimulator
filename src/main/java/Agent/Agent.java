@@ -1,6 +1,7 @@
 package Agent;
 
 import AgentsBehaviour.StateMachine.StateMachine;
+import Environment.Objectives.Exit;
 import Environment.Objectives.Objective;
 import GraphGenerator.Node;
 import GraphGenerator.NodePath;
@@ -13,10 +14,10 @@ public class Agent {
     private static Integer count = 1;
     private final StateMachine stateMachine;
     private final Integer id;
-    private final List<? extends Objective> objectives;
     private final double maxRadius;
     private final double minRadius;
     private final double maxVelocity;
+    private List<Objective> objectives;
     private Vector position;
     private Vector velocity;
     private double radius;
@@ -25,7 +26,7 @@ public class Agent {
     private NodePath currentPath;
     private Node currentIntermediateObjectiveNode;
 
-    public Agent(Vector x, double minRadius, double maxRadius, double maxVelocity, StateMachine stateMachine, List<? extends Objective> objectives) {
+    public Agent(Vector x, double minRadius, double maxRadius, double maxVelocity, StateMachine stateMachine, List<Objective> objectives) {
         this.position = x;
         this.velocity = new Vector(0, 0);
         this.minRadius = minRadius;
@@ -110,6 +111,17 @@ public class Agent {
 
     public double distance(Vector position) {
         return this.getPosition().distance(position) - this.radius;
+    }
+
+    public void evacuate(List<Exit> exits) {
+        if (this.objectives.size() > 1) {
+            //is not going to exit
+            this.stateMachine.evacuate(this, exits);
+        }
+    }
+
+    public void setObjectives(List<Objective> objectives) {
+        this.objectives = objectives;
     }
 
     public Integer getId() {

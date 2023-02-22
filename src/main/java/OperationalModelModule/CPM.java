@@ -58,8 +58,8 @@ public class CPM implements OperationalModelModule {
 
         // remove from map those agent that left
         List<Integer> agentsIdToRemove = new ArrayList<>();
-        for(Integer agentId : this.agentsPreviousVelocity.keySet()) {
-            if(agents.stream().noneMatch(a -> Objects.equals(a.getId(), agentId)))
+        for (Integer agentId : this.agentsPreviousVelocity.keySet()) {
+            if (agents.stream().noneMatch(a -> Objects.equals(a.getId(), agentId)))
                 agentsIdToRemove.add(agentId);
         }
         agentsIdToRemove.forEach(this.agentsPreviousVelocity::remove);
@@ -67,10 +67,10 @@ public class CPM implements OperationalModelModule {
 
     private Vector calculateHeuristicDirection(Agent agent, Random random) {
         //initialize with original direction
-        Vector resultantNc = new Vector(0,0);
-        if(this.agentsPreviousVelocity.containsKey(agent.getId()))
+        Vector resultantNc = new Vector(0, 0);
+        if (this.agentsPreviousVelocity.containsKey(agent.getId()))
             resultantNc = resultantNc.add(this.agentsPreviousVelocity.get(agent.getId())).normalize()
-                .scalarMultiply(getRandomDoubleInRange(CPMConstants.ORIGINAL_DIRECTION_AP, CPMConstants.AP_VARIATION, random));
+                    .scalarMultiply(getRandomDoubleInRange(CPMConstants.ORIGINAL_DIRECTION_AP, CPMConstants.AP_VARIATION, random));
 
         //add new direction
         resultantNc = resultantNc.add(agent.getVelocity().normalize()
@@ -123,7 +123,7 @@ public class CPM implements OperationalModelModule {
 
     public void expandAgent(Agent agent) {
         if (agent.getRadius() < agent.getMaxRadius()) {
-            agent.setRadius(agent.getRadius() + agent.getMaxRadius() / CPMConstants.DTS_NEEDED_FOR_EXPANSION);
+            agent.setRadius(agent.getRadius() + (agent.getMaxRadius() / CPMConstants.DTS_NEEDED_FOR_EXPANSION));
         }
     }
 

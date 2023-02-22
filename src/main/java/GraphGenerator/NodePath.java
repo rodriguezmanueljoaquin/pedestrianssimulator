@@ -25,7 +25,7 @@ public class NodePath {
     }
 
     public Node getLastNode() {
-        if(this.path.size() == 0)
+        if (this.path.size() == 0)
             return null;
         return this.path.get(this.path.size() - 1);
     }

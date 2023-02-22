@@ -1,7 +1,5 @@
 package InputHandling;
 
-import org.json.simple.JSONObject;
-
 public class ParametersNames {
     public static String MARKET_CLIENT_BEHAVIOUR_SCHEME_KEY = "MARKET-CLIENT";
     public static String SERVERS_KEY = "servers";

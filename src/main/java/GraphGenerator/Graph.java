@@ -39,20 +39,14 @@ public class Graph {
         double distTheta = Math.atan2(dist.getY(), dist.getX()); // in (-PI, PI]
 
         double highestPointTheta = distTheta + Math.PI / 2;
-        if (highestPointTheta > Math.PI)
-            highestPointTheta -= Math.PI * 2;
-
         Vector originHighestPoint = origin.add(new Vector(Math.cos(highestPointTheta), Math.sin(highestPointTheta)).scalarMultiply(radius));
         Vector destinyHighestPoint = destiny.add(new Vector(Math.cos(highestPointTheta), Math.sin(highestPointTheta)).scalarMultiply(radius));
         if (!isPositionVisibleWithinWalls(originHighestPoint, destinyHighestPoint, this.walls))
             return false;
 
         double lowestPointTheta = distTheta - Math.PI / 2;
-        if (lowestPointTheta <= -Math.PI)
-            lowestPointTheta += Math.PI * 2;
-
         Vector originLowestPoint = origin.add(new Vector(Math.cos(lowestPointTheta), Math.sin(lowestPointTheta)).scalarMultiply(radius));
-        Vector destinyLowestPoint = destiny.add(new Vector(Math.cos(highestPointTheta), Math.sin(highestPointTheta)).scalarMultiply(radius));
+        Vector destinyLowestPoint = destiny.add(new Vector(Math.cos(lowestPointTheta), Math.sin(lowestPointTheta)).scalarMultiply(radius));
         return isPositionVisibleWithinWalls(originLowestPoint, destinyLowestPoint, this.walls);
     }
 

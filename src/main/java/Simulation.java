@@ -24,15 +24,17 @@ public class Simulation {
     private final Environment environment;
     private final Random random;
     private final OperationalModelModule operationalModelModule;
+    private final Double evacuationTime;
     private double time;
     private PrintWriter writer;
 
     public Simulation(double maxTime, Environment environment, OperationalModelModule operationalModelModule,
-                      String outputDirectoryPath, Random random) throws FileNotFoundException, UnsupportedEncodingException {
+                      String outputDirectoryPath, Random random, Double evacuationTime) throws FileNotFoundException, UnsupportedEncodingException {
         this.maxTime = maxTime;
         this.environment = environment;
         this.operationalModelModule = operationalModelModule;
         this.random = random;
+        this.evacuationTime = evacuationTime;
         this.agents = new ArrayList<>();
         this.time = 0;
         this.dt = DELTA_T;
@@ -61,7 +63,18 @@ public class Simulation {
 
         while (this.time < this.maxTime) {
             // create new agents and update servers
-            this.agents.addAll(this.environment.update(this.time));
+            List<Agent> newAgents = this.environment.update(this.time);
+
+            // check for evacuation
+            if (this.evacuationTime != null && this.time >= this.evacuationTime) {
+                if (this.agents.size() == 0)
+                    // stop simulation
+                    break;
+
+                for (Agent agent : this.agents) {
+                    agent.evacuate(this.environment.getExits());
+                }
+            } else this.agents.addAll(newAgents);
 
             // update positions and state
             for (Agent agent : this.agents) {

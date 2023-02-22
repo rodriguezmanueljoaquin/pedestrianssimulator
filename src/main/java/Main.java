@@ -1,3 +1,4 @@
+import Agent.AgentConstants;
 import AgentsBehaviour.BehaviourScheme;
 import AgentsBehaviour.StateMachine.SuperMarketClientSM;
 import AgentsGenerator.AgentsGenerator;
@@ -7,6 +8,7 @@ import Environment.Objectives.Server.Server;
 import Environment.Objectives.Target.Target;
 import Environment.Wall;
 import GraphGenerator.Graph;
+import GraphGenerator.NodePath;
 import InputHandling.EnvironmentData.CSVHandler;
 import InputHandling.ParametersNames;
 import InputHandling.SimulationParameters.SimulationParameters;
@@ -54,15 +56,16 @@ public class Main {
         List<Wall> walls = CSVHandler.importWalls("./input/WALLS.csv");
 
         // -------- EXITS --------
-        Map<String, List<Exit>> exits = CSVHandler.importExits("./input/EXITS.csv");
+        Map<String, List<Exit>> exitsMap = CSVHandler.importExits("./input/EXITS.csv");
 
         // -------- GRAPH --------
-        Graph graph = new Graph(walls, exits.values().stream().flatMap(List::stream)
+        Graph graph = new Graph(walls, exitsMap.values().stream().flatMap(List::stream)
                 .map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1));
 
         // FOR GRAPH NODES PLOT:
 //        graph.generateOutput(RESULTS_PATH);
-//        NodePath path = graph.AStar(graph.getClosestVisibleNode(new Vector(16.07,9.65)), new Vector(34.5, 12.0));
+//        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(36.5,6.95), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
+//                new Vector(25., 0.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
 //        System.out.println(path);
 
         // -------- CONFIGURATION --------
@@ -75,7 +78,7 @@ public class Main {
         Map<String, List<Server>> serversMap = CSVHandler.importServers("./input/SERVERS.csv", parameters.getServerGroupsParameters());
 
         // -------- BEHAVIOUR --------
-        Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exits, serversMap, targetsMap, random);
+        Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exitsMap, serversMap, targetsMap, random);
 
         // -------- AGENT GENERATORS --------
         List<AgentsGenerator> generators = CSVHandler.importAgentsGenerators(
@@ -85,14 +88,16 @@ public class Main {
 
         // -------- ENVIRONMENT --------
         List<Server> servers = serversMap.values().stream().flatMap(List::stream).collect(Collectors.toList());
-        Environment environment = new Environment(walls, servers, generators);
+        Environment environment = new Environment(walls, servers, generators,
+                exitsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toList()) // all exits
+        );
 
         // -------- OPERATIONAL MODEL MODULE --------
         OperationalModelModule operationalModelModule = new CPM(environment);
 
         try {
             Simulation.createStaticFile(RESULTS_PATH, walls);
-            Simulation sim = new Simulation(Constants.MAX_TIME, environment, operationalModelModule, RESULTS_PATH, random);
+            Simulation sim = new Simulation(Constants.MAX_TIME, environment, operationalModelModule, RESULTS_PATH, random, 600.);
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

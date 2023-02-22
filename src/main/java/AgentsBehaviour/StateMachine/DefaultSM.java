@@ -2,10 +2,17 @@ package AgentsBehaviour.StateMachine;
 
 import Agent.Agent;
 import Agent.AgentStates;
+import Environment.Objectives.Exit;
 import Environment.Objectives.ObjectiveType;
 import GraphGenerator.Graph;
 import GraphGenerator.Node;
 import GraphGenerator.NodePath;
+import Utils.Vector;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static Utils.Constants.DOUBLE_EPSILON;
 
 public class DefaultSM implements StateMachine {
     protected final Graph graph;
@@ -24,6 +31,21 @@ public class DefaultSM implements StateMachine {
         } else {
             agent.setCurrentPath(path);
         }
+    }
+
+    public void evacuate(Agent agent, List<Exit> exits) {
+        agent.setState(AgentStates.MOVING);
+
+        Vector closestExitPosition = this.graph.getClosestDestination(agent.getPosition(),
+                        exits.stream().map(Exit::getCentroidPosition).collect(Collectors.toList()), agent.getMaxRadius());
+
+        // get the exit with matches with the closest position found
+        Exit closestExit = exits.stream()
+                .filter(e->e.getCentroidPosition().distance(closestExitPosition) < DOUBLE_EPSILON).findFirst()
+                .orElseThrow(RuntimeException::new);
+
+        agent.setObjectives(new ArrayList<>(Collections.singletonList(closestExit)));
+        updateAgentCurrentPath(agent);
     }
 
     private void updateAgentCurrentObjective(Agent agent, Double currentTime) {
@@ -99,8 +121,8 @@ public class DefaultSM implements StateMachine {
             case MOVING_TO_QUEUE_POSITION:
                 Node lastNode = agent.getCurrentPath().getLastNode();
                 if (lastNode != null && !graph.isPositionAccessible(lastNode.getPosition(),
-                                                agent.getCurrentObjective().getPosition(agent),
-                                                agent.getMaxRadius()))
+                        agent.getCurrentObjective().getPosition(agent),
+                        agent.getMaxRadius()))
                     // objective position in queue changed while going to it and the position is not accessible from current path
                     this.updateAgentCurrentPath(agent);
 

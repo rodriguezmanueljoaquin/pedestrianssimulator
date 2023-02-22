@@ -2,21 +2,25 @@ package Environment;
 
 import Agent.Agent;
 import AgentsGenerator.AgentsGenerator;
+import Environment.Objectives.Exit;
 import Environment.Objectives.Server.Server;
 import Utils.Vector;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Environment {
     private final List<Wall> walls;
     private final List<Server> servers;
     private final List<AgentsGenerator> generators;
+    private final List<Exit> exits;
 
-    public Environment(List<Wall> walls, List<Server> servers, List<AgentsGenerator> generators) {
+    public Environment(List<Wall> walls, List<Server> servers, List<AgentsGenerator> generators, List<Exit> exits) {
         this.walls = walls;
         this.servers = servers;
         this.generators = generators;
+        this.exits = exits;
     }
 
     public List<Wall> getWalls() {
@@ -39,6 +43,10 @@ public class Environment {
             }
         }
         return closestWall;
+    }
+
+    public List<Exit> getExits() {
+        return exits;
     }
 
     public List<Agent> generateAgents(Double time) {
