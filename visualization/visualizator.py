@@ -26,10 +26,10 @@ def visualize_graph_results():
 
 
     color_map = []
-    visited = []
+    visited = [259,249,240,230,222,213,202,189,176,164,153] # nodes to be colored
     for node in G:
         if node in visited:
-            color_map.append('blue')
+            color_map.append('yellow')
         else: 
             color_map.append('green')      
 

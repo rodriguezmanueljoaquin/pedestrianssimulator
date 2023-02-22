@@ -25,6 +25,8 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.lang.System.exit;
+
 public class Main {
     private static final String RESULTS_PATH = "./results/";
 
@@ -62,11 +64,11 @@ public class Main {
         Graph graph = new Graph(walls, exitsMap.values().stream().flatMap(List::stream)
                 .map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1));
 
-        // FOR GRAPH NODES PLOT:
-//        graph.generateOutput(RESULTS_PATH);
-//        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(36.5,6.95), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
-//                new Vector(25., 0.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
-//        System.out.println(path);
+        // FOR GRAPH NODES PLOT  -------- DEBUGGING --------
+        graph.generateOutput(RESULTS_PATH);
+        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(6.542717913594863,-0.59), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
+                new Vector(25., 5.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
+        System.out.println(path);
 
         // -------- CONFIGURATION --------
         SimulationParameters parameters = new SimulationParameters("./input/parameters.json");

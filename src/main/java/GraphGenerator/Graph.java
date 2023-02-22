@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Graph {
     private final static double STEP_SIZE = 1.8; // Found empirically, TODO: AUTOMATIZE STEP SIZE SELECTION
@@ -34,20 +35,23 @@ public class Graph {
         // checks if whole circumference of the circle can access to destiny
         // for this, picks "highest" point in circumferences and checks if it can see the "highest" point in destination
         // with "highest", we refer to the perpendicular point to the distance vector in the circumference
-        // find angle of distance vector
-        Vector dist = destiny.substract(origin);
-        double distTheta = Math.atan2(dist.getY(), dist.getX()); // in (-PI, PI]
+        Vector distance = destiny.substract(origin);
+        double originalTetha = Math.atan2(distance.getY(), distance.getX());
 
-        double highestPointTheta = distTheta + Math.PI / 2;
-        Vector originHighestPoint = origin.add(new Vector(Math.cos(highestPointTheta), Math.sin(highestPointTheta)).scalarMultiply(radius));
-        Vector destinyHighestPoint = destiny.add(new Vector(Math.cos(highestPointTheta), Math.sin(highestPointTheta)).scalarMultiply(radius));
-        if (!isPositionVisibleWithinWalls(originHighestPoint, destinyHighestPoint, this.walls))
-            return false;
+        return isProjectedPositionVisible(origin, destiny, radius, originalTetha + Math.PI / 2)
+                && isProjectedPositionVisible(origin, destiny, radius, originalTetha - Math.PI / 2);
+    }
 
-        double lowestPointTheta = distTheta - Math.PI / 2;
-        Vector originLowestPoint = origin.add(new Vector(Math.cos(lowestPointTheta), Math.sin(lowestPointTheta)).scalarMultiply(radius));
-        Vector destinyLowestPoint = destiny.add(new Vector(Math.cos(lowestPointTheta), Math.sin(lowestPointTheta)).scalarMultiply(radius));
-        return isPositionVisibleWithinWalls(originLowestPoint, destinyLowestPoint, this.walls);
+    private boolean isProjectedPositionVisible(Vector origin, Vector destiny, double radius, double theta) {
+        Vector projectedPoint = new Vector(Math.cos(theta), Math.sin(theta)).scalarMultiply(radius);
+        Vector originProjectedPoint = origin.add(projectedPoint);
+        Vector destinyProjectedPoint = destiny.add(projectedPoint);
+
+        // only if origin projected position is reachable from origin
+        // AND projected position on destination is reachable from projected position on origin
+        //      returns TRUE
+        return isPositionVisibleWithinWalls(origin, originProjectedPoint, this.walls) &&
+                isPositionVisibleWithinWalls(originProjectedPoint, destinyProjectedPoint, this.walls);
     }
 
     private boolean isPositionVisibleWithinWalls(Vector origin, Vector destiny, List<Wall> walls) {
@@ -82,7 +86,7 @@ public class Graph {
         if (this.isPositionAccessible(fromPosition, toPosition, radius))
             return new NodePath();
 
-        // first try to get by current position, otherwise get the closest visible
+        // first try to get by current position, otherwise get the closest accessible
         Node fromNode = this.nodes.get(fromPosition);
         if (fromNode == null) {
             fromNode = this.getClosestAccessibleNode(fromPosition, radius);
@@ -138,6 +142,40 @@ public class Graph {
 
             current.addNeighbors(currentNeighbours);
         }
+
+        // add nodes on exits for agents that summon outside the establishment
+        // and add an extra mirrored node outside just in case
+        for(Wall wall : extraWalls) {
+            Node node = new Node(wall.getCentroid());
+            Node closestNode = this.getClosestAccessibleNode(node.getPosition(), 0.0001);
+            node.addNeighbor(closestNode);
+            closestNode.addNeighbor(node);
+            this.nodes.put(node.getPosition(), node);
+
+            Node mirrorNode = new Node(getMirroredPosition(wall, closestNode.getPosition()));
+            node.addNeighbor(mirrorNode);
+            mirrorNode.addNeighbor(node);
+            this.nodes.put(mirrorNode.getPosition(), mirrorNode);
+        }
+    }
+
+    private Vector getMirroredPosition(Wall line, Vector position) {
+        // mirrored point https://stackoverflow.com/questions/8954326/how-to-calculate-the-mirror-point-along-a-line#:~:text=px%27%2C%20py%27).-,Alternatively,-%2C%20you%20can%20use
+        double A = line.getB().getY() - line.getA().getY();
+        double B = -(line.getB().getX() - line.getA().getX());
+        double C = -A * line.getA().getX() - B * line.getA().getY();
+
+        // normalize
+        double M = Math.sqrt(Math.pow(A,2) + Math.pow(B,2));
+        A /= M;
+        B /= M;
+        C /= M;
+
+        double D = A * position.getX() + B * position.getY() + C;
+        double mirrorX = position.getX() - 2 * A * D;
+        double mirrorY = position.getY() - 2 * B * D;
+
+        return new Vector(mirrorX, mirrorY);
     }
 
     public Vector getClosestDestination(Vector fromPosition, List<Vector> possibleDestinations, double radius) {

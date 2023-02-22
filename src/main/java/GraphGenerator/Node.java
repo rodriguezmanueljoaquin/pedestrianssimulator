@@ -5,6 +5,7 @@ import Utils.Vector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Node {
     private static Integer count = 1;
@@ -32,8 +33,12 @@ public class Node {
 
     public void addNeighbors(List<Node> nodes) {
         for (Node node : nodes)
-            if (!this.neighbors.contains(node))
-                this.neighbors.add(node);
+            this.addNeighbor(node);
+    }
+
+    public void addNeighbor(Node node) {
+        if (!this.neighbors.contains(node))
+            this.neighbors.add(node);
     }
 
     @Override
@@ -47,5 +52,14 @@ public class Node {
     @Override
     public int hashCode() {
         return Objects.hash(position);
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "position=" + position +
+                ", neighbors=" + neighbors.stream().map(Node::getId).collect(Collectors.toList()) +
+                ", id=" + id +
+                '}';
     }
 }

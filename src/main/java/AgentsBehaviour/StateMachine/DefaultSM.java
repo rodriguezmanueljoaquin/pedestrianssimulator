@@ -9,7 +9,9 @@ import GraphGenerator.Node;
 import GraphGenerator.NodePath;
 import Utils.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static Utils.Constants.DOUBLE_EPSILON;
@@ -37,11 +39,11 @@ public class DefaultSM implements StateMachine {
         agent.setState(AgentStates.MOVING);
 
         Vector closestExitPosition = this.graph.getClosestDestination(agent.getPosition(),
-                        exits.stream().map(Exit::getCentroidPosition).collect(Collectors.toList()), agent.getMaxRadius());
+                exits.stream().map(Exit::getCentroidPosition).collect(Collectors.toList()), agent.getMaxRadius());
 
         // get the exit with matches with the closest position found
         Exit closestExit = exits.stream()
-                .filter(e->e.getCentroidPosition().distance(closestExitPosition) < DOUBLE_EPSILON).findFirst()
+                .filter(e -> e.getCentroidPosition().distance(closestExitPosition) < DOUBLE_EPSILON).findFirst()
                 .orElseThrow(RuntimeException::new);
 
         agent.setObjectives(new ArrayList<>(Collections.singletonList(closestExit)));
