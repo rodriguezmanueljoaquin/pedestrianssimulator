@@ -1,6 +1,7 @@
 package Environment.Objectives;
 
 import Agent.Agent;
+import Agent.AgentConstants;
 import Environment.Wall;
 import Utils.Vector;
 
@@ -13,6 +14,11 @@ public class Exit implements Objective {
 
     public Wall getExitWall() {
         return exit;
+    }
+
+    @Override
+    public Boolean reachedObjective(Agent agent) {
+        return agent.distance(exit.getClosestPoint(agent.getPosition())) < AgentConstants.MINIMUM_DISTANCE_TO_TARGET;
     }
 
     @Override
