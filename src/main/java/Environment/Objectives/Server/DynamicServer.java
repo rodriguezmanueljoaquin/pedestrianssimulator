@@ -2,13 +2,22 @@ package Environment.Objectives.Server;
 
 import Agent.Agent;
 import Environment.Objectives.ObjectiveType;
+import Utils.Random.RandomInterface;
 import Utils.Rectangle;
 
-public class DynamicServer extends Server {
+import java.util.HashMap;
+import java.util.Map;
 
+public class DynamicServer extends Server {
+    private final Map<Integer, Double> attendingTimeMap = new HashMap<>();
     //Dynamic event is for an event that happens continuously.
-    public DynamicServer(String id, int maxCapacity, Rectangle zone, double attendingTime, QueueLine queueLine) {
-        super(id, maxCapacity, zone, attendingTime, queueLine);
+    public DynamicServer(String id, int maxCapacity, Rectangle zone, RandomInterface attendingDistribution, QueueLine queueLine) {
+        super(id, maxCapacity, zone, attendingDistribution, queueLine);
+    }
+
+    private double getAttendingTime(Agent agent) {
+        attendingTimeMap.computeIfAbsent(agent.getId(),(c -> attendingDistribution.getNewRandomNumber()));
+        return (attendingTimeMap.get(agent.getId()));
     }
 
     @Override
@@ -34,7 +43,11 @@ public class DynamicServer extends Server {
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
         // returns true when agent has started attending the server and also has completed the time required of attending
-        return agent.getStartedAttendingAt() != null && currentTime - agent.getStartedAttendingAt() > this.attendingTime;
+        if (agent.getStartedAttendingAt() != null && currentTime - agent.getStartedAttendingAt() > getAttendingTime(agent)){
+            attendingTimeMap.remove(agent.getId());
+            return true;
+        }
+        return false;
     }
 
     @Override

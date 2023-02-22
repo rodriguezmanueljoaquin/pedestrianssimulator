@@ -2,13 +2,14 @@ package Environment.Objectives.Server;
 
 import Agent.Agent;
 import Environment.Objectives.ObjectiveType;
+import Utils.Random.RandomInterface;
 import Utils.Rectangle;
 import Utils.Vector;
 
 public class StaticServer extends Server {
     //Static event is for an event that has a fixed schedule
-    public StaticServer(String id, int maxCapacity, Rectangle zone, double startTime, double attendingTime) {
-        super(id, maxCapacity, zone, attendingTime, null);
+    public StaticServer(String id, int maxCapacity, Rectangle zone, double startTime, RandomInterface attendingDistribution) {
+        super(id, maxCapacity, zone, attendingDistribution, null);
         this.startTime = startTime;
     }
 
@@ -36,10 +37,14 @@ public class StaticServer extends Server {
         return this.servingAgents.contains(agent);
     }
 
+    private double getAttendingTime() {
+        return attendingDistribution.getMean();
+    }
+
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
         // returns true when server has ended it activity or when a new agent arrives in a moment where server is at maxCapacity
-        return currentTime - this.startTime > this.attendingTime ||
+        return currentTime - this.startTime > getAttendingTime() ||
                 (!this.servingAgents.contains(agent) && this.servingAgents.size() >= this.maxAttendants);
     }
 

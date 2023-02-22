@@ -2,6 +2,7 @@ package Environment.Objectives.Server;
 
 import Agent.Agent;
 import Environment.Objectives.Objective;
+import Utils.Random.RandomInterface;
 import Utils.Rectangle;
 import Utils.Vector;
 
@@ -14,15 +15,15 @@ public abstract class Server implements Objective {
     protected final List<Agent> servingAgents;
     protected final ServerPositionHandler serverPositionHandler;
     protected final QueueHandler queueHandler;
-    protected final double attendingTime;
+    protected final RandomInterface attendingDistribution;
     protected Double startTime = null;
 
-    public Server(String id, int maxCapacity, Rectangle zone, double attendingTime, QueueLine queueLine) {
+    public Server(String id, int maxCapacity, Rectangle zone, RandomInterface attendingDistribution, QueueLine queueLine) {
         this.id = id;
         this.serverPositionHandler = new ServerPositionHandler(zone);
         this.queueHandler = new QueueHandler(queueLine, this);
         this.maxAttendants = maxCapacity;
-        this.attendingTime = attendingTime;
+        this.attendingDistribution = attendingDistribution;
         this.servingAgents = new ArrayList<>();
     }
 

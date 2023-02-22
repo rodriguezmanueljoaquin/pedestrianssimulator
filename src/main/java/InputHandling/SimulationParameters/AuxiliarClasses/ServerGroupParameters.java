@@ -1,18 +1,20 @@
 package InputHandling.SimulationParameters.AuxiliarClasses;
 
+import Utils.Random.RandomInterface;
+
 public class ServerGroupParameters {
-    private final Double attendingTime;
+    private final RandomInterface attendingDistribution;
     private final Integer maxCapacity;
     private final Double startTime;
 
-    public ServerGroupParameters(Double attendingTime, Integer maxCapacity, Double startTime) {
-        this.attendingTime = attendingTime;
+    public ServerGroupParameters(RandomInterface attendingDistribution, Integer maxCapacity, Double startTime) {
+        this.attendingDistribution = attendingDistribution;
         this.maxCapacity = maxCapacity;
         this.startTime = startTime;
     }
 
-    public Double getAttendingTime() {
-        return attendingTime;
+    public RandomInterface getAttendingDistribution() {
+        return attendingDistribution;
     }
 
     public Integer getMaxCapacity() {

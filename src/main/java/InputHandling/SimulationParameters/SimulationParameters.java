@@ -3,6 +3,7 @@ package InputHandling.SimulationParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.ServerGroupParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.TargetGroupParameters;
+import Utils.Random.UniformRandom;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -37,9 +38,11 @@ public class SimulationParameters {
         this.serverGroupsParameters = new HashMap<>();
         for (Object serverParametersObj : serversParametersJSON) {
             JSONObject serverParameters = (JSONObject) serverParametersObj;
-
+            //TODO: Insert other value from random
+            //TODO: UniformRandom could also recieve attending time and variance
+            //TODO: Ask Mr. Parisi how to handle Exponential Random as lambda gives weird cases.
             ServerGroupParameters newServerGroupParameters = new ServerGroupParameters(
-                    (Double) serverParameters.get(ATTENDING_TIME_KEY),
+                    new UniformRandom((Double) serverParameters.get(ATTENDING_TIME_KEY),(Double) serverParameters.get(ATTENDING_TIME_KEY) + 10),
                     ((Long) serverParameters.get(MAX_CAPACITY_KEY)).intValue(),
                     (Double) serverParameters.get(START_TIME_KEY)
             );
@@ -59,7 +62,9 @@ public class SimulationParameters {
             this.targetGroupsParameters.put(
                     (String) targetParameters.get(GROUP_NAME_KEY),
                     new TargetGroupParameters(
-                            (Double) targetParameters.get(ATTENDING_TIME_KEY)
+                            new UniformRandom((Double) targetParameters.get(ATTENDING_TIME_KEY),
+                                    (Double) targetParameters.get(ATTENDING_TIME_KEY) + 10)
+
                     )
             );
         }

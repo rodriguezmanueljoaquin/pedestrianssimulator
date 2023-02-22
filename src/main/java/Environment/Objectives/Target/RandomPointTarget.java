@@ -4,6 +4,7 @@ package Environment.Objectives.Target;
 import Agent.Agent;
 import Environment.Objectives.ObjectiveType;
 import Utils.Constants;
+import Utils.Random.RandomInterface;
 import Utils.Vector;
 import Utils.Zone;
 
@@ -14,15 +15,19 @@ import java.util.Map;
 public class RandomPointTarget implements Target {
     private final Zone zone;
     private final String groupId;
-    private final Double attendingTime; //milliseconds needed to complete task
+    private final RandomInterface attendingDistribution; //milliseconds needed to complete task
     private final Map<Integer, Vector> positionMap = new HashMap<>();
 
-    public RandomPointTarget(String groupId, Zone zone, Double attendingTime) {
+    public RandomPointTarget(String groupId, Zone zone, RandomInterface attendingDistribution) {
         this.zone = zone;
-        this.attendingTime = attendingTime;
+        this.attendingDistribution = attendingDistribution;
         this.groupId = groupId;
     }
 
+
+    public Double getAttendingTime() {
+        return attendingDistribution.getNewRandomNumber();
+    }
 
     @Override
     public Vector getPosition(Agent agent) {
@@ -36,7 +41,7 @@ public class RandomPointTarget implements Target {
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
         //true if the agent has started to attend and completed it "task"
-        return currentTime - agent.getStartedAttendingAt() >= this.attendingTime;
+        return currentTime - agent.getStartedAttendingAt() >= getAttendingTime();
     }
 
     @Override

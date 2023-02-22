@@ -137,7 +137,7 @@ public class CSVHandler {
             targets.get(targetGroupId).add(new DotTarget(
                     targetGroupId,
                     targetZone,
-                    targetGroupParameters.getAttendingTime()
+                    targetGroupParameters.getAttendingDistribution()
             ));
         }
 
@@ -196,7 +196,7 @@ public class CSVHandler {
                                     name,
                                     serverGroupParameters.getMaxCapacity(),
                                     area,
-                                    serverGroupParameters.getAttendingTime(),
+                                    serverGroupParameters.getAttendingDistribution(),
                                     queue
                             );
                         } else {
@@ -205,7 +205,7 @@ public class CSVHandler {
                                     serverGroupParameters.getMaxCapacity(),
                                     area,
                                     serverGroupParameters.getStartTime(),
-                                    serverGroupParameters.getAttendingTime()
+                                    serverGroupParameters.getAttendingDistribution()
                             );
                         }
 

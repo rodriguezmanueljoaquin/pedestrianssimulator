@@ -4,6 +4,7 @@ package Environment.Objectives.Target;
 import Agent.Agent;
 import Environment.Objectives.ObjectiveType;
 import Utils.Constants;
+import Utils.Random.RandomInterface;
 import Utils.Vector;
 import Utils.Zone;
 
@@ -11,12 +12,15 @@ import Utils.Zone;
 public class DotTarget implements Target {
     private final Zone zone;
     private final String groupId;
-    private final Double attendingTime; //milliseconds needed to complete task
-
-    public DotTarget(String groupId, Zone zone, Double attendingTime) {
+    private final RandomInterface attendingDistribution;
+    public DotTarget(String groupId, Zone zone, RandomInterface attendingDistribution) {
         this.zone = zone;
-        this.attendingTime = attendingTime;
+        this.attendingDistribution = attendingDistribution;
         this.groupId = groupId;
+    }
+
+    public Double getAttendingTime() {
+        return attendingDistribution.getNewRandomNumber();
     }
 
     @Override
@@ -27,7 +31,7 @@ public class DotTarget implements Target {
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
         //true if the agent has started to attend and completed it "task"
-        return currentTime - agent.getStartedAttendingAt() >= this.attendingTime;
+        return currentTime - agent.getStartedAttendingAt() >= getAttendingTime();
     }
 
     @Override
