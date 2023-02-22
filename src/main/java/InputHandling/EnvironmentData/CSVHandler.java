@@ -17,6 +17,7 @@ import InputHandling.SimulationParameters.AuxiliarClasses.TargetGroupParameters;
 import Utils.Circle;
 import Utils.Rectangle;
 import Utils.Vector;
+import Utils.Zone;
 
 import java.io.File;
 import java.util.*;
@@ -117,14 +118,27 @@ public class CSVHandler {
             if (targetGroupParameters == null)
                 throw new RuntimeException("No parameters found for target group: " + targetGroupId);
 
-            //TODO: add support for rectangles
-            targets.get(targetGroupId).add(
-                    new DotTarget(
-                            targetGroupId,
-                            new Circle(new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])), Double.parseDouble(row[4])),
-                            targetGroupParameters.getAttendingTime()
-                    )
-            );
+            Zone targetZone;
+            switch (row.length) {
+                case 5:
+                    //Circle
+                    targetZone = new Circle(new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])), Double.parseDouble(row[4]));
+                    break;
+
+                case 7:
+                    //Rectangle
+                    targetZone = new Rectangle(new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),
+                                               new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5])));
+                    break;
+                default:
+                    throw new RuntimeException("Target.CSV row wrong formatted: " + Arrays.toString(row));
+            }
+
+            targets.get(targetGroupId).add(new DotTarget(
+                    targetGroupId,
+                    targetZone,
+                    targetGroupParameters.getAttendingTime()
+            ));
         }
 
         scanner.close();

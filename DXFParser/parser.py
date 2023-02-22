@@ -9,46 +9,52 @@ TARGETS_LAYER = "TARGETS"
 SERVERS_LAYER = "SERVERS"
 
 
-def get_rectangle_figure(e, layer_prefix):
-    if e.dxftype() != 'POLYLINE' or len(e) != 5 or e[0].dxf.location != e[-1].dxf.location:
-        # If we know we are getting a rectangle, we can save just top left and bottom right vertices
-        # in a rectangle there are 4 vertices + 1 closing vertex (that is the same as the first one)
-        raise ValueError(f'Layer {layer_prefix} contains {e.dxftype()} entities which is not a rectangle, when it should be because of being in this layer.')
+def is_rectangle(entity):
+    # In a rectangle there are 4 vertices + 1 closing vertex (that is the same as the first one)
+    return entity.dxftype() == 'POLYLINE' and len(entity) == 5 and entity[0].dxf.location == entity[-1].dxf.location
 
-    return [e[0].dxf.location[0], e[0].dxf.location[1], e[0].dxf.location[2],
-                        e[2].dxf.location[0], e[2].dxf.location[1], e[2].dxf.location[2]]
 
-def get_figures(e, layer_prefix):
+def get_rectangle_figure(entity):
+    # If we know we are getting a rectangle, we can save just top left and bottom right vertices
+    return [entity[0].dxf.location[0], entity[0].dxf.location[1], entity[0].dxf.location[2],
+            entity[2].dxf.location[0], entity[2].dxf.location[1], entity[2].dxf.location[2]]
+
+
+def get_figures(entity, layer_prefix):
     figures = []
-    if e.dxftype() == 'LINE':
-        figures.append([e.dxf.start[0], e.dxf.start[1], e.dxf.start[2],
-                        e.dxf.end[0], e.dxf.end[1], e.dxf.end[2]])
-    elif e.dxftype() == 'CIRCLE':
-        figures.append([e.dxf.center[0], e.dxf.center[1], e.dxf.center[2], e.dxf.radius])
-    elif e.dxftype() == 'POLYLINE':
-        lines_qty = len(e)
+    if entity.dxftype() == 'LINE':
+        figures.append([entity.dxf.start[0], entity.dxf.start[1], entity.dxf.start[2],
+                        entity.dxf.end[0], entity.dxf.end[1], entity.dxf.end[2]])
+    elif entity.dxftype() == 'CIRCLE':
+        figures.append([entity.dxf.center[0], entity.dxf.center[1],
+                       entity.dxf.center[2], entity.dxf.radius])
+    elif entity.dxftype() == 'POLYLINE':
+        lines_qty = len(entity)
 
-        if not e.is_closed:
-            lines_qty -= 1 # because the last vertex does not have to connect to the first one
+        if not entity.is_closed:
+            lines_qty -= 1  # because the last vertex does not have to connect to the first one
 
         for i in range(lines_qty):
-            current_vertex_location = e[i].dxf.location
-            next_vertex_location = e[(i+1)%len(e)].dxf.location
+            current_vertex_location = entity[i].dxf.location
+            next_vertex_location = entity[(i+1) % len(entity)].dxf.location
             figures.append([current_vertex_location[0], current_vertex_location[1], current_vertex_location[2],
-                        next_vertex_location[0], next_vertex_location[1], next_vertex_location[2]])
+                            next_vertex_location[0], next_vertex_location[1], next_vertex_location[2]])
     else:
-        raise ValueError(f'Layer {layer_prefix} contains {e.dxftype()} entities which is not supported.')
+        raise ValueError(
+            f'Layer {layer_prefix} contains {entity.dxftype()} entities which is not supported.')
 
     return figures
-            
-def parse_entities(entities, layer_prefix, expected_types, name=None, figures_are_rectangles=False):
+
+
+def parse_entities(entities, layer_prefix, expected_types, name=None, figures_can_be_rectangles=False):
     figures = []
     for entity in entities:
         if entity.dxftype() not in expected_types:
-            raise ValueError(f'Layer {layer_prefix} contains {entity.dxftype()} entities which is not in the expected: {expected_types}.')
+            raise ValueError(
+                f'Layer {layer_prefix} contains {entity.dxftype()} entities which is not in the expected: {expected_types}.')
 
-        if figures_are_rectangles:
-            new_figures = [get_rectangle_figure(entity, layer_prefix)]
+        if figures_can_be_rectangles and is_rectangle(entity):
+            new_figures = [get_rectangle_figure(entity)]
         else:
             new_figures = get_figures(entity, layer_prefix)
 
@@ -72,28 +78,31 @@ def write_to_file(file, array):
 
         # round to 6 decimals to avoid minimal innacuracies from autocad
         DECIMALS = 6
-        for i in range(with_name == True, len(value) -1):
+        for i in range(with_name == True, len(value) - 1):
             file.write(f'{round(value[i], DECIMALS)}, ')
 
         file.write(f'{round(value[len(value)-1], DECIMALS)}\n')
 
-def get_blocks_figures(msp, layer, expected_types, figures_are_rectangles=False):
+
+def get_blocks_figures(msp, layer, expected_types, figures_can_be_rectangles=False):
     figures = []
     for block in msp.query('INSERT').filter(lambda block: regex.match(r"{}*".format(layer), block.dxfattribs()['layer'])):
         # TODO: QUE PASA SI EL BLOQUE ESTA EN MAS DE UN LAYER? O SI SU CONTENIDO ESTA EN MAS DE UN LAYER?
-        figures += parse_entities(block.virtual_entities(), layer, expected_types, 
-                                                        block.dxf.name, figures_are_rectangles)
+        figures += parse_entities(block.virtual_entities(), layer, expected_types,
+                                  block.dxf.name, figures_can_be_rectangles)
 
     return figures
+
 
 def get_walls(msp, expected_types):
-    figures = parse_entities(msp.query().filter(lambda e: regex.match(r"{}*".format(WALLS_LAYER), e.dxf.layer)), 
-                                                WALLS_LAYER, 
-                                                expected_types=expected_types, 
-                                                name=None, 
-                                                figures_are_rectangles=False)
+    figures = parse_entities(msp.query().filter(lambda entity: regex.match(r"{}*".format(WALLS_LAYER), entity.dxf.layer)),
+                             WALLS_LAYER,
+                             expected_types=expected_types,
+                             name=None,
+                             figures_can_be_rectangles=False)
 
     return figures
+
 
 def get_servers(msp):
     servers_map = {}
@@ -101,7 +110,7 @@ def get_servers(msp):
     for server in msp.query('INSERT').filter(lambda block: regex.match(r"{}*".format(SERVERS_LAYER), block.dxfattribs()['layer'])):
         if server.dxf.name not in servers_map:
             servers_map[server.dxf.name] = []
-        
+
         servers_map[server.dxf.name].append(server)
 
     figures = []
@@ -110,27 +119,31 @@ def get_servers(msp):
         id = 0
         for server in servers_map[key]:
             id += 1
-            for e in server.virtual_entities():
+            for entity in server.virtual_entities():
                 # TODO: ADD SUPPORT FOR POLYLINE QUEUES!
-                if e.dxftype() == 'POLYLINE':
-                    figures.append([key + "_" + str(id) + "_SERVER", *get_rectangle_figure(e, SERVERS_LAYER)])
-                elif e.dxftype() == 'LINE':
-                    figures.append([key + "_" + str(id) + "_QUEUE", e.dxf.start[0], e.dxf.start[1], e.dxf.start[2],
-                                                                            e.dxf.end[0], e.dxf.end[1], e.dxf.end[2]])
+                if entity.dxftype() == 'POLYLINE':
+                    figures.append(
+                        [key + "_" + str(id) + "_SERVER", *get_rectangle_figure(entity)])
+                elif entity.dxftype() == 'LINE':
+                    figures.append([key + "_" + str(id) + "_QUEUE", entity.dxf.start[0], entity.dxf.start[1], entity.dxf.start[2],
+                                    entity.dxf.end[0], entity.dxf.end[1], entity.dxf.end[2]])
 
     return figures
 
-def parse_layer_and_write_to_file(msp, layer, expected_types, out_file_path, figures_are_rectangles=False):
+
+def parse_layer_and_write_to_file(msp, layer, expected_types, out_file_path, figures_can_be_rectangles=False):
     if layer == WALLS_LAYER:
         array = get_walls(msp, expected_types)
     elif layer == SERVERS_LAYER:
         array = get_servers(msp)
     else:
-        array = get_blocks_figures(msp, layer, expected_types, figures_are_rectangles)
+        array = get_blocks_figures(
+            msp, layer, expected_types, figures_can_be_rectangles)
 
     file = open(out_file_path + layer + ".csv", "w")
     write_to_file(file, array)
     file.close()
+
 
 def parse_dxf(in_file_path, out_path):
     print("Initializing parsing over the dxf file...")
@@ -138,19 +151,24 @@ def parse_dxf(in_file_path, out_path):
     msp = doc.modelspace()
 
     print("\tParsing walls...")
-    parse_layer_and_write_to_file(msp, WALLS_LAYER, ['LINE', 'POLYLINE'], out_path)
-    
+    parse_layer_and_write_to_file(
+        msp, WALLS_LAYER, ['LINE', 'POLYLINE'], out_path)
+
     print("\tParsing exits...")
-    parse_layer_and_write_to_file(msp, EXITS_LAYER, ['LINE', 'POLYLINE'], out_path)
+    parse_layer_and_write_to_file(
+        msp, EXITS_LAYER, ['LINE', 'POLYLINE'], out_path)
 
     print("\tParsing generators...")
-    parse_layer_and_write_to_file(msp, GENERATORS_LAYER, ['POLYLINE'], out_path, figures_are_rectangles=True)
+    parse_layer_and_write_to_file(msp, GENERATORS_LAYER, [
+                                  'POLYLINE'], out_path, figures_can_be_rectangles=True)
 
     print("\tParsing targets...")
-    parse_layer_and_write_to_file(msp, TARGETS_LAYER, ['CIRCLE'], out_path)
+    parse_layer_and_write_to_file(
+        msp, TARGETS_LAYER, ['CIRCLE'], out_path, figures_can_be_rectangles=True)
 
     print("\tParsing servers...")
-    parse_layer_and_write_to_file(msp, SERVERS_LAYER, ['LINE', 'POLYLINE'], out_path, figures_are_rectangles=True) 
+    parse_layer_and_write_to_file(msp, SERVERS_LAYER, [
+                                  'LINE', 'POLYLINE'], out_path, figures_can_be_rectangles=True)
 
     print("Parsing of dxf file finished...")
 
@@ -159,19 +177,20 @@ EXAMPLE_DXF_PATH = "DXFParser/DXFExamples/Plano prueba simulacion V05.02.dxf"
 EXAMPLE_JSON_PATH = "input/parameters.json"
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Parse a .dxf file to a the .csv files necessary for the program.")
-    
-    parser.add_argument("-dxf", 
-    help="Path to the .dxf file to be used by the program to define the environment of the simulation. \
-This file has to follow the requirements indicated on the README. \
-Defaults to: " + EXAMPLE_DXF_PATH, 
-    type=str, default=EXAMPLE_DXF_PATH, required=False)
+    parser = argparse.ArgumentParser(
+        description="Parse a .dxf file to a the .csv files necessary for the program.")
 
-    parser.add_argument("-params", 
-    help="Path to the .json file to be used by the program to define the behavior of the components of the simulation. \
+    parser.add_argument("-dxf",
+                        help="Path to the .dxf file to be used by the program to define the environment of the simulation. \
+This file has to follow the requirements indicated on the README. \
+Defaults to: " + EXAMPLE_DXF_PATH,
+                        type=str, default=EXAMPLE_DXF_PATH, required=False)
+
+    parser.add_argument("-params",
+                        help="Path to the .json file to be used by the program to define the behavior of the components of the simulation. \
 This file requirements indicated on the README. \
-Defaults to: " + EXAMPLE_JSON_PATH, 
-    type=str, default=EXAMPLE_JSON_PATH, required=False)
+Defaults to: " + EXAMPLE_JSON_PATH,
+                        type=str, default=EXAMPLE_JSON_PATH, required=False)
 
     args = parser.parse_args()
 
