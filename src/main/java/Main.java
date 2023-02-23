@@ -65,10 +65,10 @@ public class Main {
                 .map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1));
 
         // FOR GRAPH NODES PLOT  -------- DEBUGGING --------
-        graph.generateOutput(RESULTS_PATH);
-        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(6.542717913594863,-0.59), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
-                new Vector(25., 5.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
-        System.out.println(path);
+//        graph.generateOutput(RESULTS_PATH);
+//        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(6.542717913594863,-.5), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
+//                new Vector(25., 5.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
+//        System.out.println(path);
 
         // -------- CONFIGURATION --------
         SimulationParameters parameters = new SimulationParameters("./input/parameters.json");

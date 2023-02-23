@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Graph {
@@ -63,12 +65,12 @@ public class Graph {
         return true;
     }
 
-    public Node getClosestAccessibleNode(Vector position, double radius) {
+    private Node getClosestNode(Vector position, Predicate<Vector> predicate) {
         Node bestNode = null;
         double minDistance = Double.MAX_VALUE;
         double distanceToNode;
         for (Node node : this.nodes.values()) {
-            if (isPositionAccessible(position, node.getPosition(), radius)) {
+            if (predicate.test(node.getPosition())) {
                 distanceToNode = node.getPosition().distance(position);
                 if (distanceToNode < minDistance) {
                     bestNode = node;
@@ -76,10 +78,25 @@ public class Graph {
                 }
             }
         }
+        return bestNode;
+    }
+
+    private Node getClosestVisibleNode(Vector from) {
+        Node bestNode = this.getClosestNode(from,
+                nodePosition -> isPositionVisibleWithinWalls(from, nodePosition, walls));
         if (bestNode == null) {
-            throw new RuntimeException("Zero nodes reachable from position: " + position);
+            throw new RuntimeException("Zero nodes reachable from position: " + from);
         }
         return bestNode;
+    }
+
+    public Node getClosestAccessibleNode(Vector from, double radius) {
+        Node bestNode = this.getClosestNode(from,
+                nodePosition -> isPositionAccessible(from, nodePosition, radius));
+        if (bestNode == null) {
+            // try without radius consideration
+            return getClosestVisibleNode(from);
+        } else return bestNode;
     }
 
     public NodePath getPathToPosition(Vector fromPosition, Vector toPosition, double radius) {
@@ -147,7 +164,7 @@ public class Graph {
         // and add an extra mirrored node outside just in case
         for(Wall wall : extraWalls) {
             Node node = new Node(wall.getCentroid());
-            Node closestNode = this.getClosestAccessibleNode(node.getPosition(), 0.0001);
+            Node closestNode = this.getClosestVisibleNode(node.getPosition());
             node.addNeighbor(closestNode);
             closestNode.addNeighbor(node);
             this.nodes.put(node.getPosition(), node);
