@@ -95,7 +95,7 @@ public class Main {
 
         try {
             Simulation.createStaticFile(RESULTS_PATH, walls);
-            Simulation sim = new Simulation(Constants.MAX_TIME, environment, operationalModelModule, RESULTS_PATH, random, 600.);
+            Simulation sim = new Simulation(Constants.MAX_TIME, environment, operationalModelModule, RESULTS_PATH, random, 2000.);
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

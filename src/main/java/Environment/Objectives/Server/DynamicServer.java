@@ -44,7 +44,6 @@ public class DynamicServer extends Server {
     @Override
     protected void freeAgent(Agent agent) {
         super.freeAgent(agent);
-        agent.setStartedAttendingAt(null);
     }
 
     @Override
