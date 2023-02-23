@@ -13,7 +13,6 @@ public class BorderTarget implements Target {
     private final RandomInterface attendingDistribution;
 
 
-
     public BorderTarget(String groupId, Zone zone, RandomInterface attendingDistribution) {
         this.zone = zone;
         this.attendingDistribution = attendingDistribution;

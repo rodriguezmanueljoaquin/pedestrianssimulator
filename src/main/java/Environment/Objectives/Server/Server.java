@@ -49,8 +49,9 @@ public abstract class Server implements Objective {
     public Vector getPosition(Agent agent) {
         // server positions vary per agent, as the server may command agent to go to a specific place in the queue,
         // or in the server when attending it
-        if (!this.servingAgents.contains(agent))
+        if (!this.servingAgents.contains(agent)) {
             throw new RuntimeException("SERVER NOT ATENDING AGENT " + agent.getId());
+        }
 
         return this.serverPositionHandler.getOccupiedPosition(agent.getId());
     }

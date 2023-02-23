@@ -1,4 +1,3 @@
-import Agent.AgentConstants;
 import AgentsBehaviour.BehaviourScheme;
 import AgentsBehaviour.StateMachine.SuperMarketClientSM;
 import AgentsGenerator.AgentsGenerator;
@@ -8,7 +7,6 @@ import Environment.Objectives.Server.Server;
 import Environment.Objectives.Target.Target;
 import Environment.Wall;
 import GraphGenerator.Graph;
-import GraphGenerator.NodePath;
 import InputHandling.EnvironmentData.CSVHandler;
 import InputHandling.ParametersNames;
 import InputHandling.SimulationParameters.SimulationParameters;
@@ -24,8 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.lang.System.exit;
 
 public class Main {
     private static final String RESULTS_PATH = "./results/";

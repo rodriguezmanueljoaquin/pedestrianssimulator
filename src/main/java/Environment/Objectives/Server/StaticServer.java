@@ -38,7 +38,7 @@ public class StaticServer extends Server {
     }
 
     private double getAttendingTime() {
-        return attendingDistribution.getMean();
+        return this.attendingDistribution.getMean();
     }
 
     @Override

@@ -10,14 +10,14 @@ import java.util.Map;
 
 public class DynamicServer extends Server {
     private final Map<Integer, Double> attendingTimeMap = new HashMap<>();
-    //Dynamic event is for an event that happens continuously.
+
+    //Dynamic server is for an event that happens continuously.
     public DynamicServer(String id, int maxCapacity, Rectangle zone, RandomInterface attendingDistribution, QueueLine queueLine) {
         super(id, maxCapacity, zone, attendingDistribution, queueLine);
     }
 
     private double getAttendingTime(Agent agent) {
-        attendingTimeMap.computeIfAbsent(agent.getId(),(c -> attendingDistribution.getNewRandomNumber()));
-        return (attendingTimeMap.get(agent.getId()));
+        return this.attendingTimeMap.get(agent.getId());
     }
 
     @Override
@@ -33,6 +33,7 @@ public class DynamicServer extends Server {
         Agent agent = this.queueHandler.removeFromQueue();
         this.servingAgents.add(agent);
         this.serverPositionHandler.setNewPosition(agent.getId());
+        this.attendingTimeMap.put(agent.getId(), this.attendingDistribution.getNewRandomNumber());
     }
 
     @Override
@@ -41,13 +42,15 @@ public class DynamicServer extends Server {
     }
 
     @Override
+    protected void freeAgent(Agent agent) {
+        super.freeAgent(agent);
+        agent.setStartedAttendingAt(null);
+    }
+
+    @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
         // returns true when agent has started attending the server and also has completed the time required of attending
-        if (agent.getStartedAttendingAt() != null && currentTime - agent.getStartedAttendingAt() > getAttendingTime(agent)){
-            attendingTimeMap.remove(agent.getId());
-            return true;
-        }
-        return false;
+        return !this.attendingTimeMap.containsKey(agent.getId()) && currentTime - agent.getStartedAttendingAt() > getAttendingTime(agent);
     }
 
     @Override

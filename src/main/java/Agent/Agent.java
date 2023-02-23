@@ -94,7 +94,7 @@ public class Agent {
     }
 
     public Double getStartedAttendingAt() {
-        return startedAttendingAt;
+        return this.startedAttendingAt;
     }
 
     public void setStartedAttendingAt(Double startedAttendingAt) {

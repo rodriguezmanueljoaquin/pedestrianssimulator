@@ -42,7 +42,7 @@ public class SimulationParameters {
             //TODO: UniformRandom could also recieve attending time and variance
             //TODO: Ask Mr. Parisi how to handle Exponential Random as lambda gives weird cases.
             ServerGroupParameters newServerGroupParameters = new ServerGroupParameters(
-                    new UniformRandom((Double) serverParameters.get(ATTENDING_TIME_KEY),(Double) serverParameters.get(ATTENDING_TIME_KEY) + 10),
+                    new UniformRandom((Double) serverParameters.get(ATTENDING_TIME_KEY), (Double) serverParameters.get(ATTENDING_TIME_KEY) + 10),
                     ((Long) serverParameters.get(MAX_CAPACITY_KEY)).intValue(),
                     (Double) serverParameters.get(START_TIME_KEY)
             );

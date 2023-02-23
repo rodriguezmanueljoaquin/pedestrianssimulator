@@ -7,9 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class Graph {
     private final static double STEP_SIZE = 1.8; // Found empirically, TODO: AUTOMATIZE STEP SIZE SELECTION
@@ -162,7 +160,7 @@ public class Graph {
 
         // add nodes on exits for agents that summon outside the establishment
         // and add an extra mirrored node outside just in case
-        for(Wall wall : extraWalls) {
+        for (Wall wall : extraWalls) {
             Node node = new Node(wall.getCentroid());
             Node closestNode = this.getClosestVisibleNode(node.getPosition());
             node.addNeighbor(closestNode);
@@ -183,7 +181,7 @@ public class Graph {
         double C = -A * line.getA().getX() - B * line.getA().getY();
 
         // normalize
-        double M = Math.sqrt(Math.pow(A,2) + Math.pow(B,2));
+        double M = Math.sqrt(Math.pow(A, 2) + Math.pow(B, 2));
         A /= M;
         B /= M;
         C /= M;

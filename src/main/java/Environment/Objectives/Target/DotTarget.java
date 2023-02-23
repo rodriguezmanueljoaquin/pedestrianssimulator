@@ -13,6 +13,7 @@ public class DotTarget implements Target {
     private final Zone zone;
     private final String groupId;
     private final RandomInterface attendingDistribution;
+
     public DotTarget(String groupId, Zone zone, RandomInterface attendingDistribution) {
         this.zone = zone;
         this.attendingDistribution = attendingDistribution;
