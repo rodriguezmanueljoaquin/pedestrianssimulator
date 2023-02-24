@@ -3,6 +3,7 @@ package Environment.Objectives;
 import Agent.Agent;
 import Agent.AgentConstants;
 import Environment.Wall;
+import Utils.Constants;
 import Utils.Vector;
 
 public class Exit implements Objective {
@@ -33,7 +34,7 @@ public class Exit implements Objective {
 
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
-        return true;
+        return currentTime - agent.getStartedAttendingAt() > Constants.LEAVING_TIME;
     }
 
     @Override

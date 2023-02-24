@@ -176,6 +176,7 @@ public class Graph {
 
     private Vector getMirroredPosition(Wall line, Vector position) {
         // mirrored point https://stackoverflow.com/questions/8954326/how-to-calculate-the-mirror-point-along-a-line#:~:text=px%27%2C%20py%27).-,Alternatively,-%2C%20you%20can%20use
+
         double A = line.getB().getY() - line.getA().getY();
         double B = -(line.getB().getX() - line.getA().getX());
         double C = -A * line.getA().getX() - B * line.getA().getY();

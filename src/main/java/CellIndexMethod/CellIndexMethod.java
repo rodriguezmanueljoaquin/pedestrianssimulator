@@ -28,6 +28,7 @@ public class CellIndexMethod {
     }
 
     private static void updateMinPoints(Vector currentMin, Vector possibleNewMin) {
+        //Added an extra 5
         if (currentMin.getX() > possibleNewMin.getX())
             currentMin.setX(possibleNewMin.getX());
 
@@ -78,7 +79,10 @@ public class CellIndexMethod {
         for (Agent agent : agents) {
             int i = ((Double) (agent.getPosition().getX() / this.cellSize)).intValue();
             int j = ((Double) (agent.getPosition().getY() / this.cellSize)).intValue();
-            this.matrix[i][j].addAgent(agent);
+            if(i < this.M && j < this.M)
+                this.matrix[i][j].addAgent(agent);
+            else
+                System.out.println(agent.getPosition().toString());
         }
     }
 
@@ -100,8 +104,8 @@ public class CellIndexMethod {
             updateMaxPoints(this.topRight, wall.getB());
         }
 
-        double matrixLength = this.topRight.getX() - this.bottomLeft.getX();
-        double matrixHeight = this.topRight.getY() - this.bottomLeft.getY();
+        double matrixLength = (this.topRight.getX() - this.bottomLeft.getX())* 1.25;
+        double matrixHeight = (this.topRight.getY() - this.bottomLeft.getY()) *1.25;
         // use the highest dimension to make the matrix square
         if (matrixHeight > matrixLength) {
             this.M = (int) Math.ceil(matrixHeight / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS));
