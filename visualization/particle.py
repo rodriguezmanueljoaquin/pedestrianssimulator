@@ -7,8 +7,9 @@ class ParticleState(Enum):
     ATTENDING = 2
     WAITING = 3
     LEAVING = 4
-    STARTING = 5
-    APPROXIMATING = 6
+    LEFT = 5
+    STARTING = 6
+    APPROXIMATING = 7
 
 class Particle:    
     def __init__(self,id,x,y,velx,vely,radius,state):

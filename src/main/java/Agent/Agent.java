@@ -19,7 +19,7 @@ public class Agent {
     private final double maxVelocity;
     private List<Objective> objectives;
     private Vector position;
-    private Vector velocity;
+    private Vector direction;
     private double radius;
     private AgentStates state;
     private Double startedAttendingAt;
@@ -28,7 +28,7 @@ public class Agent {
 
     public Agent(Vector x, double minRadius, double maxRadius, double maxVelocity, StateMachine stateMachine, List<Objective> objectives) {
         this.position = x;
-        this.velocity = new Vector(0, 0);
+        this.direction = new Vector(0, 1);
         this.minRadius = minRadius;
         this.maxRadius = maxRadius;
         this.radius = maxRadius;
@@ -39,9 +39,8 @@ public class Agent {
         this.objectives = objectives;
     }
 
-    public void updateVelocity() {
+    public void updateDirection() {
         if (this.getState() == AgentStates.LEAVING) {
-            this.setVelocity(new Vector(0, 0));
             return;
         }
         // first check if intermediate node has to be updated
@@ -58,11 +57,11 @@ public class Agent {
             objectivePosition = this.currentIntermediateObjectiveNode.getPosition();
         }
         Vector r = objectivePosition.substract(this.getPosition()).normalize();
-        this.setVelocity(r.scalarMultiply(this.getVelocityModule()));
+        this.setDirection(r);
     }
 
-    public void updatePosition(double time) {
-        this.position = this.position.add(this.getVelocity().scalarMultiply(time));
+    public void updatePosition(double deltaTime) {
+        this.position = this.position.add(this.getVelocity().scalarMultiply(deltaTime));
     }
 
     public boolean reachedPosition(Vector position) {
@@ -140,12 +139,16 @@ public class Agent {
         return this.position;
     }
 
-    public Vector getVelocity() {
-        return this.velocity;
+    public Vector getDirection() {
+        return this.direction;
     }
 
-    public void setVelocity(Vector speed) {
-        this.velocity = speed;
+    public void setDirection(Vector speed) {
+        this.direction = speed;
+    }
+
+    public Vector getVelocity() {
+        return this.direction.scalarMultiply(this.getVelocityModule());
     }
 
     public double getVelocityModule() {

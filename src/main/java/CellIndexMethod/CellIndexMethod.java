@@ -17,11 +17,11 @@ public class CellIndexMethod {
                     {-1, -1}, {0, -1}, {1, -1}, // bottom row
             };
     private final double neighbourhoodRadius;
+    private final double EXTRA_MARGIN_SIZE = 0.25; // Percentage that determines how much bigger the matrix will be from the rectangle defined by the walls
     private Cell[][] matrix;
     private Vector bottomLeft, topRight;
     private int M; // cells in each row and in each column (the matrix must be square)
     private double cellSize;
-    private final double EXTRA_MARGIN_SIZE = 0.25; // Percentage that determines how much bigger the matrix will be from the rectangle defined by the walls
 
     public CellIndexMethod(List<Wall> walls, double neighbourhoodRadius) {
         this.neighbourhoodRadius = neighbourhoodRadius;
@@ -80,7 +80,7 @@ public class CellIndexMethod {
         for (Agent agent : agents) {
             int i = ((Double) (agent.getPosition().getX() / this.cellSize)).intValue();
             int j = ((Double) (agent.getPosition().getY() / this.cellSize)).intValue();
-            if(i < this.M && j < this.M)
+            if (i < this.M && j < this.M)
                 this.matrix[i][j].addAgent(agent);
             else
                 System.out.println(agent.getPosition().toString());
@@ -107,8 +107,8 @@ public class CellIndexMethod {
 
         Vector matrixSize = new Vector(this.topRight.getX() - this.bottomLeft.getX(), this.topRight.getY() - this.bottomLeft.getY());
         // Apply the extra margin to the dots, in order to give some extra space in case agents go outside the rectangle defined by the walls
-        this.bottomLeft = this.bottomLeft.substract(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE/2));
-        this.topRight = this.topRight.add(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE/2));
+        this.bottomLeft = this.bottomLeft.substract(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE / 2));
+        this.topRight = this.topRight.add(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE / 2));
         //recalculate to consider margin
         matrixSize = matrixSize.add(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE));
 

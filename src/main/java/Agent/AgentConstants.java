@@ -8,6 +8,6 @@ public class AgentConstants {
     public static double MINIMUM_DISTANCE_TO_TARGET = 0.2;
 
     // For SuperMarketClient behaviour:
-    public static double APPROXIMATING_VELOCITY = MAXIMUM_VELOCITY / 5;
+    public static double APPROXIMATING_VELOCITY = MAXIMUM_VELOCITY / 3;
     public static double MINIMUM_DISTANCE_TO_APPROXIMATING = 2;
 }

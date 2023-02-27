@@ -41,7 +41,7 @@ public class CPM implements OperationalModelModule {
 
     private static void escapeFromObstacle(Agent agent, Vector other) {
         Vector oppositeDirection = other.substract(agent.getPosition()).normalize().scalarMultiply(-1.0);
-        agent.setVelocity(oppositeDirection.scalarMultiply(agent.getState().getVelocity()));
+        agent.setDirection(oppositeDirection);
     }
 
     private static void collapseAgent(Agent agent) {
@@ -73,7 +73,7 @@ public class CPM implements OperationalModelModule {
                     .scalarMultiply(getRandomDoubleInRange(CPMConstants.ORIGINAL_DIRECTION_AP, CPMConstants.AP_VARIATION, random));
 
         //add new direction
-        resultantNc = resultantNc.add(agent.getVelocity().normalize()
+        resultantNc = resultantNc.add(agent.getDirection()
                 .scalarMultiply(getRandomDoubleInRange(CPMConstants.NEW_DIRECTION_AP, CPMConstants.AP_VARIATION, random)));
 
         List<Agent> neighbours = this.CIM.getAgentNeighbours(agent);
@@ -116,8 +116,7 @@ public class CPM implements OperationalModelModule {
 
     public void updateNonCollisionAgent(Agent agent, double dt, Random random) {
         Vector heuristicDirection = calculateHeuristicDirection(agent, random);
-        agent.setVelocity(heuristicDirection.scalarMultiply(agent.getVelocityModule()));
-
+        agent.setDirection(heuristicDirection);
         saveAgentVelocity(agent);
     }
 

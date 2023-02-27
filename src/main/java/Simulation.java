@@ -14,11 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static Utils.Constants.DELTA_T;
 
 public class Simulation {
-    private final List<Agent> agents;
+    private final List<Agent> agents, leavingAgents;
     private final double maxTime;
     private final double dt;
     private final Environment environment;
@@ -36,6 +38,7 @@ public class Simulation {
         this.random = random;
         this.evacuationTime = evacuationTime;
         this.agents = new ArrayList<>();
+        this.leavingAgents = new ArrayList<>();
         this.time = 0;
         this.dt = DELTA_T;
 
@@ -54,6 +57,10 @@ public class Simulation {
 
         writer.close();
         System.out.println("\tStatic file successfully created");
+    }
+
+    private List<Agent> getAllAgents() {
+        return Stream.concat(this.agents.stream(), this.leavingAgents.stream()).collect(Collectors.toList());
     }
 
     public void run() {
@@ -77,24 +84,12 @@ public class Simulation {
             } else this.agents.addAll(newAgents);
 
             // update positions and state
-            for (Agent agent : this.agents) {
+            for (Agent agent : this.getAllAgents()) {
                 agent.updatePosition(this.dt);
                 agent.getStateMachine().updateAgent(agent, this.time);
             }
 
-            // remove agents that left and update the velocity of the rest
-            List<Agent> leavingAgents = new ArrayList<>();
-            for (Agent agent : this.agents) {
-//                if (agent.getState() == AgentStates.LEAVING && this.time - agent.getStartedAttendingAt() > Constants.LEAVING_TIME) {
-//                    System.out.println("Agent started attending time: " + agent.getStartedAttendingAt().toString());
-//                    leavingAgents.add(agent);
-//                }
-                if (agent.getState() == AgentStates.LEAVING)
-                    leavingAgents.add(agent);
-                else
-                    agent.updateVelocity();
-            }
-            this.agents.removeAll(leavingAgents);
+            this.checkLeavingAgents();
 
             this.executeOperationalModelModule();
 
@@ -107,6 +102,22 @@ public class Simulation {
         System.out.println("\tSuccesfully created dynamic file");
     }
 
+    private void checkLeavingAgents() {
+        List<Agent> leftAgents = new ArrayList<>();
+        for (Agent agent : this.leavingAgents) {
+            if (agent.getState() == AgentStates.LEFT) {
+                leftAgents.add(agent);
+            }
+        }
+        this.leavingAgents.removeAll(leftAgents);
+
+        for (Agent agent : this.agents) {
+            if (agent.getState() == AgentStates.LEAVING) {
+                this.leavingAgents.add(agent);
+            } else agent.updateDirection();
+        }
+        this.agents.removeAll(leavingAgents);
+    }
 
     private void executeOperationalModelModule() {
         this.operationalModelModule.updateAgents(this.agents);
@@ -136,8 +147,9 @@ public class Simulation {
     }
 
     private void writeOutput() {
-        this.writer.write(String.format(Locale.ENGLISH, "%f;%d\n", this.time, agents.size()));
-        for (Agent agent : this.agents) {
+        List<Agent> allAgents = this.getAllAgents();
+        this.writer.write(String.format(Locale.ENGLISH, "%f;%d\n", this.time, allAgents.size()));
+        for (Agent agent : allAgents) {
             this.writer.write(String.format(Locale.ENGLISH, "%d;%f;%f;%f;%f;%f;%d\n",
                     agent.getId(), agent.getPosition().getX(), agent.getPosition().getY(), agent.getVelocity().getX(),
                     agent.getVelocity().getY(), agent.getRadius(), agent.getState().ordinal()));

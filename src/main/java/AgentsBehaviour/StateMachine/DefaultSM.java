@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static Utils.Constants.DOUBLE_EPSILON;
+import static Utils.Constants.LEAVING_TIME;
 
 public class DefaultSM implements StateMachine {
     protected final Graph graph;
@@ -94,8 +95,6 @@ public class DefaultSM implements StateMachine {
     public void movingBehaviour(Agent agent, double currentTime) {
         if (agent.getCurrentObjective().reachedObjective(agent)) {
             // when agent has arrived to objective
-//            if(agent.getCurrentObjective().getType() == ObjectiveType.TARGET)
-//                System.out.println("AGENT IN RADIUS " + agent.getPosition().toString() + " FOR TARGET " + agent.getCurrentObjective().getCentroidPosition().toString() + " DISTANCE BEING " + agent.distance(agent.getCurrentObjective().getCentroidPosition()));
             agent.setStartedAttendingAt(currentTime);
             agent.setState(AgentStates.ATTENDING);
         }
@@ -151,7 +150,9 @@ public class DefaultSM implements StateMachine {
                 break;
 
             case LEAVING:
-                System.out.println("Agent velocity at LEAVING: " + agent.getVelocity().toString());
+                if (currentTime - agent.getStartedAttendingAt() > LEAVING_TIME) {
+                    agent.setState(AgentStates.LEFT);
+                }
             default:
         }
     }

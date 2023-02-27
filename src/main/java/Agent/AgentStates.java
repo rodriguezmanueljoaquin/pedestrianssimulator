@@ -26,10 +26,15 @@ public enum AgentStates {
         }
     },
     LEAVING {
-        //TODO: Get nearest exit.
         @Override
         public double getVelocity() {
             return AgentConstants.MAXIMUM_VELOCITY;
+        }
+    },
+    LEFT {
+        @Override
+        public double getVelocity() {
+            return 0.0;
         }
     },
     STARTING {

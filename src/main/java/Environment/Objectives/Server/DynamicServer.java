@@ -54,7 +54,7 @@ public class DynamicServer extends Server {
         //      + Agent is attending to server and has completed the required time
         return
                 !this.attendingTimeMap.containsKey(agent.getId()) ||
-                (agent.getStartedAttendingAt() != null && currentTime - agent.getStartedAttendingAt() > getAttendingTime(agent));
+                        (agent.getStartedAttendingAt() != null && currentTime - agent.getStartedAttendingAt() > getAttendingTime(agent));
     }
 
     @Override
