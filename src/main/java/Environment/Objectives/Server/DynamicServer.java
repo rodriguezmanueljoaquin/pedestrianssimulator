@@ -43,22 +43,18 @@ public class DynamicServer extends Server {
 
     @Override
     protected void freeAgent(Agent agent) {
+        this.attendingTimeMap.remove(agent.getId());
         super.freeAgent(agent);
     }
 
     @Override
     public Boolean hasFinishedAttending(Agent agent, double currentTime) {
-        // returns true when agent has started attending the server and also has completed the time required of attending
-        if(!this.attendingTimeMap.containsKey(agent.getId()))
-            return true;
-        if(agent.getStartedAttendingAt() == null)
-            return false;
-
-        if(currentTime - agent.getStartedAttendingAt() > getAttendingTime(agent)){
-            this.attendingTimeMap.remove(agent.getId());
-            return true;
-        }
-        return false;
+        // returns true if one of the follow is suffixed:
+        //      + Server is not serving to it
+        //      + Agent is attending to server and has completed the required time
+        return
+                !this.attendingTimeMap.containsKey(agent.getId()) ||
+                (agent.getStartedAttendingAt() != null && currentTime - agent.getStartedAttendingAt() > getAttendingTime(agent));
     }
 
     @Override

@@ -21,6 +21,7 @@ public class CellIndexMethod {
     private Vector bottomLeft, topRight;
     private int M; // cells in each row and in each column (the matrix must be square)
     private double cellSize;
+    private final double EXTRA_MARGIN_SIZE = 0.25; // Percentage that determines how much bigger the matrix will be from the rectangle defined by the walls
 
     public CellIndexMethod(List<Wall> walls, double neighbourhoodRadius) {
         this.neighbourhoodRadius = neighbourhoodRadius;
@@ -104,15 +105,20 @@ public class CellIndexMethod {
             updateMaxPoints(this.topRight, wall.getB());
         }
 
-        double matrixLength = (this.topRight.getX() - this.bottomLeft.getX())* 1.25;
-        double matrixHeight = (this.topRight.getY() - this.bottomLeft.getY()) *1.25;
+        Vector matrixSize = new Vector(this.topRight.getX() - this.bottomLeft.getX(), this.topRight.getY() - this.bottomLeft.getY());
+        // Apply the extra margin to the dots, in order to give some extra space in case agents go outside the rectangle defined by the walls
+        this.bottomLeft = this.bottomLeft.substract(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE/2));
+        this.topRight = this.topRight.add(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE/2));
+        //recalculate to consider margin
+        matrixSize = matrixSize.add(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE));
+
         // use the highest dimension to make the matrix square
-        if (matrixHeight > matrixLength) {
-            this.M = (int) Math.ceil(matrixHeight / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS));
-            this.cellSize = matrixHeight / this.M;
+        if (matrixSize.getY() > matrixSize.getX()) {
+            this.M = (int) Math.ceil(matrixSize.getY() / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS));
+            this.cellSize = matrixSize.getY() / this.M;
         } else {
-            this.M = (int) Math.ceil(matrixLength / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS));
-            this.cellSize = matrixLength / this.M;
+            this.M = (int) Math.ceil(matrixSize.getX() / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS));
+            this.cellSize = matrixSize.getX() / this.M;
         }
 
         this.matrix = new Cell[this.M][this.M];
