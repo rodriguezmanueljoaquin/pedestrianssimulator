@@ -23,6 +23,8 @@ public class CPM implements OperationalModelModule {
         this.agentsPreviousVelocity = new HashMap<>();
     }
 
+
+
     private static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector originalVelocity, double Ap, double Bp) {
         //eij (e sub ij)
         Vector repulsionDirection = position.substract(obstacle).normalize();
