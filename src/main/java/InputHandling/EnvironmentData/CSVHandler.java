@@ -135,9 +135,9 @@ public class CSVHandler {
             }
 
             targets.get(targetGroupId).add(new DotTarget(
+                    targetGroupParameters.getAttendingDistribution(),
                     targetGroupId,
-                    targetZone,
-                    targetGroupParameters.getAttendingDistribution()
+                    targetZone
             ));
         }
 

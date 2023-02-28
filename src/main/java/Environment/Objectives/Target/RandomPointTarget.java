@@ -2,7 +2,6 @@ package Environment.Objectives.Target;
 
 
 import Agent.Agent;
-import Environment.Objectives.ObjectiveType;
 import Utils.Constants;
 import Utils.Random.RandomInterface;
 import Utils.Vector;
@@ -11,62 +10,38 @@ import Utils.Zone;
 import java.util.HashMap;
 import java.util.Map;
 
-// Dot target was not requested, so it could be erased.
-public class RandomPointTarget implements Target {
+public class RandomPointTarget extends Target {
     private final Zone zone;
-    private final String groupId;
-    private final RandomInterface attendingDistribution; //milliseconds needed to complete task
     private final Map<Integer, Vector> positionMap = new HashMap<>();
 
-    public RandomPointTarget(String groupId, Zone zone, RandomInterface attendingDistribution) {
+    public RandomPointTarget(RandomInterface attendingDistribution, String groupId, Zone zone) {
+        super(attendingDistribution, groupId);
         this.zone = zone;
-        this.attendingDistribution = attendingDistribution;
-        this.groupId = groupId;
-    }
-
-
-    public Double getAttendingTime() {
-        return attendingDistribution.getNewRandomNumber();
     }
 
     @Override
     public Vector getPosition(Agent agent) {
-        if (positionMap.containsKey(agent.getId()))
-            return positionMap.get(agent.getId());
-        Vector position = zone.getRandomPointInside();
-        positionMap.put(agent.getId(), position);
+        if (this.positionMap.containsKey(agent.getId()))
+            return this.positionMap.get(agent.getId());
+
+        Vector position = this.zone.getRandomPointInside();
+        this.positionMap.put(agent.getId(), position);
         return position;
     }
 
     @Override
-    public Boolean hasFinishedAttending(Agent agent, double currentTime) {
-        //true if the agent has started to attend and completed it "task"
-        return currentTime - agent.getStartedAttendingAt() >= getAttendingTime();
-    }
-
-    @Override
-    public Boolean canAttend(Agent agent) {
-        return true;
-    }
-
-    @Override
-    public ObjectiveType getType() {
-        return ObjectiveType.TARGET;
-    }
-
-    @Override
     public Vector getCentroidPosition() {
-        return zone.getMiddlePoint();
+        return this.zone.getMiddlePoint();
     }
 
     @Override
     public Boolean reachedObjective(Agent agent) {
         //just in case should never reach here
-        if (!positionMap.containsKey(agent.getId())) {
+        if (!this.positionMap.containsKey(agent.getId())) {
             getPosition(agent);
             return false;
         }
 
-        return agent.distance(positionMap.get(agent.getId())) < Constants.DOUBLE_EPSILON;
+        return agent.distance(this.positionMap.get(agent.getId())) < Constants.DOUBLE_EPSILON;
     }
 }
