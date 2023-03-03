@@ -177,7 +177,7 @@ public class CSVHandler {
                 throw new RuntimeException("No parameters found for server group: " + serverGroupId);
 
             List<String[]> serverRows = rowsMap.get(serverFullName);
-            // sort so first que QUEUE are analyzed, and then the SERVER
+            // sort so first QUEUE are analyzed, and then the SERVER
             serverRows.sort(Comparator.comparing(o -> o[0].charAt(serverFullName.length() + 1))); // skip '_'
             QueueLine queue = null;
             String name = serverFullName.substring(serverGroupId.length() + 1);

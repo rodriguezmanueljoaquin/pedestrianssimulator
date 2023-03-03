@@ -114,18 +114,29 @@ def get_servers(msp):
         servers_map[server.dxf.name].append(server)
 
     figures = []
-    # retrieve queue and server for each server, together with an id depending on its group size so we can identify the server and its queue on the csv
+    # retrieve queue and server for each server group
+    # assign an id to each instance so we can identify the server and its queue on the csv
     for key in servers_map:
         id = 0
         for server in servers_map[key]:
             id += 1
             for entity in server.virtual_entities():
-                # TODO: ADD SUPPORT FOR POLYLINE QUEUES!
                 if entity.dxftype() == 'POLYLINE':
-                    figures.append(
-                        [key + "_" + str(id) + "_SERVER", *get_rectangle_figure(entity)])
+                    if is_rectangle(entity):
+                        # its a server
+                        figures.append(
+                            [f'{key}_{id}_SERVER', *get_rectangle_figure(entity)])
+                    else:
+                        # its a queue
+                        queue_id = 0
+                        for line in get_figures(entity, SERVERS_LAYER):
+                            figures.append(
+                                [f'{key}_{id}_QUEUE{queue_id:03d}', *line])
+                            queue_id += 1
+                    
                 elif entity.dxftype() == 'LINE':
-                    figures.append([key + "_" + str(id) + "_QUEUE", entity.dxf.start[0], entity.dxf.start[1], entity.dxf.start[2],
+                    # has to be a queue
+                    figures.append([f'{key}_{id}_QUEUE', entity.dxf.start[0], entity.dxf.start[1], entity.dxf.start[2],
                                     entity.dxf.end[0], entity.dxf.end[1], entity.dxf.end[2]])
 
     return figures
