@@ -62,7 +62,9 @@ public class CPMAnisotropic implements OperationalModelModule{
         if(agent.getRadius() == agent.getMinRadius() && agent.distance(otherAgent) < 0)
             return true;
         double beta = getBeta(agent,otherAgent);
-        return beta >= 0 && beta <= Math.PI / 2 && parallelLinesIntersectAgentRadiusAndDistanceIsValid(agent,otherAgent);
+        return beta >= 0 && beta <= Math.PI / 2 &&
+                agent.distance(otherAgent) < agent.getRadius() &&
+                parallelLinesIntersectAgentRadiusAndDistanceIsValid(agent,otherAgent);
     }
 
     public static boolean parallelLinesIntersectAgentRadiusAndDistanceIsValid(Agent agent, Agent otherAgent) {
@@ -73,6 +75,7 @@ public class CPMAnisotropic implements OperationalModelModule{
 //        Es distinto a lo que dice el paper asi que checkear con Rafa
 //        Revisar esto y ver como hago para sacar el punto P que es el mas cercano, asi lo comparo con
 //        la distancia al centro del agente y me fijo que sea menor a 2*ri que es la segunda condicion del Ademas
+//        SI REVERTIMOS LAS CONDICIONES, LEER EL EXTRA, solo deberia llamar esta funcion si el radio es menor a 2*ri
         Vector point1 = agent.getPosition();
         Vector point2 = agent.getPosition().add(agent.getDirection());
         Vector circleCenter = otherAgent.getPosition();
