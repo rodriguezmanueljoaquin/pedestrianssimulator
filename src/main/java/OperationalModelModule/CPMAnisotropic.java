@@ -59,12 +59,15 @@ public class CPMAnisotropic implements OperationalModelModule{
     }
 
     public static boolean isInContact(Agent agent, Agent otherAgent) {
-        if(agent.getRadius() == agent.getMinRadius() && agent.distance(otherAgent) < 0)
-            return true;
-        double beta = getBeta(agent,otherAgent);
-        return beta >= 0 && beta <= Math.PI / 2 &&
-                agent.distance(otherAgent) < agent.getRadius() &&
-                parallelLinesIntersectAgentRadiusAndDistanceIsValid(agent,otherAgent);
+        if(agent.getRadius() == agent.getMinRadius()) {
+            // like CPM
+            return agent.distance(otherAgent) < 0;
+        } else {
+            double beta = getBeta(agent,otherAgent);
+            return beta >= 0 && beta <= Math.PI / 2 &&
+                    agent.distance(otherAgent) < agent.getRadius() &&
+                    parallelLinesIntersectAgentRadiusAndDistanceIsValid(agent,otherAgent);
+        }
     }
 
     public static boolean parallelLinesIntersectAgentRadiusAndDistanceIsValid(Agent agent, Agent otherAgent) {
