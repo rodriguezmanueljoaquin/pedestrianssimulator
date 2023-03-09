@@ -5,6 +5,7 @@ import Environment.Objectives.Exit;
 import Environment.Objectives.Objective;
 import GraphGenerator.Node;
 import GraphGenerator.NodePath;
+import Utils.Constants;
 import Utils.Vector;
 
 import java.util.List;
@@ -153,8 +154,8 @@ public class Agent {
 
     public double getVelocityModule() {
         double maxVelocity = this.getState().getVelocity();
-        return maxVelocity * (Math.pow((this.getRadius() - this.minRadius) /
-                (this.maxRadius - this.minRadius), AgentConstants.B));
+        return maxVelocity * (Math.pow((this.getRadius() - (this.minRadius - Constants.DOUBLE_EPSILON)) /
+                (this.maxRadius - this.minRadius), AgentConstants.B)); // subtract a little from min radius in the nominator in order to avoid complete freeze of the agent
     }
 
     public double getMaxRadius() {
