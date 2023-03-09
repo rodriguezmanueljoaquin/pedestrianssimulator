@@ -1,4 +1,7 @@
 {
+    "max_time": 1500,
+    "evacuate_at": 1000,
+
     "agents_generators": [
         {
             "group_name": "SLOW",

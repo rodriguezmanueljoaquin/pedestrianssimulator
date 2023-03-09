@@ -2,6 +2,7 @@ package InputHandling;
 
 public class ParametersNames {
     public static String MARKET_CLIENT_BEHAVIOUR_SCHEME_KEY = "MARKET-CLIENT";
+    public static String EVACUATE_TIME_KEY = "evacuate_at";
     public static String SERVERS_KEY = "servers";
     public static String TARGETS_KEY = "targets";
     public static String GENERATORS_KEY = "agents_generators";

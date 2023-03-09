@@ -6,6 +6,5 @@ public class Constants {
     public static double DELTA_T = AgentConstants.MAX_RADIUS_OF_ALL_AGENTS / (12 * AgentConstants.MAXIMUM_VELOCITY);
     public static double DOUBLE_EPSILON = .000001;
     public static double SPACE_BETWEEN_AGENTS_IN_QUEUE = AgentConstants.MAX_RADIUS_OF_ALL_AGENTS * 2.5; //separate the points by the size of an agent and 50% of its radius more
-    public static double MAX_TIME = 1000;
     public static double LEAVING_TIME = 8.0;
 }

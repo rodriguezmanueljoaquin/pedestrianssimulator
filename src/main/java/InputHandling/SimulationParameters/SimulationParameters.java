@@ -20,6 +20,8 @@ public class SimulationParameters {
     private Map<String, AgentsGeneratorParameters> generatorsParameters;
     private Map<String, TargetGroupParameters> targetGroupsParameters;
     private Map<String, ServerGroupParameters> serverGroupsParameters;
+    private final Long maxTime;
+    private Long evacuationTime = null;
 
     public SimulationParameters(String JSONPath) {
         JSONObject jsonObject;
@@ -29,9 +31,12 @@ public class SimulationParameters {
             throw new RuntimeException("Exception when parsing SimulationParametersJSON: " + e);
         }
 
-        initGeneratorsParameters((JSONArray) jsonObject.get(GENERATORS_KEY));
-        initTargetsParameters((JSONArray) jsonObject.get(TARGETS_KEY));
-        initServersParameters((JSONArray) jsonObject.get(SERVERS_KEY));
+        this.maxTime = (Long) jsonObject.get(EVACUATE_TIME_KEY);
+        if(jsonObject.containsKey(EVACUATE_TIME_KEY))
+            this.evacuationTime = (Long) jsonObject.get(EVACUATE_TIME_KEY);
+        this.initGeneratorsParameters((JSONArray) jsonObject.get(GENERATORS_KEY));
+        this.initTargetsParameters((JSONArray) jsonObject.get(TARGETS_KEY));
+        this.initServersParameters((JSONArray) jsonObject.get(SERVERS_KEY));
     }
 
     private void initServersParameters(JSONArray serversParametersJSON) {
@@ -95,6 +100,14 @@ public class SimulationParameters {
                     )
             );
         }
+    }
+
+    public Long getMaxTime() {
+        return this.maxTime;
+    }
+
+    public long getEvacuationTime() {
+        return this.evacuationTime;
     }
 
     public Map<String, AgentsGeneratorParameters> getGeneratorsParameters() {
