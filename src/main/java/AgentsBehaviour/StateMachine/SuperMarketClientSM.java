@@ -32,7 +32,12 @@ public class SuperMarketClientSM extends DefaultSM {
 
     @Override
     public void approximatingBehaviour(Agent agent, double currentTime) {
-        // moving as super, just modifies its velocity through the state
-        super.movingBehaviour(agent, currentTime);
+        if (agent.distance(agent.getCurrentObjective().getPosition(agent)) > AgentConstants.MINIMUM_DISTANCE_TO_APPROXIMATING) {
+            // stop approximating
+            agent.setState(AgentStates.MOVING);
+        } else {
+            // moving as super, just modifies its velocity through the state
+            super.movingBehaviour(agent, currentTime);
+        }
     }
 }
