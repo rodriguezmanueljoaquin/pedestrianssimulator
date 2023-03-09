@@ -5,7 +5,7 @@ import AgentsGenerator.AgentsGenerator;
 import AgentsGenerator.AgentsGeneratorZone;
 import Environment.Objectives.Exit;
 import Environment.Objectives.Server.DynamicServer;
-import Environment.Objectives.Server.QueueLine;
+import Environment.Objectives.Server.Queue;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Objectives.Target.DotTarget;
@@ -14,10 +14,8 @@ import Environment.Wall;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.ServerGroupParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.TargetGroupParameters;
-import Utils.Circle;
-import Utils.Rectangle;
+import Utils.*;
 import Utils.Vector;
-import Utils.Zone;
 
 import java.io.File;
 import java.util.*;
@@ -179,7 +177,7 @@ public class CSVHandler {
             List<String[]> serverRows = rowsMap.get(serverFullName);
             // sort so first QUEUE are analyzed, and then the SERVER
             serverRows.sort(Comparator.comparing(o -> o[0].charAt(serverFullName.length() + 1))); // skip '_'
-            QueueLine queue = null;
+            List<Line> queueLines = new ArrayList<>();
             String name = serverFullName.substring(serverGroupId.length() + 1);
 
             for (String[] row : serverRows) {
@@ -191,15 +189,7 @@ public class CSVHandler {
                     case "SERVER":
                         Server server;
                         Rectangle area = new Rectangle(start, end);
-                        if (queue != null) {
-                            server = new DynamicServer(
-                                    name,
-                                    serverGroupParameters.getMaxCapacity(),
-                                    area,
-                                    serverGroupParameters.getAttendingDistribution(),
-                                    queue
-                            );
-                        } else {
+                        if (queueLines.isEmpty()) {
                             server = new StaticServer(
                                     name,
                                     serverGroupParameters.getMaxCapacity(),
@@ -207,22 +197,23 @@ public class CSVHandler {
                                     serverGroupParameters.getStartTime(),
                                     serverGroupParameters.getAttendingDistribution()
                             );
+                        } else {
+                            server = new DynamicServer(
+                                    name,
+                                    serverGroupParameters.getMaxCapacity(),
+                                    area,
+                                    serverGroupParameters.getAttendingDistribution(),
+                                    new Queue(queueLines)
+                            );
                         }
 
-                        serversMap.get(serverGroupId).add(
-                                server
-                        );
-                        break;
-
-                    case "QUEUE":
-                        if (queue != null)
-                            throw new RuntimeException("ERROR IN SERVERS.csv queue without server associated");
-
-                        queue = new QueueLine(start, end);
+                        serversMap.get(serverGroupId).add(server);
                         break;
 
                     default:
-                        throw new RuntimeException("ERROR IN SERVERS.csv on row: " + Arrays.toString(row));
+                        if(type.startsWith("QUEUE")) {
+                            queueLines.add(new Line(start, end));
+                        } else throw new RuntimeException("ERROR IN SERVERS.csv on row: " + Arrays.toString(row));
                 }
             }
         }

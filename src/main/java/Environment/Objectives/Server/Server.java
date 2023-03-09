@@ -18,7 +18,7 @@ public abstract class Server implements Objective {
     protected final RandomInterface attendingDistribution;
     protected Double startTime = null;
 
-    public Server(String id, int maxCapacity, Rectangle zone, RandomInterface attendingDistribution, QueueLine queueLine) {
+    public Server(String id, int maxCapacity, Rectangle zone, RandomInterface attendingDistribution, Queue queueLine) {
         this.id = id;
         this.serverPositionHandler = new ServerPositionHandler(zone);
         this.queueHandler = new QueueHandler(queueLine, this);

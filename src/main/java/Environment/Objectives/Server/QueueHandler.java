@@ -9,24 +9,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 class QueueHandler implements Objective {
-    private final QueueLine queueLine;
+    private final Queue queue;
     private final List<Agent> queueingAgents;
     private final Server server;
 
-    public QueueHandler(QueueLine queueLine, Server server) {
-        this.queueLine = queueLine;
+    public QueueHandler(Queue queue, Server server) {
+        this.queue = queue;
         this.queueingAgents = new ArrayList<>();
         this.server = server;
     }
 
     public Vector getPosition(Agent agent) {
         // returns position designated for agent if its in queue, else returns first available position
-        int position = this.queueingAgents.indexOf(agent);
-        if (position != -1) {
-            return this.queueLine.getSegmentPosition(position);
+        int spot = this.queueingAgents.indexOf(agent);
+        if (spot != -1) {
+            return this.queue.getSpotPosition(spot);
         }
 
-        Vector firstAvailablePosition = this.queueLine.getSegmentPosition(this.queueingAgents.size() - 1);
+        Vector firstAvailablePosition = this.queue.getSpotPosition(this.queueingAgents.size());
         if (agent.reachedPosition(firstAvailablePosition)) {
             // assign to queue as it got to the first free spot
             this.queueingAgents.add(agent);
@@ -44,7 +44,7 @@ class QueueHandler implements Objective {
     public Boolean canAttend(Agent agent) {
         // returns true when agent is in the queue and in its position
         return this.queueingAgents.contains(agent) &&
-                agent.reachedPosition(this.queueLine.getSegmentPosition(this.queueingAgents.indexOf(agent)));
+                agent.reachedPosition(this.queue.getSpotPosition(this.queueingAgents.indexOf(agent)));
     }
 
     public Agent removeFromQueue() {
@@ -66,6 +66,6 @@ class QueueHandler implements Objective {
 
     @Override
     public Vector getCentroidPosition() {
-        return queueLine.getSegmentPosition(0);
+        return this.queue.getSpotPosition(0);
     }
 }

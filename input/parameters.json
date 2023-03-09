@@ -54,7 +54,7 @@
         },
         {
             "group_name": "CASHIER",
-            "attending_time": 30.0,
+            "attending_time": 120.0,
             "max_capacity": 2
         }
     ]

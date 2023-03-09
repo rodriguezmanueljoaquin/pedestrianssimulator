@@ -12,7 +12,7 @@ public class DynamicServer extends Server {
     private final Map<Integer, Double> attendingTimeMap = new HashMap<>();
 
     //Dynamic server is for an event that happens continuously.
-    public DynamicServer(String id, int maxCapacity, Rectangle zone, RandomInterface attendingDistribution, QueueLine queueLine) {
+    public DynamicServer(String id, int maxCapacity, Rectangle zone, RandomInterface attendingDistribution, Queue queueLine) {
         super(id, maxCapacity, zone, attendingDistribution, queueLine);
     }
 

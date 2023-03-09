@@ -136,7 +136,7 @@ def get_servers(msp):
                     
                 elif entity.dxftype() == 'LINE':
                     # has to be a queue
-                    figures.append([f'{key}_{id}_QUEUE', entity.dxf.start[0], entity.dxf.start[1], entity.dxf.start[2],
+                    figures.append([f'{key}_{id}_QUEUE000', entity.dxf.start[0], entity.dxf.start[1], entity.dxf.start[2],
                                     entity.dxf.end[0], entity.dxf.end[1], entity.dxf.end[2]])
 
     return figures
