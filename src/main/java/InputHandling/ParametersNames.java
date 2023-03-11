@@ -13,6 +13,12 @@ public class ParametersNames {
     public static String MAX_CAPACITY_KEY = "max_capacity";
     public static String START_TIME_KEY = "start_time";
     public static String GENERATION_KEY = "generation";
+    public static String DISTRIBUTION_KEY = "distribution";
+    public static String DISTRIBUTION_TYPE_KEY = "type";
+    public static String DISTRIBUTION_MIN_KEY = "min";
+    public static String DISTRIBUTION_MAX_KEY = "max";
+    public static String DISTRIBUTION_STD_KEY = "std";
+    public static String DISTRIBUTION_MEAN_KEY = "mean";
     public static String AGENTS_KEY = "agents";
     public static String ACTIVE_TIME_KEY = "active_time";
     public static String INACTIVE_TIME_KEY = "inactive_time";

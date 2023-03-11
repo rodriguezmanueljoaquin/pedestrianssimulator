@@ -3,6 +3,8 @@ package InputHandling.SimulationParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.ServerGroupParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.TargetGroupParameters;
+import Utils.Random.ExponentialRandom;
+import Utils.Random.GaussianRandom;
 import Utils.Random.RandomGenerator;
 import Utils.Random.UniformRandom;
 import org.json.simple.JSONArray;
@@ -41,12 +43,53 @@ public class SimulationParameters {
         this.initServersParameters(seedGenerator, (JSONArray) jsonObject.get(SERVERS_KEY));
     }
 
+    private RandomGenerator getRandomGenerator(JSONObject from, long seed) {
+        JSONObject parameters = this.getOrThrowMissingException(from, DISTRIBUTION_KEY);
+        RandomGenerator randomGenerator;
+
+        switch ((String) parameters.get(DISTRIBUTION_TYPE_KEY)) {
+            case "UNIFORM":
+                if(parameters.get(DISTRIBUTION_MIN_KEY) == null || parameters.get(DISTRIBUTION_MAX_KEY) == null)
+                    throw new IllegalArgumentException("Distribution min or max values not found on the parameters JSON file when uniform distribution specified.");
+
+                randomGenerator = new UniformRandom(seed, (double) parameters.get(DISTRIBUTION_MIN_KEY), (double) parameters.get(DISTRIBUTION_MAX_KEY));
+                break;
+
+            case "GAUSSIAN":
+                if(parameters.get(DISTRIBUTION_MEAN_KEY) == null || parameters.get(DISTRIBUTION_STD_KEY) == null)
+                    throw new IllegalArgumentException("Distribution mean or std values not found on the parameters JSON file when gaussian distribution specified.");
+
+                randomGenerator = new GaussianRandom(seed, (double) parameters.get(DISTRIBUTION_MEAN_KEY), (double) parameters.get(DISTRIBUTION_STD_KEY));
+                break;
+
+            case "EXPONENTIAL":
+                if(parameters.get(DISTRIBUTION_STD_KEY) == null)
+                    throw new IllegalArgumentException("Distribution std values not found on the parameters JSON file when exponential distribution specified.");
+
+                randomGenerator = new ExponentialRandom(seed, (double) parameters.get(DISTRIBUTION_STD_KEY));
+                break;
+
+            default:
+                throw new IllegalArgumentException("Distribution type not supported found on the parameters JSON file.");
+        }
+
+        return randomGenerator;
+    }
+
+    private JSONObject getOrThrowMissingException(JSONObject from, String key) {
+        if(from.get(key) == null)
+            throw new IllegalArgumentException("Parameter: " + key + " not found.");
+
+        return (JSONObject) from.get(key);
+    }
+
     private void initGeneratorsParameters(Random seedGenerator, JSONArray generatorsParametersJSON) {
         this.generatorsParameters = new HashMap<>();
         for (Object generatorParametersObj : generatorsParametersJSON) {
             JSONObject generatorParameters = (JSONObject) generatorParametersObj;
-            JSONObject generationParameters = (JSONObject) generatorParameters.get(GENERATION_KEY);
-            JSONObject agentsParameters = (JSONObject) generatorParameters.get(AGENTS_KEY);
+            JSONObject generationParameters = this.getOrThrowMissingException(generatorParameters, GENERATION_KEY);
+            JSONObject agentsParameters = this.getOrThrowMissingException(generatorParameters, AGENTS_KEY);
+
             this.generatorsParameters.put(
                     (String) generatorParameters.get(GROUP_NAME_KEY),
                     new AgentsGeneratorParameters(
@@ -61,11 +104,7 @@ public class SimulationParameters {
 
                             // GenerationParameters
                             (double) generationParameters.get(FREQUENCY_KEY),
-                            new UniformRandom(
-                                    seedGenerator.nextLong(),
-                                    ((Long) generationParameters.get(MIN_AGENTS_KEY)).intValue(),
-                                    ((Long) generationParameters.get(MAX_AGENTS_KEY)).intValue()
-                            )
+                            this.getRandomGenerator(generationParameters, seedGenerator.nextLong())
                     )
             );
         }
@@ -79,11 +118,7 @@ public class SimulationParameters {
             this.targetGroupsParameters.put(
                     (String) targetParameters.get(GROUP_NAME_KEY),
                     new TargetGroupParameters(
-                            new UniformRandom(
-                                    seedGenerator.nextLong(),
-                                    (Double) targetParameters.get(ATTENDING_TIME_KEY),
-                                    (Double) targetParameters.get(ATTENDING_TIME_KEY) + 10
-                            )
+                            this.getRandomGenerator(targetParameters, seedGenerator.nextLong())
                     )
             );
         }
@@ -93,15 +128,9 @@ public class SimulationParameters {
         this.serverGroupsParameters = new HashMap<>();
         for (Object serverParametersObj : serversParametersJSON) {
             JSONObject serverParameters = (JSONObject) serverParametersObj;
-            //TODO: Insert other value from random
-            //TODO: UniformRandom could also recieve attending time and variance
-            //TODO: Ask Mr. Parisi how to handle Exponential Random as lambda gives weird cases.
+
             ServerGroupParameters newServerGroupParameters = new ServerGroupParameters(
-                    new UniformRandom(
-                            seedGenerator.nextLong(),
-                            (Double) serverParameters.get(ATTENDING_TIME_KEY),
-                            (Double) serverParameters.get(ATTENDING_TIME_KEY) + 10
-                    ),
+                    this.getRandomGenerator(serverParameters, seedGenerator.nextLong()),
                     ((Long) serverParameters.get(MAX_CAPACITY_KEY)).intValue(),
                     (Double) serverParameters.get(START_TIME_KEY)
             );
