@@ -3,14 +3,14 @@ package Environment.Objectives.Target;
 
 import Agent.Agent;
 import Utils.Constants;
-import Utils.Random.RandomInterface;
+import Utils.Random.RandomGenerator;
 import Utils.Vector;
 import Utils.Zone;
 
 public class DotTarget extends Target {
     private final Zone zone;
 
-    public DotTarget(RandomInterface attendingDistribution, String groupId, Zone zone) {
+    public DotTarget(RandomGenerator attendingDistribution, String groupId, Zone zone) {
         super(attendingDistribution, groupId);
         this.zone = zone;
     }

@@ -2,14 +2,14 @@ package Environment.Objectives.Target;
 
 
 import Agent.Agent;
-import Utils.Random.RandomInterface;
+import Utils.Random.RandomGenerator;
 import Utils.Vector;
 import Utils.Zone;
 
 public class BorderTarget extends Target {
     private final Zone zone;
 
-    public BorderTarget(RandomInterface attendingDistribution, String groupId, Zone zone) {
+    public BorderTarget(RandomGenerator attendingDistribution, String groupId, Zone zone) {
         super(attendingDistribution, groupId);
         this.zone = zone;
     }

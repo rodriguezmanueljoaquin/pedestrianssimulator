@@ -33,7 +33,7 @@ public class Main {
 
         // --- MARKET-CLIENT ---
         BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(new SuperMarketClientSM(graph), exitsMap.get("NORMAL"),
-                graph, random.nextLong());
+                graph, random);
 
         marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCT1")), 2, 3);
         marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCT2")), 1, 1);
@@ -67,7 +67,7 @@ public class Main {
 //        System.out.println(path);
 
         // -------- CONFIGURATION --------
-        SimulationParameters parameters = new SimulationParameters("./input/parameters.json");
+        SimulationParameters parameters = new SimulationParameters("./input/parameters.json", random);
 
         // -------- TARGETS --------
         Map<String, List<Target>> targetsMap = CSVHandler.importTargets("./input/TARGETS.csv", parameters.getTargetGroupsParameters());

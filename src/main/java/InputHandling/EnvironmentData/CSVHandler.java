@@ -45,6 +45,7 @@ public class CSVHandler {
                                                                Map<String, AgentsGeneratorParameters> generatorsParameters, long randomSeed) {
         List<AgentsGenerator> generators = new ArrayList<>();
         Scanner scanner = getCSVScanner(filePath);
+        Random random = new Random(randomSeed);
 
         while (scanner.hasNextLine()) {
             String[] row = scanner.nextLine().split(",");
@@ -66,8 +67,7 @@ public class CSVHandler {
 
             generators.add(
                     new AgentsGenerator(
-                            generatorGroupId, zone, agentsGeneratorParameters,
-                            behaviourScheme, randomSeed
+                            generatorGroupId, zone, agentsGeneratorParameters, behaviourScheme, random.nextLong()
                     )
             );
         }
@@ -133,7 +133,7 @@ public class CSVHandler {
             }
 
             targets.get(targetGroupId).add(new DotTarget(
-                    targetGroupParameters.getAttendingDistribution(),
+                    targetGroupParameters.getAttendingTimeGenerator(),
                     targetGroupId,
                     targetZone
             ));
@@ -167,7 +167,8 @@ public class CSVHandler {
         return serversMap;
     }
 
-    private static void parseServers(Map<String, List<Server>> serversMap, Map<String, List<String[]>> rowsMap, Map<String, ServerGroupParameters> serverGroupsParameters) {
+    private static void parseServers(Map<String, List<Server>> serversMap, Map<String, List<String[]>> rowsMap,
+                                     Map<String, ServerGroupParameters> serverGroupsParameters) {
         for (String serverFullName : rowsMap.keySet()) {
             String serverGroupId = serverFullName.substring(0, serverFullName.indexOf('_'));
             ServerGroupParameters serverGroupParameters = serverGroupsParameters.get(serverGroupId);
@@ -195,14 +196,14 @@ public class CSVHandler {
                                     serverGroupParameters.getMaxCapacity(),
                                     area,
                                     serverGroupParameters.getStartTime(),
-                                    serverGroupParameters.getAttendingDistribution()
+                                    serverGroupParameters.getAttendingTimeGenerator()
                             );
                         } else {
                             server = new DynamicServer(
                                     name,
                                     serverGroupParameters.getMaxCapacity(),
                                     area,
-                                    serverGroupParameters.getAttendingDistribution(),
+                                    serverGroupParameters.getAttendingTimeGenerator(),
                                     new Queue(queueLines)
                             );
                         }

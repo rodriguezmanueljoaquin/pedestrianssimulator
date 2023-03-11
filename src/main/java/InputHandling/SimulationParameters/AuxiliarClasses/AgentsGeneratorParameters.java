@@ -1,5 +1,7 @@
 package InputHandling.SimulationParameters.AuxiliarClasses;
 
+import Utils.Random.RandomGenerator;
+
 public class AgentsGeneratorParameters {
     private final double activeTime;
     private final double inactiveTime;
@@ -7,13 +9,13 @@ public class AgentsGeneratorParameters {
     private final AgentsParameters agentsParameters;
     private final GenerationParameters generationParameters;
 
-    public AgentsGeneratorParameters(double activeTime, double inactiveTime, String behaviourSchemeKey, double minRadius, double maxRadius,
-                                     double maxVelocity, double timeBetweenGenerations, int minGeneration, int maxGeneration) {
+    public AgentsGeneratorParameters(double activeTime, double inactiveTime, String behaviourSchemeKey, double minRadius,
+                                     double maxRadius, double maxVelocity, double timeBetweenGenerations, RandomGenerator generationDistribution) {
         this.activeTime = activeTime;
         this.inactiveTime = inactiveTime;
         this.behaviourSchemeKey = behaviourSchemeKey;
         this.agentsParameters = new AgentsParameters(minRadius, maxRadius, maxVelocity);
-        this.generationParameters = new GenerationParameters(timeBetweenGenerations, minGeneration, maxGeneration);
+        this.generationParameters = new GenerationParameters(timeBetweenGenerations, generationDistribution);
     }
 
     public double getActiveTime() {
@@ -62,28 +64,19 @@ public class AgentsGeneratorParameters {
 
     public class GenerationParameters {
         private final double timeBetweenGenerations;
-        private final int minGeneration;
-        private final int maxGeneration;
+        private final RandomGenerator generationUnitsGenerator;
 
-        public GenerationParameters(double timeBetweenGenerations, int minGeneration, int maxGeneration) {
-            if (minGeneration > maxGeneration || minGeneration < 0)
-                throw new IllegalArgumentException("Bad arguments on generator agent creation limits");
-
+        public GenerationParameters(double timeBetweenGenerations, RandomGenerator generationUnitsGenerator) {
             this.timeBetweenGenerations = timeBetweenGenerations;
-            this.minGeneration = minGeneration;
-            this.maxGeneration = maxGeneration;
+            this.generationUnitsGenerator = generationUnitsGenerator;
         }
 
         public double getTimeBetweenGenerations() {
             return timeBetweenGenerations;
         }
 
-        public int getMinGeneration() {
-            return minGeneration;
-        }
-
-        public int getMaxGeneration() {
-            return maxGeneration;
+        public RandomGenerator getGenerationUnitsGenerator() {
+            return generationUnitsGenerator;
         }
     }
 }

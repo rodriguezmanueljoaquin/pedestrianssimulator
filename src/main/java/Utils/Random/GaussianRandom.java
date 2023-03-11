@@ -1,26 +1,22 @@
 package Utils.Random;
 
-import java.util.Random;
+public class GaussianRandom extends RandomGenerator {
+    private double mean;
+    private double std;
 
-public class GaussianRandom implements RandomInterface {
-    double mean;
-    double std;
-    Random random;
-
-    public GaussianRandom(double mean, double std) {
+    public GaussianRandom(long seed, double mean, double std) {
+        super(seed);
         this.mean = mean;
         this.std = std;
-        this.random = new Random();
     }
 
     @Override
-    public Double getNewRandomNumber() {
+    public double getNewRandomNumber() {
         return this.random.nextGaussian() * std + mean;
     }
 
-
     @Override
-    public Double getMean() {
+    public double getMean() {
         return mean;
     }
 }

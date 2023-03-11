@@ -3,17 +3,17 @@ package Environment.Objectives.Target;
 import Agent.Agent;
 import Environment.Objectives.Objective;
 import Environment.Objectives.ObjectiveType;
-import Utils.Random.RandomInterface;
+import Utils.Random.RandomGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Target implements Objective {
-    private final RandomInterface attendingDistribution;
+    private final RandomGenerator attendingDistribution;
     private final String groupId;
     private final Map<Integer, Double> attendingTimeMap = new HashMap<>();
 
-    public Target(RandomInterface attendingDistribution, String groupId) {
+    public Target(RandomGenerator attendingDistribution, String groupId) {
         this.attendingDistribution = attendingDistribution;
         this.groupId = groupId;
     }

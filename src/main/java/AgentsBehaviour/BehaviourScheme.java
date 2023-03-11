@@ -7,6 +7,9 @@ import Environment.Objectives.Objective;
 import Environment.Objectives.ObjectiveType;
 import Environment.Objectives.Server.Server;
 import GraphGenerator.Graph;
+import Utils.Random.GaussianRandom;
+import Utils.Random.RandomGenerator;
+import Utils.Random.UniformRandom;
 import Utils.Vector;
 
 import java.util.ArrayList;
@@ -30,12 +33,12 @@ public class BehaviourScheme {
     private final Graph graph;
     private final Random random;
 
-    public BehaviourScheme(StateMachine stateMachine, List<Exit> exits, Graph graph, long randomSeed) {
+    public BehaviourScheme(StateMachine stateMachine, List<Exit> exits, Graph graph, Random random) {
         this.stateMachine = stateMachine;
         this.scheme = new ArrayList<>();
         this.exits = exits;
         this.graph = graph;
-        this.random = new Random(randomSeed);
+        this.random = random;
     }
 
     public void addObjectiveGroupToScheme(List<Objective> possibleObjectives, Integer minOccurrences, Integer maxOccurrences) {
@@ -47,7 +50,7 @@ public class BehaviourScheme {
     public List<Objective> getObjectivesSample() {
         List<Objective> objectives = new ArrayList<>();
         for (ObjectiveGroup group : this.scheme) {
-            int objectivesQuantity = (int) (this.random.nextDouble() * (group.getMaxOccurrences() - group.getMinOccurrences())) + group.getMinOccurrences();
+            int objectivesQuantity = group.getRandomObjectivesQuantity();
 
             for (int i = 0; i < objectivesQuantity; i++) {
                 Objective obj = group.getRandomObjective();
@@ -78,28 +81,22 @@ public class BehaviourScheme {
     }
 
     private class ObjectiveGroup {
-        private final int minOccurrences, maxOccurrences;
         private final List<Objective> possibleObjectives;
-        private final Random random;
+        private final RandomGenerator objectiveGenerator;
+        private final RandomGenerator objectivesQuantityGenerator;
 
         public ObjectiveGroup(List<Objective> possibleObjectives, int minOccurrences, int maxOccurrences, long randomSeed) {
             this.possibleObjectives = possibleObjectives;
-            this.minOccurrences = minOccurrences;
-            this.maxOccurrences = maxOccurrences;
-            this.random = new Random(randomSeed);
+            this.objectiveGenerator = new UniformRandom(randomSeed, 0, possibleObjectives.size()-1);
+            this.objectivesQuantityGenerator = new UniformRandom(randomSeed, minOccurrences, maxOccurrences);
         }
 
         public Objective getRandomObjective() {
-            int objectiveIndex = (int) (this.random.nextDouble() * this.possibleObjectives.size());
-            return this.possibleObjectives.get(objectiveIndex);
+            return this.possibleObjectives.get((int) Math.round(this.objectiveGenerator.getNewRandomNumber()));
         }
 
-        public int getMinOccurrences() {
-            return minOccurrences;
-        }
-
-        public int getMaxOccurrences() {
-            return maxOccurrences;
+        public int getRandomObjectivesQuantity() {
+            return (int) Math.round(this.objectivesQuantityGenerator.getNewRandomNumber());
         }
     }
 }

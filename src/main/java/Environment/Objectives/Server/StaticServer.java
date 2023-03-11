@@ -2,13 +2,13 @@ package Environment.Objectives.Server;
 
 import Agent.Agent;
 import Environment.Objectives.ObjectiveType;
-import Utils.Random.RandomInterface;
+import Utils.Random.RandomGenerator;
 import Utils.Rectangle;
 import Utils.Vector;
 
 public class StaticServer extends Server {
     //Static event is for an event that has a fixed schedule
-    public StaticServer(String id, int maxCapacity, Rectangle zone, double startTime, RandomInterface attendingDistribution) {
+    public StaticServer(String id, int maxCapacity, Rectangle zone, double startTime, RandomGenerator attendingDistribution) {
         super(id, maxCapacity, zone, attendingDistribution, null);
         this.startTime = startTime;
     }

@@ -3,7 +3,7 @@ package Environment.Objectives.Target;
 
 import Agent.Agent;
 import Utils.Constants;
-import Utils.Random.RandomInterface;
+import Utils.Random.RandomGenerator;
 import Utils.Vector;
 import Utils.Zone;
 
@@ -14,7 +14,7 @@ public class RandomPointTarget extends Target {
     private final Zone zone;
     private final Map<Integer, Vector> positionMap = new HashMap<>();
 
-    public RandomPointTarget(RandomInterface attendingDistribution, String groupId, Zone zone) {
+    public RandomPointTarget(RandomGenerator attendingDistribution, String groupId, Zone zone) {
         super(attendingDistribution, groupId);
         this.zone = zone;
     }

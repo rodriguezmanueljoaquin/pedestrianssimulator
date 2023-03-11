@@ -1,15 +1,15 @@
 package InputHandling.SimulationParameters.AuxiliarClasses;
 
-import Utils.Random.RandomInterface;
+import Utils.Random.RandomGenerator;
 
 public class TargetGroupParameters {
-    private final RandomInterface attendingDistribution;
+    private final RandomGenerator attendingTimeGenerator;
 
-    public TargetGroupParameters(RandomInterface attendingDistribution) {
-        this.attendingDistribution = attendingDistribution;
+    public TargetGroupParameters(RandomGenerator attendingTimeGenerator) {
+        this.attendingTimeGenerator = attendingTimeGenerator;
     }
 
-    public RandomInterface getAttendingDistribution() {
-        return attendingDistribution;
+    public RandomGenerator getAttendingTimeGenerator() {
+        return attendingTimeGenerator;
     }
 }

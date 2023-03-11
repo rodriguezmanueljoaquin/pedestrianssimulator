@@ -1,23 +1,27 @@
 package Utils.Random;
 
-public class UniformRandom implements RandomInterface {
-    double from;
-    double to;
+public class UniformRandom extends RandomGenerator {
+    private final double from;
+    private final double to;
 
-    public UniformRandom(double from, double to) {
-        this.from = from;
-        this.to = to;
+    public UniformRandom(long seed, double from, double to) {
+        super(seed);
+        if(from > to) {
+            this.from = to;
+            this.to = from;
+        } else {
+            this.from = from;
+            this.to = to;
+        }
     }
 
     @Override
-    public Double getNewRandomNumber() {
-        return Math.random() * (to - from) + from;
+    public double getNewRandomNumber() {
+        return Math.random() * (this.to - this.from) + this.from;
     }
 
     @Override
-    public Double getMean() {
-        return (to + from) / 2;
+    public double getMean() {
+        return (this.to + this.from) / 2;
     }
-
-
 }
