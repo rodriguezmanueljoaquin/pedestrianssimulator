@@ -9,7 +9,7 @@ import Environment.Wall;
 import GraphGenerator.Graph;
 import InputHandling.EnvironmentData.CSVHandler;
 import InputHandling.ParametersNames;
-import InputHandling.SimulationParameters.SimulationParameters;
+import InputHandling.SimulationParameters.SimulationParametersParser;
 import OperationalModelModule.CPM;
 import OperationalModelModule.OperationalModelModule;
 import Utils.Vector;
@@ -28,12 +28,12 @@ public class Main {
 
     private static Map<String, BehaviourScheme> getBehaviourSchemes(Graph graph, Map<String, List<Exit>> exitsMap,
                                                                     Map<String, List<Server>> serversMap, Map<String, List<Target>> targetsMap,
-                                                                    Random random) {
+                                                                    double agentsMaximumMostPossibleRadius, Random random) {
         Map<String, BehaviourScheme> behaviourSchemes = new HashMap<>();
 
         // --- MARKET-CLIENT ---
         BehaviourScheme marketClientBehaviourScheme = new BehaviourScheme(new SuperMarketClientSM(graph), exitsMap.get("NORMAL"),
-                graph, random);
+                graph, agentsMaximumMostPossibleRadius, random);
 
         marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCT1")), 2, 3);
         marketClientBehaviourScheme.addObjectiveGroupToScheme(new ArrayList<>(targetsMap.get("PRODUCT2")), 1, 1);
@@ -67,21 +67,25 @@ public class Main {
 //        System.out.println(path);
 
         // -------- CONFIGURATION --------
-        SimulationParameters parameters = new SimulationParameters( "./input/parameters.json", random);
+        SimulationParametersParser parameters = new SimulationParametersParser( "./input/parameters.json", random);
 
         // -------- TARGETS --------
-        Map<String, List<Target>> targetsMap = CSVHandler.importTargets(CSV_DIRECTORY + "/TARGETS.csv", parameters.getTargetGroupsParameters());
+        Map<String, List<Target>> targetsMap =
+                CSVHandler.importTargets(CSV_DIRECTORY + "/TARGETS.csv", parameters.getTargetGroupsParameters());
 
         // -------- SERVERS --------
-        Map<String, List<Server>> serversMap = CSVHandler.importServers(CSV_DIRECTORY + "/SERVERS.csv", parameters.getServerGroupsParameters());
+        Map<String, List<Server>> serversMap =
+                CSVHandler.importServers(CSV_DIRECTORY + "/SERVERS.csv", parameters.getServerGroupsParameters(),
+                parameters.getAgentsMaximumMostPossibleRadius());
 
         // -------- BEHAVIOUR --------
-        Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exitsMap, serversMap, targetsMap, random);
+        Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exitsMap, serversMap, targetsMap,
+                parameters.getAgentsMaximumMostPossibleRadius(), random);
 
         // -------- AGENT GENERATORS --------
         List<AgentsGenerator> generators = CSVHandler.importAgentsGenerators(
                 CSV_DIRECTORY + "/GENERATORS.csv", behaviours,
-                parameters.getGeneratorsParameters(), random.nextLong()
+                parameters.getGeneratorsParameters(), parameters.getAgentsMaximumMostPossibleRadius(), random.nextLong()
         );
 
         // -------- ENVIRONMENT --------
@@ -91,11 +95,13 @@ public class Main {
         );
 
         // -------- OPERATIONAL MODEL MODULE --------
-        OperationalModelModule operationalModelModule = new CPM(environment);
+        OperationalModelModule operationalModelModule = new CPM(environment, parameters.getAgentsMaximumMostPossibleRadius());
 
         try {
             Simulation.createStaticFile(RESULTS_DIRECTORY, walls);
-            Simulation sim = new Simulation(parameters.getMaxTime(), environment, operationalModelModule, RESULTS_DIRECTORY, random, (double) parameters.getEvacuationTime());
+            Simulation sim = new Simulation(parameters.getMaxTime(), environment, parameters.getAgentsMaximumMostPossibleRadius(),
+                    parameters.getAgentsMaximumVelocity(),
+                    operationalModelModule, RESULTS_DIRECTORY, random, (double) parameters.getEvacuationTime());
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 public class Queue {
     private final List<QueueLine> queue;
 
-    public Queue(List<Line> lines) {
+    public Queue(List<Line> lines, double agentsMaximumMostPossibleRadius) {
         this.queue = new ArrayList<>();
         this.queue.addAll(
-                lines.stream().map(QueueLine::new).collect(Collectors.toList())
+                lines.stream().map(line -> new QueueLine(line, agentsMaximumMostPossibleRadius)).collect(Collectors.toList())
         );
     }
 
@@ -36,14 +36,14 @@ public class Queue {
     private class QueueLine extends Line {
         private final int segmentsQuantity;
 
-        public QueueLine(Vector x1, Vector x2) {
+        public QueueLine(Vector x1, Vector x2, double agentsMaximumMostPossibleRadius) {
             super(x1, x2);
-            this.segmentsQuantity = (int) (this.getX2().distance(this.getX1()) / Constants.SPACE_BETWEEN_AGENTS_IN_QUEUE);
+            this.segmentsQuantity = (int) (this.getX2().distance(this.getX1()) / (agentsMaximumMostPossibleRadius * 2));
         }
 
-        public QueueLine(Line line) {
+        public QueueLine(Line line, double agentsMaximumMostPossibleRadius) {
             super(line);
-            this.segmentsQuantity = (int) (this.getX2().distance(this.getX1()) / Constants.SPACE_BETWEEN_AGENTS_IN_QUEUE);
+            this.segmentsQuantity = (int) (this.getX2().distance(this.getX1()) / (agentsMaximumMostPossibleRadius * 2));
         }
 
         public int getSegmentsQuantity() {

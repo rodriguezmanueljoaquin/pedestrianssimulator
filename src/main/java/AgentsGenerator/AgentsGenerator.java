@@ -19,10 +19,11 @@ public class AgentsGenerator {
     private final AgentsGeneratorParameters generatorParameters;
     private final BehaviourScheme behaviourScheme;
     private final RandomGenerator generationUnitsGenerator, generationIndexGenerator, minRadiusGenerator, maxRadiusGenerator;
+    private final double agentsMaximumMostPossibleRadius;
     private double lastGenerationTime;
 
     public AgentsGenerator(String groupId, AgentsGeneratorZone zone, AgentsGeneratorParameters generatorParameters,
-                           BehaviourScheme behaviourScheme, long seed) {
+                           BehaviourScheme behaviourScheme, double agentsMaximumMostPossibleRadius, long seed) {
         this.groupId = groupId;
         this.zone = zone;
         this.generatorParameters = generatorParameters;
@@ -30,6 +31,7 @@ public class AgentsGenerator {
         this.generationIndexGenerator = new UniformRandom(seed, 0, this.zone.getZoneMatrixSize()-1);
         this.minRadiusGenerator = generatorParameters.getAgentsParameters().getMinRadiusGenerator();
         this.maxRadiusGenerator = generatorParameters.getAgentsParameters().getMaxRadiusGenerator();
+        this.agentsMaximumMostPossibleRadius = agentsMaximumMostPossibleRadius;
         this.behaviourScheme = behaviourScheme;
     }
 
@@ -52,7 +54,7 @@ public class AgentsGenerator {
                 } else {
                     Vector closestPoint = agent.getPosition().add(
                             (this.zone.getMiddlePoint().substract(agent.getPosition()))
-                                    .scalarMultiply(agent.distance(this.zone.getMiddlePoint()) * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS)
+                                    .scalarMultiply(agent.distance(this.zone.getMiddlePoint()) * this.agentsMaximumMostPossibleRadius)
                     );
                     if (this.zone.isPointInside(closestPoint)) {
                         positionsUsed.add(this.zone.getIndexByPosition(closestPoint));

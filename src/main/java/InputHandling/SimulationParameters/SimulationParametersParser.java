@@ -14,20 +14,22 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import static InputHandling.ParametersNames.*;
 
-public class SimulationParameters {
+public class SimulationParametersParser {
     private Map<String, AgentsGeneratorParameters> generatorsParameters;
     private Map<String, TargetGroupParameters> targetGroupsParameters;
     private Map<String, ServerGroupParameters> serverGroupsParameters;
     private final Long maxTime;
     private Long evacuationTime = null;
+    private double agentsMaximumMostPossibleRadius = 0;
 
-    public SimulationParameters(String JSONPath, Random seedGenerator) {
+    public SimulationParametersParser(String JSONPath, Random seedGenerator) {
         JSONObject jsonObject;
         try {
             jsonObject = (JSONObject) new JSONParser().parse(new FileReader(JSONPath));
@@ -62,10 +64,10 @@ public class SimulationParameters {
                 break;
 
             case DISTRIBUTION_EXPONENTIAL_KEY:
-                if(parameters.get(DISTRIBUTION_STD_KEY) == null)
+                if(parameters.get(DISTRIBUTION_MEAN_KEY) == null)
                     throw new IllegalArgumentException("Distribution std values not found on the parameters JSON file when exponential distribution specified.");
 
-                randomGenerator = new ExponentialRandom(seed, (double) parameters.get(DISTRIBUTION_STD_KEY));
+                randomGenerator = new ExponentialRandom(seed, (double) parameters.get(DISTRIBUTION_MEAN_KEY));
                 break;
 
             default:
@@ -107,6 +109,12 @@ public class SimulationParameters {
                     )
             );
         }
+
+        this.agentsMaximumMostPossibleRadius = this.generatorsParameters.values().stream()
+                .map(AgentsGeneratorParameters::getAgentsParameters)
+                .map(AgentsGeneratorParameters.AgentsParameters::getMaxRadiusGenerator)
+                .map(RandomGenerator::getHighestMostPossibleValue)
+                .mapToDouble(Double::doubleValue).max().getAsDouble();
     }
 
     private void initTargetsParameters(Random seedGenerator, JSONArray targetsParametersJSON) {
@@ -150,14 +158,25 @@ public class SimulationParameters {
     }
 
     public Map<String, AgentsGeneratorParameters> getGeneratorsParameters() {
-        return generatorsParameters;
+        return this.generatorsParameters;
+    }
+
+    public double getAgentsMaximumMostPossibleRadius() {
+        return this.agentsMaximumMostPossibleRadius;
+    }
+
+    public double getAgentsMaximumVelocity() {
+        return this.generatorsParameters.values().stream()
+                .map(AgentsGeneratorParameters::getAgentsParameters)
+                .map(AgentsGeneratorParameters.AgentsParameters::getMaxVelocity)
+                .mapToDouble(Double::doubleValue).max().getAsDouble();
     }
 
     public Map<String, TargetGroupParameters> getTargetGroupsParameters() {
-        return targetGroupsParameters;
+        return this.targetGroupsParameters;
     }
 
     public Map<String, ServerGroupParameters> getServerGroupsParameters() {
-        return serverGroupsParameters;
+        return this.serverGroupsParameters;
     }
 }

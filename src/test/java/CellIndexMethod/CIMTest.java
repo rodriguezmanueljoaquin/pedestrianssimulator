@@ -41,7 +41,7 @@ public class CIMTest {
         agents.add(new Agent(new Vector(5, 10), 0.1, 0.2, 1, stateMachine, new ArrayList<>()));
         agents.add(new Agent(new Vector(15, 10), 0.1, 0.2, 1, stateMachine, new ArrayList<>()));
         agents.add(new Agent(new Vector(15, 15), 0.1, 0.2, 1, stateMachine, new ArrayList<>()));
-        CellIndexMethod cim = new CellIndexMethod(walls, neighbourhoodRadius);
+        CellIndexMethod cim = new CellIndexMethod(walls, neighbourhoodRadius, 0.2);
         cim.updateAgentsPosition(agents);
 
         for (Agent agent : agents) {

@@ -23,9 +23,9 @@ public class CellIndexMethod {
     private int M; // cells in each row and in each column (the matrix must be square)
     private double cellSize;
 
-    public CellIndexMethod(List<Wall> walls, double neighbourhoodRadius) {
+    public CellIndexMethod(List<Wall> walls, double neighbourhoodRadius, double agentsMaximumMostPossibleRadius) {
         this.neighbourhoodRadius = neighbourhoodRadius;
-        initMatrix(walls);
+        initMatrix(walls, agentsMaximumMostPossibleRadius);
     }
 
     private static void updateMinPoints(Vector currentMin, Vector possibleNewMin) {
@@ -91,7 +91,7 @@ public class CellIndexMethod {
         return position < 0 || position >= max;
     }
 
-    private void initMatrix(List<Wall> walls) {
+    private void initMatrix(List<Wall> walls, double agentsMaximumMostPossibleRadius) {
         // generate matrix from a rectangle that has all walls inside
 
         // find the dots that define this rectangle
@@ -114,10 +114,10 @@ public class CellIndexMethod {
 
         // use the highest dimension to make the matrix square
         if (matrixSize.getY() > matrixSize.getX()) {
-            this.M = (int) Math.ceil(matrixSize.getY() / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS));
+            this.M = (int) Math.ceil(matrixSize.getY() / (this.neighbourhoodRadius + 2 * agentsMaximumMostPossibleRadius));
             this.cellSize = matrixSize.getY() / this.M;
         } else {
-            this.M = (int) Math.ceil(matrixSize.getX() / (this.neighbourhoodRadius + 2 * AgentConstants.MAX_RADIUS_OF_ALL_AGENTS));
+            this.M = (int) Math.ceil(matrixSize.getX() / (this.neighbourhoodRadius + 2 * agentsMaximumMostPossibleRadius));
             this.cellSize = matrixSize.getX() / this.M;
         }
 

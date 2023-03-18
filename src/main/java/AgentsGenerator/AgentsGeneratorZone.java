@@ -6,15 +6,17 @@ import Utils.Vector;
 
 public class AgentsGeneratorZone extends Rectangle {
     private int rowsQty, colsQty;
-    private final double CELL_SIZE = (AgentConstants.MAX_RADIUS_OF_ALL_AGENTS * 2) *2; // at least 2 agents fit in one cell
-    public AgentsGeneratorZone(Vector x1, Vector x2) {
+    private final double CELL_SIZE;
+    public AgentsGeneratorZone(Vector x1, Vector x2, double agentsMaximumMostPossibleRadius) {
         super(x1, x2);
+        this.CELL_SIZE = (agentsMaximumMostPossibleRadius* 2) *2; // at least 2 agents fit in one cell;
         this.rowsQty =  (int) Math.floor((this.x2.getY() - this.x1.getY()) / CELL_SIZE);
         this.colsQty = (int) Math.floor((this.x2.getX() - this.x1.getX()) / CELL_SIZE);
         if (this.rowsQty <= 0)
             this.rowsQty = 1;
         if (this.colsQty <= 0)
             this.colsQty = 1;
+
     }
 
     public int getZoneMatrixSize() {

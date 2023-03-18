@@ -31,13 +31,15 @@ public class BehaviourScheme {
     private final List<ObjectiveGroup> scheme;
     private final List<Exit> exits;
     private final Graph graph;
+    private final double agentsMaximumMostPossibleRadius;
     private final Random random;
 
-    public BehaviourScheme(StateMachine stateMachine, List<Exit> exits, Graph graph, Random random) {
+    public BehaviourScheme(StateMachine stateMachine, List<Exit> exits, Graph graph, double agentsMaximumMostPossibleRadius, Random random) {
         this.stateMachine = stateMachine;
         this.scheme = new ArrayList<>();
         this.exits = exits;
         this.graph = graph;
+        this.agentsMaximumMostPossibleRadius = agentsMaximumMostPossibleRadius;
         this.random = random;
     }
 
@@ -65,7 +67,8 @@ public class BehaviourScheme {
         Map<Vector, Exit> exitsByCentroid = exits.stream()
                 .collect(Collectors.toMap(Exit::getCentroidPosition, Function.identity()));
         Exit closestExitFromLastObjective = exitsByCentroid
-                .get(graph.getClosestDestination(lastObjectivePosition, new ArrayList<>(exitsByCentroid.keySet()), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS));
+                .get(graph.getClosestDestination(lastObjectivePosition, new ArrayList<>(exitsByCentroid.keySet()),
+                        this.agentsMaximumMostPossibleRadius));
 
         objectives.add(closestExitFromLastObjective);
         return objectives;

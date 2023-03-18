@@ -17,9 +17,9 @@ public class CPM implements OperationalModelModule {
     private final Environment environment;
     private final Map<Integer, Vector> agentsPreviousVelocity;
 
-    public CPM(Environment environment) {
+    public CPM(Environment environment, double agentsMaximumMostPossibleRadius) {
         this.environment = environment;
-        this.CIM = new CellIndexMethod(this.environment.getWalls(), CPMConstants.NEIGHBOURS_RADIUS);
+        this.CIM = new CellIndexMethod(this.environment.getWalls(), CPMConstants.NEIGHBOURS_RADIUS, agentsMaximumMostPossibleRadius);
         this.agentsPreviousVelocity = new HashMap<>();
     }
 

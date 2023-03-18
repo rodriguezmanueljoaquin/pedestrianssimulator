@@ -42,7 +42,9 @@ public class CSVHandler {
 
     public static List<AgentsGenerator> importAgentsGenerators(String filePath,
                                                                Map<String, BehaviourScheme> possibleBehaviourSchemes,
-                                                               Map<String, AgentsGeneratorParameters> generatorsParameters, long randomSeed) {
+                                                               Map<String, AgentsGeneratorParameters> generatorsParameters,
+                                                               double agentsMaximumMostPossibleRadius,
+                                                               long randomSeed) {
         List<AgentsGenerator> generators = new ArrayList<>();
         Scanner scanner = getCSVScanner(filePath);
         Random random = new Random(randomSeed);
@@ -52,7 +54,8 @@ public class CSVHandler {
 
             AgentsGeneratorZone zone = new AgentsGeneratorZone(
                     new Utils.Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),
-                    new Utils.Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]))
+                    new Utils.Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5])),
+                    agentsMaximumMostPossibleRadius
             );
 
             String generatorGroupId = row[0];
@@ -67,7 +70,7 @@ public class CSVHandler {
 
             generators.add(
                     new AgentsGenerator(
-                            generatorGroupId, zone, agentsGeneratorParameters, behaviourScheme, random.nextLong()
+                            generatorGroupId, zone, agentsGeneratorParameters, behaviourScheme, agentsMaximumMostPossibleRadius, random.nextLong()
                     )
             );
         }
@@ -143,7 +146,8 @@ public class CSVHandler {
         return targets;
     }
 
-    public static Map<String, List<Server>> importServers(String filePath, Map<String, ServerGroupParameters> serverGroupsParameters) {
+    public static Map<String, List<Server>> importServers(String filePath, Map<String, ServerGroupParameters> serverGroupsParameters,
+                                                        double agentsMaximumMostPossibleRadius) {
         Map<String, List<Server>> serversMap = new HashMap<>();
         for (String key : serverGroupsParameters.keySet()) {
             serversMap.put(key, new ArrayList<>());
@@ -162,13 +166,13 @@ public class CSVHandler {
         }
         scanner.close();
 
-        parseServers(serversMap, rowsMap, serverGroupsParameters);
+        parseServers(serversMap, rowsMap, serverGroupsParameters, agentsMaximumMostPossibleRadius);
 
         return serversMap;
     }
 
     private static void parseServers(Map<String, List<Server>> serversMap, Map<String, List<String[]>> rowsMap,
-                                     Map<String, ServerGroupParameters> serverGroupsParameters) {
+                                     Map<String, ServerGroupParameters> serverGroupsParameters, double agentsMaximumMostPossibleRadius) {
         for (String serverFullName : rowsMap.keySet()) {
             String serverGroupId = serverFullName.substring(0, serverFullName.indexOf('_'));
             ServerGroupParameters serverGroupParameters = serverGroupsParameters.get(serverGroupId);
@@ -204,7 +208,7 @@ public class CSVHandler {
                                     serverGroupParameters.getMaxCapacity(),
                                     area,
                                     serverGroupParameters.getAttendingTimeGenerator(),
-                                    new Queue(queueLines)
+                                    new Queue(queueLines, agentsMaximumMostPossibleRadius)
                             );
                         }
 
