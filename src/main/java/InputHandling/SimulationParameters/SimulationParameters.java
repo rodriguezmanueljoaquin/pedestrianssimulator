@@ -103,7 +103,7 @@ public class SimulationParameters {
 
                             // GenerationParameters
                             (double) generationParameters.get(FREQUENCY_KEY),
-                            this.getRandomGenerator(this.getOrThrowMissingException(generationParameters, DISTRIBUTION_KEY), seedGenerator.nextLong())
+                            this.getRandomGenerator(this.getOrThrowMissingException(generationParameters, GENERATION_QUANTITY_DISTRIBUTION_KEY), seedGenerator.nextLong())
                     )
             );
         }
@@ -117,7 +117,7 @@ public class SimulationParameters {
             this.targetGroupsParameters.put(
                     (String) targetParameters.get(GROUP_NAME_KEY),
                     new TargetGroupParameters(
-                            this.getRandomGenerator(this.getOrThrowMissingException(targetParameters, DISTRIBUTION_KEY), seedGenerator.nextLong())
+                            this.getRandomGenerator(this.getOrThrowMissingException(targetParameters, ATTENDING_TIME_DISTRIBUTION_KEY), seedGenerator.nextLong())
                     )
             );
         }
@@ -129,7 +129,7 @@ public class SimulationParameters {
             JSONObject serverParameters = (JSONObject) serverParametersObj;
 
             ServerGroupParameters newServerGroupParameters = new ServerGroupParameters(
-                    this.getRandomGenerator(this.getOrThrowMissingException(serverParameters, DISTRIBUTION_KEY), seedGenerator.nextLong()),
+                    this.getRandomGenerator(this.getOrThrowMissingException(serverParameters, ATTENDING_TIME_DISTRIBUTION_KEY), seedGenerator.nextLong()),
                     ((Long) serverParameters.get(MAX_CAPACITY_KEY)).intValue(),
                     (Double) serverParameters.get(START_TIME_KEY)
             );

@@ -16,7 +16,9 @@ public class ParametersNames {
     public static String MAX_CAPACITY_KEY = "max_capacity";
     public static String START_TIME_KEY = "start_time";
     public static String GENERATION_KEY = "generation";
-    public static String DISTRIBUTION_KEY = "distribution";
+    public static String GENERATION_QUANTITY_DISTRIBUTION_KEY = "quantity_distribution";
+    public static String ATTENDING_TIME_DISTRIBUTION_KEY = "attending_time_distribution";
+
     public static String DISTRIBUTION_TYPE_KEY = "type";
     public static String DISTRIBUTION_MIN_KEY = "min";
     public static String DISTRIBUTION_MAX_KEY = "max";
