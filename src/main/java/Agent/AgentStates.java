@@ -3,43 +3,43 @@ package Agent;
 public enum AgentStates {
     MOVING {
         @Override
-        public double getVelocity() {
-            return AgentConstants.MAXIMUM_VELOCITY;
+        public double getMaxVelocityFactor() {
+            return AgentConstants.MAXIMUM_VELOCITY_FACTOR;
         }
     },
     MOVING_TO_QUEUE_POSITION {
         @Override
-        public double getVelocity() {
-            return AgentConstants.MAXIMUM_VELOCITY;
+        public double getMaxVelocityFactor() {
+            return AgentConstants.MAXIMUM_VELOCITY_FACTOR;
         }
     },
     ATTENDING {
         @Override
-        public double getVelocity() {
+        public double getMaxVelocityFactor() {
             return 0.0;
         }
     },
     WAITING_IN_QUEUE {
         @Override
-        public double getVelocity() {
+        public double getMaxVelocityFactor() {
             return 0.0;
         }
     },
     LEAVING {
         @Override
-        public double getVelocity() {
-            return AgentConstants.MAXIMUM_VELOCITY;
+        public double getMaxVelocityFactor() {
+            return AgentConstants.MAXIMUM_VELOCITY_FACTOR;
         }
     },
     LEFT {
         @Override
-        public double getVelocity() {
+        public double getMaxVelocityFactor() {
             return 0.0;
         }
     },
     STARTING {
         @Override
-        public double getVelocity() {
+        public double getMaxVelocityFactor() {
             return 0.0;
         }
     },
@@ -47,10 +47,10 @@ public enum AgentStates {
     /* for SuperMarketClientSM */
     APPROXIMATING {
         @Override
-        public double getVelocity() {
-            return AgentConstants.APPROXIMATING_VELOCITY;
+        public double getMaxVelocityFactor() {
+            return AgentConstants.APPROXIMATING_VELOCITY_FACTOR;
         }
     };
 
-    public abstract double getVelocity();
+    public abstract double getMaxVelocityFactor();
 }

@@ -70,7 +70,7 @@ public class Simulation {
 
         while (this.time < this.maxTime) {
             // create new agents and update servers
-            List<Agent> newAgents = this.environment.update(this.time);
+            List<Agent> newAgents = this.environment.update(this.time, this.agents);
 
             // check for evacuation
             if (this.evacuationTime != null && this.time >= this.evacuationTime) {
@@ -140,7 +140,7 @@ public class Simulation {
             // update radius
             this.operationalModelModule.expandAgent(agent);
 
-            if (agent.getState().getVelocity() != 0)
+            if (agent.getState().getMaxVelocityFactor() != 0)
                 // if moving, update direction with heuristics
                 this.operationalModelModule.updateNonCollisionAgent(agent, this.dt, this.random);
         }

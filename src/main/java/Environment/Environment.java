@@ -48,21 +48,21 @@ public class Environment {
         return exits;
     }
 
-    public List<Agent> generateAgents(Double time) {
+    public List<Agent> generateAgents(Double time, List<Agent> currentAgents) {
         List<Agent> newAgents = new ArrayList<>();
 
         for (AgentsGenerator generator : this.generators) {
-            newAgents.addAll(generator.generate(time));
+            newAgents.addAll(generator.generate(time, currentAgents));
         }
         return newAgents;
     }
 
-    public List<Agent> update(Double time) {
+    public List<Agent> update(Double time, List<Agent> currentAgents) {
         for (Server server : this.getServers()) {
             server.updateServer(time);
         }
 
-        return generateAgents(time);
+        return generateAgents(time, currentAgents);
     }
 
 }

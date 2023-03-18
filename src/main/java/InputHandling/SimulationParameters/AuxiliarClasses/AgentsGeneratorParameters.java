@@ -20,23 +20,23 @@ public class AgentsGeneratorParameters {
     }
 
     public double getActiveTime() {
-        return activeTime;
+        return this.activeTime;
     }
 
     public double getInactiveTime() {
-        return inactiveTime;
+        return this.inactiveTime;
     }
 
     public String getBehaviourSchemeKey() {
-        return behaviourSchemeKey;
+        return this.behaviourSchemeKey;
     }
 
     public GenerationParameters getGenerationParameters() {
-        return generationParameters;
+        return this.generationParameters;
     }
 
     public AgentsParameters getAgentsParameters() {
-        return agentsParameters;
+        return this.agentsParameters;
     }
 
     public class AgentsParameters {
@@ -50,15 +50,15 @@ public class AgentsGeneratorParameters {
         }
 
         public RandomGenerator getMaxRadiusGenerator() {
-            return maxRadiusGenerator;
+            return this.maxRadiusGenerator;
         }
 
         public RandomGenerator getMinRadiusGenerator() {
-            return minRadiusGenerator;
+            return this.minRadiusGenerator;
         }
 
         public double getMaxVelocity() {
-            return maxVelocity;
+            return this.maxVelocity;
         }
     }
 

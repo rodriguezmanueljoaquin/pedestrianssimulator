@@ -36,7 +36,7 @@ public class AgentsGeneratorTests {
         AgentsGenerator agentsGenerator = new AgentsGenerator("test", agentZone, agentsGeneratorParameters, behaviourScheme, 1);
 
         for (double i = 0; i < 500; i += 0.1) {
-            List<Agent> agentList = agentsGenerator.generate(i);
+            List<Agent> agentList = agentsGenerator.generate(i, new ArrayList<>());
             for (Agent agent : agentList) {
                 assert agentZone.isPointInside(agent.getPosition());
                 for (Agent otherAgent : agentList) {
