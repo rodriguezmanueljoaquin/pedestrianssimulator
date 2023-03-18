@@ -1,6 +1,7 @@
 import argparse
 import ezdxf
 import re as regex
+import os
 
 WALLS_LAYER = "WALLS"
 EXITS_LAYER = "EXITS"
@@ -184,7 +185,7 @@ def parse_dxf(in_file_path, out_path):
     print("Parsing of dxf file finished...")
 
 
-EXAMPLE_DXF_PATH = "DXFParser/DXFExamples/Plano prueba simulacion V05.02.dxf"
+EXAMPLE_DXF_PATH = "input/Plano prueba simulacion V05.02.dxf"
 EXAMPLE_JSON_PATH = "input/parameters.json"
 
 if __name__ == '__main__':
@@ -204,5 +205,7 @@ Defaults to: " + EXAMPLE_JSON_PATH,
                         type=str, default=EXAMPLE_JSON_PATH, required=False)
 
     args = parser.parse_args()
-
-    parse_dxf(args.dxf, "input/")
+    out_path = "simulation_input/"
+    if not os.path.exists(out_path):
+        os.makedirs(out_path)
+    parse_dxf(args.dxf, "simulation_input/")

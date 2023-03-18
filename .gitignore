@@ -1,4 +1,5 @@
 out/*
+simulation_input/*
 .idea/*
 *.pyc
 *.xyz

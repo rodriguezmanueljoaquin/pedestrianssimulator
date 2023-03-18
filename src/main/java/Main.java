@@ -12,7 +12,6 @@ import InputHandling.ParametersNames;
 import InputHandling.SimulationParameters.SimulationParameters;
 import OperationalModelModule.CPM;
 import OperationalModelModule.OperationalModelModule;
-import Utils.Constants;
 import Utils.Vector;
 
 import java.io.File;
@@ -24,7 +23,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
-    private static final String RESULTS_PATH = "./out/";
+    private static final String RESULTS_DIRECTORY = "./out/";
+    private static final String CSV_DIRECTORY = "./simulation_input";
 
     private static Map<String, BehaviourScheme> getBehaviourSchemes(Graph graph, Map<String, List<Exit>> exitsMap,
                                                                     Map<String, List<Server>> serversMap, Map<String, List<Target>> targetsMap,
@@ -47,14 +47,14 @@ public class Main {
 
     public static void main(String[] args) {
         Random random = new Random(1);
-        if (!Files.exists(Paths.get(RESULTS_PATH))) {
-            new File(RESULTS_PATH).mkdir();
+        if (!Files.exists(Paths.get(RESULTS_DIRECTORY))) {
+            new File(RESULTS_DIRECTORY).mkdir();
         }
         // -------- WALLS --------
-        List<Wall> walls = CSVHandler.importWalls("./input/WALLS.csv");
+        List<Wall> walls = CSVHandler.importWalls(CSV_DIRECTORY + "/WALLS.csv");
 
         // -------- EXITS --------
-        Map<String, List<Exit>> exitsMap = CSVHandler.importExits("./input/EXITS.csv");
+        Map<String, List<Exit>> exitsMap = CSVHandler.importExits(CSV_DIRECTORY + "/EXITS.csv");
 
         // -------- GRAPH --------
         Graph graph = new Graph(walls, exitsMap.values().stream().flatMap(List::stream)
@@ -67,20 +67,20 @@ public class Main {
 //        System.out.println(path);
 
         // -------- CONFIGURATION --------
-        SimulationParameters parameters = new SimulationParameters("./input/parameters.json", random);
+        SimulationParameters parameters = new SimulationParameters( "./input/parameters.json", random);
 
         // -------- TARGETS --------
-        Map<String, List<Target>> targetsMap = CSVHandler.importTargets("./input/TARGETS.csv", parameters.getTargetGroupsParameters());
+        Map<String, List<Target>> targetsMap = CSVHandler.importTargets(CSV_DIRECTORY + "/TARGETS.csv", parameters.getTargetGroupsParameters());
 
         // -------- SERVERS --------
-        Map<String, List<Server>> serversMap = CSVHandler.importServers("./input/SERVERS.csv", parameters.getServerGroupsParameters());
+        Map<String, List<Server>> serversMap = CSVHandler.importServers(CSV_DIRECTORY + "/SERVERS.csv", parameters.getServerGroupsParameters());
 
         // -------- BEHAVIOUR --------
         Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exitsMap, serversMap, targetsMap, random);
 
         // -------- AGENT GENERATORS --------
         List<AgentsGenerator> generators = CSVHandler.importAgentsGenerators(
-                "./input/GENERATORS.csv", behaviours,
+                CSV_DIRECTORY + "/GENERATORS.csv", behaviours,
                 parameters.getGeneratorsParameters(), random.nextLong()
         );
 
@@ -94,8 +94,8 @@ public class Main {
         OperationalModelModule operationalModelModule = new CPM(environment);
 
         try {
-            Simulation.createStaticFile(RESULTS_PATH, walls);
-            Simulation sim = new Simulation(parameters.getMaxTime(), environment, operationalModelModule, RESULTS_PATH, random, (double) parameters.getEvacuationTime());
+            Simulation.createStaticFile(RESULTS_DIRECTORY, walls);
+            Simulation sim = new Simulation(parameters.getMaxTime(), environment, operationalModelModule, RESULTS_DIRECTORY, random, (double) parameters.getEvacuationTime());
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);
