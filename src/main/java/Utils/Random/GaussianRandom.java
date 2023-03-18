@@ -12,11 +12,16 @@ public class GaussianRandom extends RandomGenerator {
 
     @Override
     public double getNewRandomNumber() {
-        return this.random.nextGaussian() * std + mean;
+        return this.random.nextGaussian() * this.std + this.mean;
     }
 
     @Override
     public double getMean() {
-        return mean;
+        return this.mean;
+    }
+
+    @Override
+    public double getHighestMostPossibleValue() {
+        return this.mean + 3 * this.std; //highest possible value 99.7% of the time
     }
 }

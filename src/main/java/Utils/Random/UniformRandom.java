@@ -24,4 +24,9 @@ public class UniformRandom extends RandomGenerator {
     public double getMean() {
         return (this.to + this.from) / 2;
     }
+
+    @Override
+    public double getHighestMostPossibleValue() {
+        return this.to;
+    }
 }

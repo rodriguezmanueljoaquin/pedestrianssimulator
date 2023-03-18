@@ -12,4 +12,6 @@ public abstract class RandomGenerator {
     public abstract double getNewRandomNumber();
 
     public abstract double getMean();
+
+    public abstract double getHighestMostPossibleValue();
 }
