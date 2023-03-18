@@ -43,26 +43,25 @@ public class SimulationParameters {
         this.initServersParameters(seedGenerator, (JSONArray) jsonObject.get(SERVERS_KEY));
     }
 
-    private RandomGenerator getRandomGenerator(JSONObject from, long seed) {
-        JSONObject parameters = this.getOrThrowMissingException(from, DISTRIBUTION_KEY);
+    private RandomGenerator getRandomGenerator(JSONObject parameters, long seed) {
         RandomGenerator randomGenerator;
 
         switch ((String) parameters.get(DISTRIBUTION_TYPE_KEY)) {
-            case "UNIFORM":
+            case DISTRIBUTION_UNIFORM_KEY:
                 if(parameters.get(DISTRIBUTION_MIN_KEY) == null || parameters.get(DISTRIBUTION_MAX_KEY) == null)
                     throw new IllegalArgumentException("Distribution min or max values not found on the parameters JSON file when uniform distribution specified.");
 
                 randomGenerator = new UniformRandom(seed, (double) parameters.get(DISTRIBUTION_MIN_KEY), (double) parameters.get(DISTRIBUTION_MAX_KEY));
                 break;
 
-            case "GAUSSIAN":
+            case DISTRIBUTION_GAUSSIAN_KEY:
                 if(parameters.get(DISTRIBUTION_MEAN_KEY) == null || parameters.get(DISTRIBUTION_STD_KEY) == null)
                     throw new IllegalArgumentException("Distribution mean or std values not found on the parameters JSON file when gaussian distribution specified.");
 
                 randomGenerator = new GaussianRandom(seed, (double) parameters.get(DISTRIBUTION_MEAN_KEY), (double) parameters.get(DISTRIBUTION_STD_KEY));
                 break;
 
-            case "EXPONENTIAL":
+            case DISTRIBUTION_EXPONENTIAL_KEY:
                 if(parameters.get(DISTRIBUTION_STD_KEY) == null)
                     throw new IllegalArgumentException("Distribution std values not found on the parameters JSON file when exponential distribution specified.");
 
@@ -98,13 +97,13 @@ public class SimulationParameters {
                             (String) generatorParameters.get(BEHAVIOUR_SCHEME_KEY),
 
                             // AgentsParameters
-                            (double) agentsParameters.get(MIN_RADIUS_KEY),
-                            (double) agentsParameters.get(MAX_RADIUS_KEY),
+                            this.getRandomGenerator(this.getOrThrowMissingException(agentsParameters, MIN_RADIUS_DISTRIBUTION_KEY), seedGenerator.nextLong()),
+                            this.getRandomGenerator(this.getOrThrowMissingException(agentsParameters, MAX_RADIUS_DISTRIBUTION_KEY), seedGenerator.nextLong()),
                             (double) agentsParameters.get(MAX_VELOCITY_KEY),
 
                             // GenerationParameters
                             (double) generationParameters.get(FREQUENCY_KEY),
-                            this.getRandomGenerator(generationParameters, seedGenerator.nextLong())
+                            this.getRandomGenerator(this.getOrThrowMissingException(generationParameters, DISTRIBUTION_KEY), seedGenerator.nextLong())
                     )
             );
         }
@@ -118,7 +117,7 @@ public class SimulationParameters {
             this.targetGroupsParameters.put(
                     (String) targetParameters.get(GROUP_NAME_KEY),
                     new TargetGroupParameters(
-                            this.getRandomGenerator(targetParameters, seedGenerator.nextLong())
+                            this.getRandomGenerator(this.getOrThrowMissingException(targetParameters, DISTRIBUTION_KEY), seedGenerator.nextLong())
                     )
             );
         }
@@ -130,7 +129,7 @@ public class SimulationParameters {
             JSONObject serverParameters = (JSONObject) serverParametersObj;
 
             ServerGroupParameters newServerGroupParameters = new ServerGroupParameters(
-                    this.getRandomGenerator(serverParameters, seedGenerator.nextLong()),
+                    this.getRandomGenerator(this.getOrThrowMissingException(serverParameters, DISTRIBUTION_KEY), seedGenerator.nextLong()),
                     ((Long) serverParameters.get(MAX_CAPACITY_KEY)).intValue(),
                     (Double) serverParameters.get(START_TIME_KEY)
             );

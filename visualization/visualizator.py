@@ -1,6 +1,6 @@
 import exportOvito
 from simulationResults import read_input_files
-input_files_directory_path = "./results/"
+input_files_directory_path = "./out/"
 
 def visualize_simulation_results():
     simulations_results = read_input_files(input_files_directory_path)

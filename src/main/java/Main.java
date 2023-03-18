@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
-    private static final String RESULTS_PATH = "./results/";
+    private static final String RESULTS_PATH = "./out/";
 
     private static Map<String, BehaviourScheme> getBehaviourSchemes(Graph graph, Map<String, List<Exit>> exitsMap,
                                                                     Map<String, List<Server>> serversMap, Map<String, List<Target>> targetsMap,

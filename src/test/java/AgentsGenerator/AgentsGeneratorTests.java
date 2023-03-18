@@ -6,6 +6,7 @@ import Environment.Objectives.Objective;
 import Environment.Objectives.Target.BorderTarget;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
 import Utils.Circle;
+import Utils.Random.GaussianRandom;
 import Utils.Random.UniformRandom;
 import Utils.Vector;
 import org.junit.Test;
@@ -24,8 +25,8 @@ public class AgentsGeneratorTests {
         AgentsGeneratorZone agentZone = new AgentsGeneratorZone(new Vector(-5, -5), new Vector(0, 0));
         AgentsGeneratorParameters agentsGeneratorParameters =
                 new AgentsGeneratorParameters(500, 1, "",
-                        0.5, 0.6, 3.0, 5,
-                        new UniformRandom(1, 4000, 5000));
+                        new GaussianRandom(1,0.5,0.005), new GaussianRandom(1,0.6,0.005), 3.0,
+                        4, new UniformRandom(1, 4000, 5000));
         BehaviourScheme behaviourScheme = mock(BehaviourScheme.class);
         Objective obj = new BorderTarget( new UniformRandom(1, 1, 2),"test", new Circle(new Vector(2, 2), 2.0));
         List<Objective> objectives = new ArrayList<>();

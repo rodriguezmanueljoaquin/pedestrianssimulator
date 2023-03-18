@@ -30,8 +30,14 @@ public class Agent {
     public Agent(Vector x, double minRadius, double maxRadius, double maxVelocity, StateMachine stateMachine, List<Objective> objectives) {
         this.position = x;
         this.direction = new Vector(0, 1);
-        this.minRadius = minRadius;
-        this.maxRadius = maxRadius;
+
+        if(maxRadius < 0)
+            this.maxRadius = 0.5;
+        else this.maxRadius = maxRadius;
+        if(minRadius > this.maxRadius || minRadius < 0) {
+            this.minRadius = maxRadius;
+        } else this.minRadius = minRadius;
+
         this.radius = maxRadius;
         this.maxVelocity = maxVelocity;
         this.stateMachine = stateMachine;

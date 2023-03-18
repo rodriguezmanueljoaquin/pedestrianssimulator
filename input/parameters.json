@@ -7,8 +7,16 @@
             "group_name": "SLOW",
             "behaviour_scheme": "MARKET-CLIENT",
             "agents": {
-                "min_radius": 0.2,
-                "max_radius": 0.6,
+                "min_radius_distribution": {
+                    "type": "GAUSSIAN",
+                    "std": 0.05,
+                    "mean": 0.2
+                },
+                "max_radius_distribution": {
+                    "type": "GAUSSIAN",
+                    "std": 0.05,
+                    "mean": 0.6
+                },
                 "max_velocity": 1.0
             },
             "active_time": 10.0,
@@ -26,8 +34,16 @@
             "group_name": "FAST",
             "behaviour_scheme": "MARKET-CLIENT",
             "agents": {
-                "min_radius": 0.2,
-                "max_radius": 0.6,
+                "min_radius_distribution": {
+                    "type": "GAUSSIAN",
+                    "std": 0.05,
+                    "mean": 0.2
+                },
+                "max_radius_distribution": {
+                    "type": "GAUSSIAN",
+                    "std": 0.05,
+                    "mean": 0.7
+                },
                 "max_velocity": 1.0
             },
             "active_time": 10.0,

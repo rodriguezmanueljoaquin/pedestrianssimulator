@@ -9,12 +9,13 @@ public class AgentsGeneratorParameters {
     private final AgentsParameters agentsParameters;
     private final GenerationParameters generationParameters;
 
-    public AgentsGeneratorParameters(double activeTime, double inactiveTime, String behaviourSchemeKey, double minRadius,
-                                     double maxRadius, double maxVelocity, double timeBetweenGenerations, RandomGenerator generationDistribution) {
+    public AgentsGeneratorParameters(double activeTime, double inactiveTime, String behaviourSchemeKey,
+                                     RandomGenerator minRadiusGenerator, RandomGenerator maxRadiusGenerator, double maxVelocity,
+                                     double timeBetweenGenerations, RandomGenerator generationDistribution) {
         this.activeTime = activeTime;
         this.inactiveTime = inactiveTime;
         this.behaviourSchemeKey = behaviourSchemeKey;
-        this.agentsParameters = new AgentsParameters(minRadius, maxRadius, maxVelocity);
+        this.agentsParameters = new AgentsParameters(minRadiusGenerator, maxRadiusGenerator, maxVelocity);
         this.generationParameters = new GenerationParameters(timeBetweenGenerations, generationDistribution);
     }
 
@@ -39,22 +40,21 @@ public class AgentsGeneratorParameters {
     }
 
     public class AgentsParameters {
-        private final double maxRadius;
-        private final double minRadius;
+        private final RandomGenerator minRadiusGenerator, maxRadiusGenerator;
         private final double maxVelocity;
 
-        public AgentsParameters(double minRadius, double maxRadius, double maxVelocity) {
-            this.minRadius = minRadius;
-            this.maxRadius = maxRadius;
+        public AgentsParameters(RandomGenerator minRadiusGenerator, RandomGenerator maxRadiusGenerator, double maxVelocity) {
+            this.minRadiusGenerator = minRadiusGenerator;
+            this.maxRadiusGenerator = maxRadiusGenerator;
             this.maxVelocity = maxVelocity;
         }
 
-        public double getMaxRadius() {
-            return maxRadius;
+        public RandomGenerator getMaxRadiusGenerator() {
+            return maxRadiusGenerator;
         }
 
-        public double getMinRadius() {
-            return minRadius;
+        public RandomGenerator getMinRadiusGenerator() {
+            return minRadiusGenerator;
         }
 
         public double getMaxVelocity() {

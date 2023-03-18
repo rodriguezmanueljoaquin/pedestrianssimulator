@@ -8,14 +8,13 @@ import Utils.Random.UniformRandom;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class AgentsGenerator {
     private final String groupId;
     private final AgentsGeneratorZone zone;
     private final AgentsGeneratorParameters generatorParameters;
     private final BehaviourScheme behaviourScheme;
-    private final RandomGenerator generationUnitsGenerator, generationCellGenerator;
+    private final RandomGenerator generationUnitsGenerator, generationCellGenerator, minRadiusGenerator, maxRadiusGenerator;
     private double lastGenerationTime;
 
     public AgentsGenerator(String groupId, AgentsGeneratorZone zone, AgentsGeneratorParameters generatorParameters,
@@ -25,6 +24,8 @@ public class AgentsGenerator {
         this.generatorParameters = generatorParameters;
         this.generationUnitsGenerator = generatorParameters.getGenerationParameters().getGenerationUnitsGenerator();
         this.generationCellGenerator = new UniformRandom(seed, 0, this.zone.getZoneMatrixSize());
+        this.minRadiusGenerator = generatorParameters.getAgentsParameters().getMinRadiusGenerator();
+        this.maxRadiusGenerator = generatorParameters.getAgentsParameters().getMaxRadiusGenerator();
         this.behaviourScheme = behaviourScheme;
     }
 
@@ -52,8 +53,8 @@ public class AgentsGenerator {
                 agents.add(
                         new Agent(
                                 this.zone.getPositionByIndex(positionIndex),
-                                agentsParameters.getMinRadius(),
-                                agentsParameters.getMaxRadius(),
+                                this.minRadiusGenerator.getNewRandomNumber(),
+                                this.maxRadiusGenerator.getNewRandomNumber(),
                                 agentsParameters.getMaxVelocity(),
                                 this.behaviourScheme.getStateMachine(),
                                 this.behaviourScheme.getObjectivesSample()
