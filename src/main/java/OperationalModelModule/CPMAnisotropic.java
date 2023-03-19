@@ -11,7 +11,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CPMAnisotropic extends CPM{
-
+//    Para cambiar entre CPM y CPMAnisotropic
+//    Hay que cambiar el instanciador del CPM en Main, linea 98
+//    y el FindAnisotropic por Find en Simulation, linea 129
     public CPMAnisotropic(Environment environment, double agentsMaximumMostPossibleRadius) {
         super(environment, agentsMaximumMostPossibleRadius);
     }
