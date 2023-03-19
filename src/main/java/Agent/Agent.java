@@ -35,7 +35,7 @@ public class Agent {
             this.maxRadius = 0.5;
         else this.maxRadius = maxRadius;
         if(minRadius > this.maxRadius || minRadius < 0) {
-            this.minRadius = maxRadius;
+            this.minRadius = maxRadius * 0.95;
         } else this.minRadius = minRadius;
 
         this.radius = maxRadius;
@@ -51,13 +51,13 @@ public class Agent {
             return;
         }
         // first check if intermediate node has to be updated
-        if (currentIntermediateObjectiveNode != null && this.reachedPosition(this.currentIntermediateObjectiveNode.getPosition())) {
+        if (this.currentIntermediateObjectiveNode != null && this.reachedPosition(this.currentIntermediateObjectiveNode.getPosition())) {
             // intermediate node reached, update it
             this.currentIntermediateObjectiveNode = this.currentPath.getNodeAfter(this.currentIntermediateObjectiveNode);
         }
 
         Vector objectivePosition;
-        if (currentIntermediateObjectiveNode == null)
+        if (this.currentIntermediateObjectiveNode == null)
             // go to objective because it is visible, there are no remaining intermediate objectives
             objectivePosition = this.getCurrentObjective().getPosition(this);
         else {
@@ -75,19 +75,23 @@ public class Agent {
         return this.distance(position) <= 0;
     }
 
+    public Node getIntermediateObjectiveNode() {
+        return this.currentIntermediateObjectiveNode;
+    }
+
     public Objective getCurrentObjective() {
         if (hasObjectives())
-            return objectives.get(0);
+            return this.objectives.get(0);
         return null;
     }
 
     public Objective popNextObjective() {
-        objectives.remove(0);
+        this.objectives.remove(0);
         return getCurrentObjective();
     }
 
     public NodePath getCurrentPath() {
-        return currentPath;
+        return this.currentPath;
     }
 
     public void setCurrentPath(NodePath currentPath) {
@@ -108,15 +112,15 @@ public class Agent {
     }
 
     public StateMachine getStateMachine() {
-        return stateMachine;
+        return this.stateMachine;
     }
 
     public double distance(Agent other) {
-        return this.getPosition().distance(other.position) - this.radius - other.radius;
+        return this.getPosition().distance(other.getPosition()) - this.getRadius() - other.getRadius();
     }
 
     public double distance(Vector position) {
-        return this.getPosition().distance(position) - this.radius;
+        return this.getPosition().distance(position) - this.getRadius();
     }
 
     public void evacuate(List<Exit> exits) {
@@ -135,7 +139,7 @@ public class Agent {
     }
 
     public double getRadius() {
-        return radius;
+        return this.radius;
     }
 
     public void setRadius(double radius) {
@@ -165,15 +169,15 @@ public class Agent {
     }
 
     public double getMaxRadius() {
-        return maxRadius;
+        return this.maxRadius;
     }
 
     public double getMinRadius() {
-        return minRadius;
+        return this.minRadius;
     }
 
     public AgentStates getState() {
-        return state;
+        return this.state;
     }
 
     public void setState(AgentStates state) {
@@ -185,12 +189,12 @@ public class Agent {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Agent agent = (Agent) o;
-        return Objects.equals(id, agent.id);
+        return Objects.equals(this.getId(), agent.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(this.getId());
     }
 }
 

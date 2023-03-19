@@ -48,7 +48,7 @@ public class DefaultSM implements StateMachine {
                 .orElseThrow(RuntimeException::new);
 
         agent.setObjectives(new ArrayList<>(Collections.singletonList(closestExit)));
-        updateAgentCurrentPath(agent);
+        this.updateAgentCurrentPath(agent);
     }
 
     private void updateAgentCurrentObjective(Agent agent, Double currentTime) {
