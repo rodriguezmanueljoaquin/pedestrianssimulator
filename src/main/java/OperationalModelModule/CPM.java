@@ -25,7 +25,7 @@ public class CPM implements OperationalModelModule {
 
 
 
-    private static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector originalVelocity, double Ap, double Bp) {
+    static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector originalVelocity, double Ap, double Bp) {
         //eij (e sub ij)
         Vector repulsionDirection = position.substract(obstacle).normalize();
 
@@ -41,16 +41,16 @@ public class CPM implements OperationalModelModule {
         return repulsionDirection.scalarMultiply(weight * cosineOfTheta);
     }
 
-    private static void escapeFromObstacle(Agent agent, Vector other) {
-        Vector oppositeDirection = other.substract(agent.getPosition()).normalize().scalarMultiply(-1.0);
-        agent.setDirection(oppositeDirection);
+    static void escapeFromObstacle(Agent agent, Vector other) {
+        Vector oppositeDirection = agent.getPosition().substract(other);
+        agent.setDirection(oppositeDirection.normalize());
     }
 
-    private static void collapseAgent(Agent agent) {
+    static void collapseAgent(Agent agent) {
         agent.setRadius(agent.getMinRadius());
     }
 
-    private static double getRandomDoubleInRange(double mean, double variation, Random random) {
+    protected static double getRandomDoubleInRange(double mean, double variation, Random random) {
         return mean + (random.nextDouble() - 0.5) * variation;
     }
 
@@ -67,7 +67,7 @@ public class CPM implements OperationalModelModule {
         agentsIdToRemove.forEach(this.agentsPreviousVelocity::remove);
     }
 
-    private Vector calculateHeuristicDirection(Agent agent, Random random) {
+    protected Vector calculateHeuristicDirection(Agent agent, Random random) {
         //initialize with original direction
         Vector resultantNc = new Vector(0, 0);
         if (this.agentsPreviousVelocity.containsKey(agent.getId()))
@@ -83,7 +83,7 @@ public class CPM implements OperationalModelModule {
         return resultantNc.normalize();
     }
 
-    private Vector calculateAgentRepulsion(Agent agent, Vector resultantNc, Random random) {
+    protected Vector calculateAgentRepulsion(Agent agent, Vector resultantNc, Random random) {
         List<Agent> neighbours = this.CIM.getAgentNeighbours(agent);
 
         double AP, BP;
@@ -108,7 +108,7 @@ public class CPM implements OperationalModelModule {
         return resultantNc;
     }
 
-    private Vector calculateWallRepulsion(Agent agent, Vector resultantNc, Random random) {
+    protected Vector calculateWallRepulsion(Agent agent, Vector resultantNc, Random random) {
         List<Vector> closestWallsPosition = this.environment.getWalls()
                 .stream()
                 .map((a) -> a.getClosestPoint(agent.getPosition()))
@@ -157,7 +157,7 @@ public class CPM implements OperationalModelModule {
         saveAgentVelocity(wallCollision.getAgent());
     }
 
-    private void saveAgentVelocity(Agent agent) {
+    protected void saveAgentVelocity(Agent agent) {
         this.agentsPreviousVelocity.put(agent.getId(), agent.getVelocity());
     }
 }

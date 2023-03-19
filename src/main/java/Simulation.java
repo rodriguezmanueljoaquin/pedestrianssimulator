@@ -124,7 +124,7 @@ public class Simulation {
         List<WallCollision> wallCollisions = new ArrayList<>();
         List<AgentsCollision> agentsCollisions = new ArrayList<>();
         List<Agent> nonCollisionAgents = new ArrayList<>();
-        CollisionsFinder.Find(this.agents, this.environment, wallCollisions, agentsCollisions, nonCollisionAgents);
+        CollisionsFinder.FindAnisotropic(this.agents, this.environment, wallCollisions, agentsCollisions, nonCollisionAgents);
 
         for (AgentsCollision agentsCollision : agentsCollisions) {
             this.operationalModelModule.updateCollidingAgents(agentsCollision);

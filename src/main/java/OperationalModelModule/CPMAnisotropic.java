@@ -1,53 +1,36 @@
 package OperationalModelModule;
 
 import Agent.Agent;
+import CellIndexMethod.CellIndexMethod;
 import Environment.Environment;
+import Environment.Wall;
 import OperationalModelModule.Collisions.AgentsCollision;
-import OperationalModelModule.Collisions.WallCollision;
 import Utils.Vector;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class CPMAnisotropic implements OperationalModelModule{
+public class CPMAnisotropic extends CPM{
 
-    @Override
-    public void updateAgents(List<Agent> agents) {
-        //Agents should only be directed to colliding agents
-        //if the crash is in the front
-        //Wall collisions should only be considered if distance
-        //is less than r min (weird since r min implies a collision)
-        //ask mr. rafa
-
-        //Colliding conditions with agents greatly complicates
-        //if agent.getRadius() == r min and agent.distance(otherAgent) < 0
-            //collision
-        //if agent.getRadius() != r min and isInFieldOfView &&
-        //lines parallel to agent direction from both borders of r min
-        //any of those intersects with the current radius of agent
-        //any of those intersections must be less than radius
+    public CPMAnisotropic(Environment environment) {
+        super(environment);
     }
 
     @Override
     public void updateCollidingAgents(AgentsCollision agentsCollision) {
-        //COLLIDING AGENTS / AGENTS with r min should behave
-        //EXACTLY LIKE CPM
+        Agent agent1 = agentsCollision.getAgent1();
+        Agent agent2 = agentsCollision.getAgent2();
+//        if(isInContactWithAgent(agent1,agent2)) {
+        saveAgentVelocity(agent1);
+            collapseAgent(agent1);
+            escapeFromObstacle(agent1, agent2.getPosition());
 
-    }
-
-    @Override
-    public void updateWallCollidingAgent(WallCollision wallCollision) {
-
-    }
-
-    @Override
-    public void expandAgent(Agent agent) {
-
-    }
-
-    @Override
-    public void updateNonCollisionAgent(Agent agent, double dt, Random random) {
-
+//        }
+//        if(isInContactWithAgent(agent2,agent1)) {
+//            collapseAgent(agent2);
+//            escapeFromObstacle(agent2, agent1.getPosition());
+//            saveAgentVelocity(agent2);
+//        }
     }
 
     private static double getBeta(Agent agent, Agent otherAgent) {
@@ -55,10 +38,10 @@ public class CPMAnisotropic implements OperationalModelModule{
         Vector relativeDirection = otherAgent.getPosition().substract(agent.getPosition());
         Vector agentDirection = agent.getDirection();
         // We use acos to calculate this direction
-        return Math.acos(agentDirection.dotMultiply(relativeDirection)/(agentDirection.module()* relativeDirection.module());
+        return Math.acos(agentDirection.dotMultiply(relativeDirection)/(agentDirection.module()* relativeDirection.module()));
     }
 
-    public static boolean isInContact(Agent agent, Agent otherAgent) {
+    public static boolean isInContactWithAgent(Agent agent, Agent otherAgent) {
         if(agent.getRadius() == agent.getMinRadius()) {
             // like CPM
             return agent.distance(otherAgent) < 0;
@@ -68,6 +51,37 @@ public class CPMAnisotropic implements OperationalModelModule{
                     agent.distance(otherAgent) < agent.getRadius() &&
                     parallelLinesIntersectAgentRadiusAndDistanceIsValid(agent,otherAgent);
         }
+    }
+
+    @Override
+    protected Vector calculateAgentRepulsion(Agent agent, Vector resultantNc, Random random) {
+        List<Agent> neighbours = this.CIM.getAgentNeighbours(agent);
+        neighbours = neighbours.stream().filter(a -> {
+            Vector dir = a.getPosition().substract(agent.getPosition());
+            Double dotProd = dir.dotMultiply( agent.getDirection());
+            return dotProd > 0;
+        }).collect(Collectors.toList());
+
+        double AP, BP;
+        for (Agent neighbour : neighbours) {
+            // agent fears more those agents not moving
+            if (neighbour.getVelocityModule() == 0) {
+                AP = CPMConstants.AGENT_AP * CPMConstants.NON_MOVING_AGENT_REPULSION_MULTIPLIER;
+                BP = CPMConstants.AGENT_BP * CPMConstants.NON_MOVING_AGENT_REPULSION_MULTIPLIER;
+            } else {
+                AP = CPMConstants.AGENT_AP;
+                BP = CPMConstants.AGENT_BP;
+            }
+
+            resultantNc = resultantNc.add(
+                    calculateRepulsionForce(
+                            agent.getPosition(), neighbour.getPosition(), agent.getVelocity(),
+                            getRandomDoubleInRange(AP, CPMConstants.AP_VARIATION, random),
+                            getRandomDoubleInRange(BP, CPMConstants.BP_VARIATION, random)
+                    )
+            );
+        }
+        return resultantNc;
     }
 
     public static boolean parallelLinesIntersectAgentRadiusAndDistanceIsValid(Agent agent, Agent otherAgent) {
