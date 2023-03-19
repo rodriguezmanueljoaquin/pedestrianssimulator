@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 import static OperationalModelModule.CPMConstants.WALL_DISTANCE_CONSIDERATION;
 
 public class CPM implements OperationalModelModule {
-    private final CellIndexMethod CIM;
-    private final Environment environment;
-    private final Map<Integer, Vector> agentsPreviousVelocity;
+    protected final CellIndexMethod CIM;
+    protected final Environment environment;
+    protected final Map<Integer, Vector> agentsPreviousVelocity;
 
     public CPM(Environment environment) {
         this.environment = environment;
@@ -57,7 +57,7 @@ public class CPM implements OperationalModelModule {
     @Override
     public void updateAgents(List<Agent> agents) {
         this.CIM.updateAgentsPosition(agents);
-
+        //esto es una pinturita de streams,
         // remove from map those agent that left
         List<Integer> agentsIdToRemove = new ArrayList<>();
         for (Integer agentId : this.agentsPreviousVelocity.keySet()) {
@@ -78,6 +78,12 @@ public class CPM implements OperationalModelModule {
         resultantNc = resultantNc.add(agent.getDirection()
                 .scalarMultiply(getRandomDoubleInRange(CPMConstants.NEW_DIRECTION_AP, CPMConstants.AP_VARIATION, random)));
 
+        resultantNc = calculateAgentRepulsion(agent, resultantNc, random);
+        resultantNc = calculateWallRepulsion(agent, resultantNc, random);
+        return resultantNc.normalize();
+    }
+
+    private Vector calculateAgentRepulsion(Agent agent, Vector resultantNc, Random random) {
         List<Agent> neighbours = this.CIM.getAgentNeighbours(agent);
 
         double AP, BP;
@@ -99,6 +105,10 @@ public class CPM implements OperationalModelModule {
                     )
             );
         }
+        return resultantNc;
+    }
+
+    private Vector calculateWallRepulsion(Agent agent, Vector resultantNc, Random random) {
         List<Vector> closestWallsPosition = this.environment.getWalls()
                 .stream()
                 .map((a) -> a.getClosestPoint(agent.getPosition()))
@@ -113,7 +123,7 @@ public class CPM implements OperationalModelModule {
             );
             resultantNc = resultantNc.add(wallRepulsion);
         }
-        return resultantNc.normalize();
+        return resultantNc;
     }
 
     public void updateNonCollisionAgent(Agent agent, double dt, Random random) {
