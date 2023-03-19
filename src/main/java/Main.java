@@ -10,10 +10,10 @@ import GraphGenerator.Graph;
 import InputHandling.EnvironmentData.CSVHandler;
 import InputHandling.ParametersNames;
 import InputHandling.SimulationParameters.SimulationParametersParser;
+import OperationalModelModule.CPMAnisotropic;
 import OperationalModelModule.CPM;
 import OperationalModelModule.OperationalModelModule;
 import Utils.Vector;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -60,7 +60,7 @@ public class Main {
         Graph graph = new Graph(walls, exitsMap.values().stream().flatMap(List::stream)
                 .map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1));
 
-        // FOR GRAPH NODES PLOT  -------- DEBUGGING --------
+//         FOR GRAPH NODES PLOT  -------- DEBUGGING --------
 //        graph.generateOutput(RESULTS_PATH);
 //        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(6.542717913594863,-.5), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
 //                new Vector(25., 5.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
@@ -95,7 +95,8 @@ public class Main {
         );
 
         // -------- OPERATIONAL MODEL MODULE --------
-        OperationalModelModule operationalModelModule = new CPM(environment, parameters.getAgentsMaximumMostPossibleRadius());
+        OperationalModelModule operationalModelModule = new CPMAnisotropic(environment, parameters.getAgentsMaximumMostPossibleRadius());
+
 
         try {
             Simulation.createStaticFile(RESULTS_DIRECTORY, walls);
