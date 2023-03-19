@@ -11,7 +11,6 @@ import InputHandling.EnvironmentData.CSVHandler;
 import InputHandling.ParametersNames;
 import InputHandling.SimulationParameters.SimulationParametersParser;
 import OperationalModelModule.CPMAnisotropic;
-import OperationalModelModule.CPM;
 import OperationalModelModule.OperationalModelModule;
 import Utils.Vector;
 import java.io.File;
@@ -76,16 +75,16 @@ public class Main {
         // -------- SERVERS --------
         Map<String, List<Server>> serversMap =
                 CSVHandler.importServers(CSV_DIRECTORY + "/SERVERS.csv", parameters.getServerGroupsParameters(),
-                parameters.getAgentsMaximumMostPossibleRadius());
+                parameters.getAgentsMostPossibleMaxRadius());
 
         // -------- BEHAVIOUR --------
         Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exitsMap, serversMap, targetsMap,
-                parameters.getAgentsMaximumMostPossibleRadius(), random);
+                parameters.getAgentsMostPossibleMaxRadius(), random);
 
         // -------- AGENT GENERATORS --------
         List<AgentsGenerator> generators = CSVHandler.importAgentsGenerators(
                 CSV_DIRECTORY + "/GENERATORS.csv", behaviours,
-                parameters.getGeneratorsParameters(), parameters.getAgentsMaximumMostPossibleRadius(), random.nextLong()
+                parameters.getGeneratorsParameters(), parameters.getAgentsMostPossibleMaxRadius(), random.nextLong()
         );
 
         // -------- ENVIRONMENT --------
@@ -95,13 +94,19 @@ public class Main {
         );
 
         // -------- OPERATIONAL MODEL MODULE --------
-        OperationalModelModule operationalModelModule = new CPMAnisotropic(environment, parameters.getAgentsMaximumMostPossibleRadius());
+        OperationalModelModule operationalModelModule = new CPMAnisotropic(environment, parameters.getAgentsMostPossibleMaxRadius());
 
 
+        // -------- OTHER PARAMETERS --------
+        double deltaT = parameters.getAgentsMostPossibleMaxRadius() / (12 * parameters.getAgentsHighestMaxVelocity());
+        if(deltaT < 0.01)
+            deltaT = 0.01;
+
+
+        // -------- EXECUTION --------
         try {
             Simulation.createStaticFile(RESULTS_DIRECTORY, walls);
-            Simulation sim = new Simulation(parameters.getMaxTime(), environment, parameters.getAgentsMaximumMostPossibleRadius(),
-                    parameters.getAgentsMaximumVelocity(),
+            Simulation sim = new Simulation(parameters.getMaxTime(), environment, deltaT,
                     operationalModelModule, RESULTS_DIRECTORY, random, (double) parameters.getEvacuationTime());
             sim.run();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {

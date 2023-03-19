@@ -160,7 +160,7 @@ public class Agent {
 
     public double getVelocityModule() {
         double currentMaxVelocity = this.getState().getMaxVelocityFactor() * this.maxVelocity;
-        return currentMaxVelocity * (Math.pow((this.getRadius() - (this.minRadius - 0.02)) /
+        return currentMaxVelocity * (Math.pow((this.getRadius() - (this.minRadius * 0.97)) /
                 (this.maxRadius - this.minRadius), AgentConstants.B)); // subtract a little from min radius in the nominator in order to avoid complete freeze of the agent
     }
 

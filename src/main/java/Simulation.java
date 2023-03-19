@@ -21,7 +21,6 @@ import java.util.stream.Stream;
 public class Simulation {
     private final List<Agent> agents, leavingAgents;
     private final double maxTime;
-    private final double agentsMaximumMostPossibleRadius;
     private final double dt;
     private final Environment environment;
     private final Random random;
@@ -30,19 +29,18 @@ public class Simulation {
     private double time;
     private PrintWriter writer;
 
-    public Simulation(double maxTime, Environment environment, double agentsMaximumMostPossibleRadius, double agentsMaximumVelocity,
+    public Simulation(double maxTime, Environment environment, double deltaT,
                       OperationalModelModule operationalModelModule,
                       String outputDirectoryPath, Random random, Double evacuationTime) throws FileNotFoundException, UnsupportedEncodingException {
         this.maxTime = maxTime;
         this.environment = environment;
-        this.agentsMaximumMostPossibleRadius = agentsMaximumMostPossibleRadius;
         this.operationalModelModule = operationalModelModule;
         this.random = random;
         this.evacuationTime = evacuationTime;
         this.agents = new ArrayList<>();
         this.leavingAgents = new ArrayList<>();
         this.time = 0;
-        this.dt = agentsMaximumMostPossibleRadius / (12 * agentsMaximumVelocity);
+        this.dt = deltaT;
 
         createDynamicFile(outputDirectoryPath);
     }

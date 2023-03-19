@@ -14,7 +14,6 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -161,11 +160,11 @@ public class SimulationParametersParser {
         return this.generatorsParameters;
     }
 
-    public double getAgentsMaximumMostPossibleRadius() {
+    public double getAgentsMostPossibleMaxRadius() {
         return this.agentsMaximumMostPossibleRadius;
     }
 
-    public double getAgentsMaximumVelocity() {
+    public double getAgentsHighestMaxVelocity() {
         return this.generatorsParameters.values().stream()
                 .map(AgentsGeneratorParameters::getAgentsParameters)
                 .map(AgentsGeneratorParameters.AgentsParameters::getMaxVelocity)
