@@ -8,24 +8,21 @@ import OperationalModelModule.Collisions.WallCollision;
 import Utils.Vector;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static OperationalModelModule.CPMConstants.WALL_DISTANCE_CONSIDERATION;
 
 public class CPM implements OperationalModelModule {
     protected final CellIndexMethod CIM;
     protected final Environment environment;
-    protected final Map<Integer, Vector> agentsPreviousVelocity;
+    protected final Map<Integer, Vector> agentsPreviousDirection;
 
     public CPM(Environment environment, double agentsMaximumMostPossibleRadius) {
         this.environment = environment;
         this.CIM = new CellIndexMethod(this.environment.getWalls(), CPMConstants.NEIGHBOURS_RADIUS, agentsMaximumMostPossibleRadius);
-        this.agentsPreviousVelocity = new HashMap<>();
+        this.agentsPreviousDirection = new HashMap<>();
     }
 
-
-
-    static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector originalVelocity, double Ap, double Bp) {
+    static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector originalDirection, double Ap, double Bp) {
         //eij (e sub ij)
         Vector repulsionDirection = position.substract(obstacle).normalize();
 
@@ -33,7 +30,7 @@ public class CPM implements OperationalModelModule {
         Double repulsionDistance = position.distance(obstacle);
 
         //cos(0) = a.b / |a||b|
-        double cosineOfTheta = originalVelocity.add(position).dotMultiply(obstacle) / (originalVelocity.add(position).module() * obstacle.module());
+        double cosineOfTheta = originalDirection.add(position).dotMultiply(obstacle) / (originalDirection.add(position).module() * obstacle.module());
 
         double weight = Ap * Math.exp(-repulsionDistance / Bp);
 
@@ -60,18 +57,18 @@ public class CPM implements OperationalModelModule {
         //esto es una pinturita de streams,
         // remove from map those agent that left
         List<Integer> agentsIdToRemove = new ArrayList<>();
-        for (Integer agentId : this.agentsPreviousVelocity.keySet()) {
+        for (Integer agentId : this.agentsPreviousDirection.keySet()) {
             if (agents.stream().noneMatch(a -> Objects.equals(a.getId(), agentId)))
                 agentsIdToRemove.add(agentId);
         }
-        agentsIdToRemove.forEach(this.agentsPreviousVelocity::remove);
+        agentsIdToRemove.forEach(this.agentsPreviousDirection::remove);
     }
 
     protected Vector calculateHeuristicDirection(Agent agent, Random random) {
         //initialize with original direction
         Vector resultantNc = new Vector(0, 0);
-        if (this.agentsPreviousVelocity.containsKey(agent.getId()))
-            resultantNc = resultantNc.add(this.agentsPreviousVelocity.get(agent.getId())).normalize()
+        if (this.agentsPreviousDirection.containsKey(agent.getId()))
+            resultantNc = resultantNc.add(this.agentsPreviousDirection.get(agent.getId())).normalize()
                     .scalarMultiply(getRandomDoubleInRange(CPMConstants.ORIGINAL_DIRECTION_AP, CPMConstants.AP_VARIATION, random));
 
         //add new direction
@@ -99,7 +96,7 @@ public class CPM implements OperationalModelModule {
 
             resultantNc = resultantNc.add(
                     calculateRepulsionForce(
-                            agent.getPosition(), neighbour.getPosition(), agent.getVelocity(),
+                            agent.getPosition(), neighbour.getPosition(), agent.getDirection(),
                             getRandomDoubleInRange(AP, CPMConstants.AP_VARIATION, random),
                             getRandomDoubleInRange(BP, CPMConstants.BP_VARIATION, random)
                     )
@@ -120,6 +117,7 @@ public class CPM implements OperationalModelModule {
                     agent.getPosition(), closestWallPosition, agent.getVelocity(),
                     getRandomDoubleInRange(CPMConstants.WALL_AP, CPMConstants.AP_VARIATION, random),
                     getRandomDoubleInRange(CPMConstants.WALL_BP, CPMConstants.BP_VARIATION, random)
+                agent.getPosition(), closestWallPosition.get(), agent.getDirection(),
             );
             resultantNc = resultantNc.add(wallRepulsion);
         }
@@ -146,17 +144,17 @@ public class CPM implements OperationalModelModule {
         escapeFromObstacle(agent1, agent2.getPosition());
         escapeFromObstacle(agent2, agent1.getPosition());
 
-        saveAgentVelocity(agent1);
-        saveAgentVelocity(agent2);
+        saveAgentDirection(agent1);
+        saveAgentDirection(agent2);
     }
 
     public void updateWallCollidingAgent(WallCollision wallCollision) {
         collapseAgent(wallCollision.getAgent());
         escapeFromObstacle(wallCollision.getAgent(), wallCollision.getWallClosestPoint());
-        saveAgentVelocity(wallCollision.getAgent());
+        saveAgentDirection(wallCollision.getAgent());
     }
 
-    protected void saveAgentVelocity(Agent agent) {
-        this.agentsPreviousVelocity.put(agent.getId(), agent.getVelocity());
+    protected void saveAgentDirection(Agent agent) {
+        this.agentsPreviousDirection.put(agent.getId(), agent.getDirection());
     }
 }

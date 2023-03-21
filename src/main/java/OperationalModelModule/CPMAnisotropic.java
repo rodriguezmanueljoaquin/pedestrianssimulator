@@ -1,14 +1,9 @@
 package OperationalModelModule;
 
 import Agent.Agent;
-import CellIndexMethod.CellIndexMethod;
 import Environment.Environment;
-import Environment.Wall;
 import OperationalModelModule.Collisions.AgentsCollision;
 import Utils.Vector;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class CPMAnisotropic extends CPM{
 //    Para cambiar entre CPM y CPMAnisotropic
@@ -23,14 +18,14 @@ public class CPMAnisotropic extends CPM{
         Agent agent1 = agentsCollision.getAgent1();
         Agent agent2 = agentsCollision.getAgent2();
         if(isInContactWithAgent(agent1,agent2)) {
-            saveAgentVelocity(agent1);
+            saveAgentDirection(agent1);
             collapseAgent(agent1);
             escapeFromObstacle(agent1, agent2.getPosition());
         }
         if(isInContactWithAgent(agent2,agent1)) {
             collapseAgent(agent2);
             escapeFromObstacle(agent2, agent1.getPosition());
-            saveAgentVelocity(agent2);
+            saveAgentDirection(agent2);
         }
     }
 

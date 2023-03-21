@@ -15,7 +15,7 @@
                 "max_radius_distribution": {
                     "type": "GAUSSIAN",
                     "std": 0.05,
-                    "mean": 0.4
+                    "mean": 0.5
                 },
                 "max_velocity": 1.0
             },
@@ -37,12 +37,12 @@
                 "min_radius_distribution": {
                     "type": "GAUSSIAN",
                     "std": 0.05,
-                    "mean": 0.35
+                    "mean": 0.3
                 },
                 "max_radius_distribution": {
                     "type": "GAUSSIAN",
                     "std": 0.05,
-                    "mean": 0.5
+                    "mean": 0.6
                 },
                 "max_velocity": 0.8
             },
