@@ -207,9 +207,9 @@ def parse_dxf(in_file_path, out_path):
     print("Parsing of dxf file finished...")
 
 
-EXAMPLE_DXF_PATH = "input/Plano prueba simulacion V05.02.dxf"
-EXAMPLE2_DXF_PATH = "input/Plano SREC PB simulacion V01.dxf"
-EXAMPLE_JSON_PATH = "input/parameters.json"
+EXAMPLE_DXF_PATH = "data/Plano prueba simulacion V05.02.dxf"
+EXAMPLE2_DXF_PATH = "data/Plano SREC PB simulacion V01.dxf"
+EXAMPLE_JSON_PATH = "data/parameters.json"
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(

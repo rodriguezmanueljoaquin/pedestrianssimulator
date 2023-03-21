@@ -68,7 +68,7 @@ public class Main {
         System.out.println(path);
 
         // -------- CONFIGURATION --------
-        SimulationParametersParser parameters = new SimulationParametersParser( "./input/parameters.json", random);
+        SimulationParametersParser parameters = new SimulationParametersParser( "./data/parameters.json", random);
 
         // -------- TARGETS --------
         Map<String, List<Target>> targetsMap =

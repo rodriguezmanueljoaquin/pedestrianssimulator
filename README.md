@@ -20,7 +20,7 @@
 Desde el directorio pincipal, el comando de ejecución sera:
 ./run.sh DXF_PATH JSON_PATH
 Donde DXF_PATH es el archivo de formato DXF donde se realiza la simulación, este debe cumplir con los [requisitos mencionados](#Requisitos DXF) para el correcto funcionamiento del programa, este es un parametro opcional que en caso de no ser indicado tomara el path al archivo de ejemplo: "DXFParser/DXFExamples/Plano prueba simulacion V03.dxf". \
-Por otro lado, PARAMS_PATH es el archivo JSON donde se indican los distintos parametros que modifican la simulación, este debe cumplir con los [requisitos mencionados](#Requisitos JSON) para el correcto funcionamiento del programa, este es un parametro opcional que en caso de no ser indicado tomara el path al archivo de ejemplo: "input/parameters.json". \
+Por otro lado, PARAMS_PATH es el archivo JSON donde se indican los distintos parametros que modifican la simulación, este debe cumplir con los [requisitos mencionados](#Requisitos JSON) para el correcto funcionamiento del programa, este es un parametro opcional que en caso de no ser indicado tomara el path al archivo de ejemplo: "data/parameters.json". \
 
 ## Ejecución del programa por partes
 Desde el directorio pincipal, los comandos de ejecución son:
