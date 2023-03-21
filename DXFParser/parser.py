@@ -12,34 +12,56 @@ SERVERS_LAYER = "SERVERS"
 
 def is_rectangle(entity):
     # In a rectangle there are 4 vertices + 1 closing vertex (that is the same as the first one)
-    return entity.dxftype() == 'POLYLINE' and len(entity) == 5 and entity[0].dxf.location == entity[-1].dxf.location
+    if entity.dxftype() == 'POLYLINE':
+        return len(entity) == 5 and entity[0].dxf.location == entity[-1].dxf.location
+    elif entity.dxftype() == 'LWPOLYLINE':
+        return len(entity) == 5 and entity.dxf.flags == ezdxf.const.LWPOLYLINE_CLOSED
+    else: return False
 
 
 def get_rectangle_figure(entity):
     # If we know we are getting a rectangle, we can save just top left and bottom right vertices
-    return [entity[0].dxf.location[0], entity[0].dxf.location[1], entity[0].dxf.location[2],
-            entity[2].dxf.location[0], entity[2].dxf.location[1], entity[2].dxf.location[2]]
-
+    if entity.dxftype() == 'POLYLINE':
+        return [entity[0].dxf.location[0], entity[0].dxf.location[1], entity[0].dxf.location[2],
+                entity[2].dxf.location[0], entity[2].dxf.location[1], entity[2].dxf.location[2]]
+    elif entity.dxftype() == 'LWPOLYLINE':
+        first_vertex = None
+        third_vertex = None
+        for i, vertex in enumerate(entity.vertices()):
+            if i == 0:
+                first_vertex = [*vertex, 0]
+            elif i == 2:
+                third_vertex = [*vertex, 0]
+        
+        return [*first_vertex, *third_vertex]
+    else: ValueError(f'Entity type {entity.dxftype()} is not supported as a rectangle.')
 
 def get_figures(entity, layer_prefix):
     figures = []
     if entity.dxftype() == 'LINE':
         figures.append([entity.dxf.start[0], entity.dxf.start[1], entity.dxf.start[2],
                         entity.dxf.end[0], entity.dxf.end[1], entity.dxf.end[2]])
+        
     elif entity.dxftype() == 'CIRCLE':
         figures.append([entity.dxf.center[0], entity.dxf.center[1],
                        entity.dxf.center[2], entity.dxf.radius])
+        
     elif entity.dxftype() == 'POLYLINE':
         lines_qty = len(entity)
-
         if not entity.is_closed:
             lines_qty -= 1  # because the last vertex does not have to connect to the first one
 
         for i in range(lines_qty):
-            current_vertex_location = entity[i].dxf.location
+            current_vertex_location = entity[(i) % len(entity)].dxf.location
             next_vertex_location = entity[(i+1) % len(entity)].dxf.location
             figures.append([current_vertex_location[0], current_vertex_location[1], current_vertex_location[2],
                             next_vertex_location[0], next_vertex_location[1], next_vertex_location[2]])
+            
+    elif entity.dxftype() == 'LWPOLYLINE':
+        for vertex in entity.vertices():
+            figures.append([vertex[0], vertex[1], 0,
+                            vertex[0], vertex[1], 0])
+            
     else:
         raise ValueError(
             f'Layer {layer_prefix} contains {entity.dxftype()} entities which is not supported.')
@@ -122,7 +144,7 @@ def get_servers(msp):
         for server in servers_map[key]:
             id += 1
             for entity in server.virtual_entities():
-                if entity.dxftype() == 'POLYLINE':
+                if entity.dxftype() == 'POLYLINE' or entity.dxftype() == 'LWPOLYLINE':
                     if is_rectangle(entity):
                         # its a server
                         figures.append(
@@ -164,28 +186,29 @@ def parse_dxf(in_file_path, out_path):
 
     print("\tParsing walls...")
     parse_layer_and_write_to_file(
-        msp, WALLS_LAYER, ['LINE', 'POLYLINE'], out_path)
+        msp, WALLS_LAYER, ['LINE', 'POLYLINE', 'LWPOLYLINE'], out_path)
 
     print("\tParsing exits...")
     parse_layer_and_write_to_file(
-        msp, EXITS_LAYER, ['LINE', 'POLYLINE'], out_path)
+        msp, EXITS_LAYER, ['LINE', 'POLYLINE', 'LWPOLYLINE'], out_path)
 
     print("\tParsing generators...")
     parse_layer_and_write_to_file(msp, GENERATORS_LAYER, [
-                                  'POLYLINE'], out_path, figures_can_be_rectangles=True)
+                                  'POLYLINE', 'LWPOLYLINE'], out_path, figures_can_be_rectangles=True)
 
     print("\tParsing targets...")
     parse_layer_and_write_to_file(
-        msp, TARGETS_LAYER, ['CIRCLE'], out_path, figures_can_be_rectangles=True)
+        msp, TARGETS_LAYER, ['POLYLINE', 'LWPOLYLINE', 'CIRCLE'], out_path, figures_can_be_rectangles=True)
 
     print("\tParsing servers...")
     parse_layer_and_write_to_file(msp, SERVERS_LAYER, [
-                                  'LINE', 'POLYLINE'], out_path, figures_can_be_rectangles=True)
+                                  'LINE', 'POLYLINE', 'LWPOLYLINE'], out_path, figures_can_be_rectangles=True)
 
     print("Parsing of dxf file finished...")
 
 
 EXAMPLE_DXF_PATH = "input/Plano prueba simulacion V05.02.dxf"
+EXAMPLE2_DXF_PATH = "input/Plano SREC PB simulacion V01.dxf"
 EXAMPLE_JSON_PATH = "input/parameters.json"
 
 if __name__ == '__main__':
@@ -195,8 +218,8 @@ if __name__ == '__main__':
     parser.add_argument("-dxf",
                         help="Path to the .dxf file to be used by the program to define the environment of the simulation. \
 This file has to follow the requirements indicated on the README. \
-Defaults to: " + EXAMPLE_DXF_PATH,
-                        type=str, default=EXAMPLE_DXF_PATH, required=False)
+Defaults to: " + EXAMPLE2_DXF_PATH,
+                        type=str, default=EXAMPLE2_DXF_PATH, required=False)
 
     parser.add_argument("-params",
                         help="Path to the .json file to be used by the program to define the behavior of the components of the simulation. \
