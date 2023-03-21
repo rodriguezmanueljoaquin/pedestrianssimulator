@@ -67,7 +67,7 @@ public class Simulation {
         System.out.println("\t\tSimulation started...");
         // first iteration
         this.writeOutput();
-
+        double nextPercentage = 0.1;
         while (this.time < this.maxTime) {
             // create new agents and update servers
             List<Agent> newAgents = this.environment.update(this.time, this.agents);
@@ -96,6 +96,11 @@ public class Simulation {
             // escribir output
             this.writeOutput();
             this.time += this.dt;
+
+            if(this.time > nextPercentage * this.maxTime) {
+                System.out.printf("\t\t\t%d% percentage of the simulation finished.", nextPercentage * 100);
+                nextPercentage += 0.1;
+            }
         }
         this.writer.close();
         System.out.println("\t\tSimulation ended");

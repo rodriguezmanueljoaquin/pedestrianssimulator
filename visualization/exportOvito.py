@@ -2,7 +2,7 @@ import math
 import os
 import numpy as np
 
-ovitoFolderName = "ovito_input"
+ovitoFolderName = "./tmp/ovito_input"
 
 def exportOvito(simulation_result):
     #Si no existe la carpeta de archivos de Ovito, la creamos

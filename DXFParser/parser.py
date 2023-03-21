@@ -228,7 +228,9 @@ Defaults to: " + EXAMPLE_JSON_PATH,
                         type=str, default=EXAMPLE_JSON_PATH, required=False)
 
     args = parser.parse_args()
-    out_path = "simulation_input/"
+    out_path = "tmp/simulation_input/"
+    if not os.path.exists("tmp"):
+        os.makedirs("tmp")
     if not os.path.exists(out_path):
         os.makedirs(out_path)
-    parse_dxf(args.dxf, "simulation_input/")
+    parse_dxf(args.dxf, out_path)

@@ -1,3 +1,4 @@
+import Agent.AgentConstants;
 import AgentsBehaviour.BehaviourScheme;
 import AgentsBehaviour.StateMachine.SuperMarketClientSM;
 import AgentsGenerator.AgentsGenerator;
@@ -7,6 +8,7 @@ import Environment.Objectives.Server.Server;
 import Environment.Objectives.Target.Target;
 import Environment.Wall;
 import GraphGenerator.Graph;
+import GraphGenerator.NodePath;
 import InputHandling.EnvironmentData.CSVHandler;
 import InputHandling.ParametersNames;
 import InputHandling.SimulationParameters.SimulationParametersParser;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class Main {
     private static final String RESULTS_DIRECTORY = "./out/";
-    private static final String CSV_DIRECTORY = "./simulation_input";
+    private static final String CSV_DIRECTORY = "./tmp/simulation_input";
 
     private static Map<String, BehaviourScheme> getBehaviourSchemes(Graph graph, Map<String, List<Exit>> exitsMap,
                                                                     Map<String, List<Server>> serversMap, Map<String, List<Target>> targetsMap,
@@ -60,10 +62,10 @@ public class Main {
                 .map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1));
 
 //         FOR GRAPH NODES PLOT  -------- DEBUGGING --------
-//        graph.generateOutput(RESULTS_PATH);
-//        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(6.542717913594863,-.5), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
-//                new Vector(25., 5.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
-//        System.out.println(path);
+        graph.generateOutput("./out/");
+        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(6.542717913594863,-.5), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
+                new Vector(25., 5.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
+        System.out.println(path);
 
         // -------- CONFIGURATION --------
         SimulationParametersParser parameters = new SimulationParametersParser( "./input/parameters.json", random);
