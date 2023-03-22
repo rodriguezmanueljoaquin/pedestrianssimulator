@@ -69,7 +69,7 @@ public class Simulation {
         this.writeOutput();
         double nextPercentage = 0.1;
         while (this.time < this.maxTime) {
-            // create new agents and update servers
+            // create new agents and update
             List<Agent> newAgents = this.environment.update(this.time, this.agents);
 
             // check for evacuation
@@ -129,7 +129,7 @@ public class Simulation {
         List<WallCollision> wallCollisions = new ArrayList<>();
         List<AgentsCollision> agentsCollisions = new ArrayList<>();
         List<Agent> nonCollisionAgents = new ArrayList<>();
-        CollisionsFinder.FindAnisotropic(this.agents, this.environment, wallCollisions, agentsCollisions, nonCollisionAgents);
+        CollisionsFinder.Find(this.agents, this.environment, wallCollisions, agentsCollisions, nonCollisionAgents);
 
         for (AgentsCollision agentsCollision : agentsCollisions) {
             this.operationalModelModule.updateCollidingAgents(agentsCollision);

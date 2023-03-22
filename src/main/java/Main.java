@@ -12,6 +12,7 @@ import GraphGenerator.NodePath;
 import InputHandling.EnvironmentData.CSVHandler;
 import InputHandling.ParametersNames;
 import InputHandling.SimulationParameters.SimulationParametersParser;
+import OperationalModelModule.CPM;
 import OperationalModelModule.CPMAnisotropic;
 import OperationalModelModule.OperationalModelModule;
 import Utils.Vector;
@@ -61,7 +62,7 @@ public class Main {
 
         // -------- GRAPH --------
         Graph graph = new Graph(walls, exitsMap.values().stream().flatMap(List::stream)
-                .map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1));
+                .map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1)); // 18,18 in new map
 
 //         FOR GRAPH NODES PLOT  -------- DEBUGGING --------
 //        graph.generateOutput("./out/");
@@ -98,13 +99,15 @@ public class Main {
         );
 
         // -------- OPERATIONAL MODEL MODULE --------
-        OperationalModelModule operationalModelModule = new CPMAnisotropic(environment, parameters.getAgentsMostPossibleMaxRadius());
+        OperationalModelModule operationalModelModule = new CPM(environment, parameters.getAgentsMostPossibleMaxRadius());
 
 
         // -------- OTHER PARAMETERS --------
         double deltaT = parameters.getAgentsMostPossibleMaxRadius() / (12 * parameters.getAgentsHighestMaxVelocity());
-        if(deltaT < 0.01)
-            deltaT = 0.01;
+        if(deltaT < 0.001) {
+            System.out.println("Delta too small!");
+            deltaT = 0.001;
+        }
 
 
         // -------- EXECUTION --------

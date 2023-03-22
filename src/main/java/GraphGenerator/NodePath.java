@@ -15,13 +15,25 @@ public class NodePath {
     }
 
     public void add(Node node) {
-        this.path.add(node);
-        recalculateFunctionValueAndDistance();
+        if(!node.equals(this.getLastNode())) {
+            // avoid repetition
+            this.path.add(node);
+            recalculateFunctionValueAndDistance();
+        }
     }
 
-    public void addAll(List<Node> nodes) {
-        this.path.addAll(nodes);
-        recalculateFunctionValueAndDistance();
+    public NodePath copyAndAdd(Node node) {
+        NodePath answer = this.copy();
+        answer.add(node);
+        return answer;
+    }
+
+    public NodePath copy() {
+        NodePath answer = new NodePath();
+        for (Node copyNode: this.path) {
+            answer.add(copyNode);
+        }
+        return answer;
     }
 
     public Node getLastNode() {
@@ -37,21 +49,20 @@ public class NodePath {
         return this.path.get(0);
     }
 
-    public NodePath copyAndAdd(Node node) {
-        NodePath answer = new NodePath();
-        answer.addAll(this.path);
-        answer.add(node);
-        return answer;
-    }
-
     private void recalculateFunctionValueAndDistance() {
         double totalDistance = 0;
-        for (int i = 0; i < path.size() - 1; i++) {
-            totalDistance += path.get(i).getPosition().distance(path.get(i + 1).getPosition());
+        for (int i = 0; i < this.path.size() - 1; i++) {
+            totalDistance += this.path.get(i).getPosition().distance(this.path.get(i + 1).getPosition());
         }
 
         this.distance = totalDistance;
         this.functionValue = this.distance; // TODO: FALTA HEURISITCA, AHORA SOLO CONSIDERA COSTO
+    }
+
+    public Node next() {
+        if(this.path.size() == 0)
+            return null;
+        return this.path.remove(0);
     }
 
     public Node getNodeAfter(Node node) {
@@ -62,7 +73,7 @@ public class NodePath {
             return null;
         }
 
-        return this.path.get(index + 1);
+        return this.path.get(index+1);
     }
 
     public Double getFunctionValue() {
@@ -79,8 +90,9 @@ public class NodePath {
         for (Node node : this.path) {
             answer.append(node.getId() + ";");
         }
-        // remove last delimiter
-        answer.deleteCharAt(answer.length() - 1);
+        if(answer.length() > 0)
+            // remove last delimiter
+            answer.deleteCharAt(answer.length() - 1);
         return answer.toString();
     }
 }

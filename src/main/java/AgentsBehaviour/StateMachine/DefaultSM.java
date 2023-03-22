@@ -108,17 +108,17 @@ public class DefaultSM implements StateMachine {
     public void updateAgent(Agent agent, double currentTime) {
         switch (agent.getState()) {
             case MOVING:
-                Node intermediateObjectiveNode = agent.getIntermediateObjectiveNode();
-                // check if agent current path is correct, otherwise (maybe it changed because of CPM) update it
-                if(intermediateObjectiveNode == null) {
-                    if(!this.graph.isPositionAccessible(agent.getPosition(), agent.getCurrentObjective().getPosition(agent), agent.getMaxRadius())) {
-                        this.updateAgentCurrentPath(agent);
-                    }
-                } else {
-                    if(!this.graph.isPositionAccessible(agent.getPosition(), intermediateObjectiveNode.getPosition(), agent.getMaxRadius())) {
-                        this.updateAgentCurrentPath(agent);
-                    }
-                }
+//                Node intermediateObjectiveNode = agent.getIntermediateObjectiveNode();
+//                // check if agent current path is correct, otherwise (maybe it changed because of CPM) update it
+//                if(intermediateObjectiveNode == null) {
+//                    if(!this.graph.isPositionAccessible(agent.getPosition(), agent.getCurrentObjective().getPosition(agent), agent.getMaxRadius())) {
+//                        this.updateAgentCurrentPath(agent);
+//                    }
+//                } else {
+//                    if(!this.graph.isPositionAccessible(agent.getPosition(), intermediateObjectiveNode.getPosition(), agent.getMaxRadius())) {
+//                        this.updateAgentCurrentPath(agent);
+//                    }
+//                }
                 movingBehaviour(agent, currentTime);
                 break;
 

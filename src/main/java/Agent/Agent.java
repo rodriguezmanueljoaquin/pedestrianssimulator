@@ -5,7 +5,6 @@ import Environment.Objectives.Exit;
 import Environment.Objectives.Objective;
 import GraphGenerator.Node;
 import GraphGenerator.NodePath;
-import Utils.Constants;
 import Utils.Vector;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class Agent {
         // first check if intermediate node has to be updated
         if (this.currentIntermediateObjectiveNode != null && this.reachedPosition(this.currentIntermediateObjectiveNode.getPosition())) {
             // intermediate node reached, update it
-            this.currentIntermediateObjectiveNode = this.currentPath.getNodeAfter(this.currentIntermediateObjectiveNode);
+            this.currentIntermediateObjectiveNode = this.currentPath.next();
         }
 
         Vector objectivePosition;

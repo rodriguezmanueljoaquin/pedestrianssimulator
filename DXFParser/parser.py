@@ -226,7 +226,7 @@ if __name__ == '__main__':
                         help="Path to the .dxf file to be used by the program to define the environment of the simulation. \
 This file has to follow the requirements indicated on the README. \
 Defaults to: " + EXAMPLE2_DXF_PATH,
-                        type=str, default=EXAMPLE2_DXF_PATH, required=False)
+                        type=str, default=EXAMPLE_DXF_PATH, required=False)
 
     parser.add_argument("-params",
                         help="Path to the .json file to be used by the program to define the behavior of the components of the simulation. \

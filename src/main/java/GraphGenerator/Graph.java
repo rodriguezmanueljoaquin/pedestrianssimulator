@@ -230,7 +230,7 @@ public class Graph {
         NodePath reducedPath = new NodePath();
 
         // keep last visible node from fromPosition
-        while (currentNode != null && isPositionAccessible(fromPosition, currentNode.getPosition(), radius)) {
+        while (currentNode != null && this.isPositionAccessible(fromPosition, currentNode.getPosition(), radius)) {
             prevNode = currentNode;
             currentNode = path.getNodeAfter(prevNode);
         }

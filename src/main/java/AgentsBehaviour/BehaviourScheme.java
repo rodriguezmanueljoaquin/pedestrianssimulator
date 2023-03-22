@@ -64,10 +64,10 @@ public class BehaviourScheme {
         }
 
         Vector lastObjectivePosition = objectives.get(objectives.size() - 1).getCentroidPosition();
-        Map<Vector, Exit> exitsByCentroid = exits.stream()
+        Map<Vector, Exit> exitsByCentroid = this.exits.stream()
                 .collect(Collectors.toMap(Exit::getCentroidPosition, Function.identity()));
         Exit closestExitFromLastObjective = exitsByCentroid
-                .get(graph.getClosestDestination(lastObjectivePosition, new ArrayList<>(exitsByCentroid.keySet()),
+                .get(this.graph.getClosestDestination(lastObjectivePosition, new ArrayList<>(exitsByCentroid.keySet()),
                         this.agentsMaximumMostPossibleRadius));
 
         objectives.add(closestExitFromLastObjective);

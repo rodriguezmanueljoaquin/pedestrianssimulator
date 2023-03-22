@@ -40,8 +40,12 @@ public class CPM implements OperationalModelModule {
     }
 
     static void escapeFromObstacle(Agent agent, Vector other) {
-        Vector oppositeDirection = agent.getPosition().subtract(other);
-        agent.setDirection(oppositeDirection.normalize());
+        Vector oppositeDirection = agent.getPosition().subtract(other).normalize();
+        if(agent.getDirection().subtract(oppositeDirection).module() < 0.1) {
+            System.out.println("WHATT " + agent.getDirection() + "  " + oppositeDirection);
+            System.out.println(agent.getPosition() + " " + other);
+        }
+        agent.setDirection(oppositeDirection);
     }
 
     static void collapseAgent(Agent agent) {
@@ -65,11 +69,12 @@ public class CPM implements OperationalModelModule {
     }
 
     protected Vector calculateHeuristicDirection(Agent agent, Random random) {
-        //initialize with original direction
         Vector resultantNc = new Vector(0, 0);
-        if (this.agentsPreviousDirection.containsKey(agent.getId()))
-            resultantNc = resultantNc.add(this.agentsPreviousDirection.get(agent.getId())).normalize()
-                    .scalarMultiply(getRandomDoubleInRange(CPMConstants.ORIGINAL_DIRECTION_AP, CPMConstants.AP_VARIATION, random));
+        //initialize with original direction if exists
+        if (this.agentsPreviousDirection.containsKey(agent.getId())) {
+            resultantNc = resultantNc.add(this.agentsPreviousDirection.get(agent.getId())
+                    .scalarMultiply(getRandomDoubleInRange(CPMConstants.ORIGINAL_DIRECTION_AP, CPMConstants.AP_VARIATION, random)));
+        }
 
         //add new direction
         resultantNc = resultantNc.add(agent.getDirection()
@@ -116,8 +121,8 @@ public class CPM implements OperationalModelModule {
         for (Vector closestWallPosition : closestWallsPosition) {
             Vector wallRepulsion = calculateRepulsionForce(
                     agent.getPosition(), closestWallPosition, agent.getVelocity(),
-                    getRandomDoubleInRange(CPMConstants.WALL_AP, CPMConstants.AP_VARIATION, random),
-                    getRandomDoubleInRange(CPMConstants.WALL_BP, CPMConstants.BP_VARIATION, random)
+                    getRandomDoubleInRange(CPMConstants.CLOSEST_WALLS_AP, CPMConstants.AP_VARIATION, random),
+                    getRandomDoubleInRange(CPMConstants.CLOSEST_WALLS_BP, CPMConstants.BP_VARIATION, random)
             );
             resultantNc = resultantNc.add(wallRepulsion);
         }
@@ -133,12 +138,13 @@ public class CPM implements OperationalModelModule {
                 .filter((a) -> a.distance(agent.getPosition()) <= WALL_DISTANCE_CONSIDERATION)
                 .min(Comparator.comparingDouble(o -> o.distance(agent.getPosition())));
 
-        if(closestWallPosition.isPresent())
+        if(closestWallPosition.isPresent()) {
             return resultantNc.add(calculateRepulsionForce(
                     agent.getPosition(), closestWallPosition.get(), agent.getDirection(),
-                    getRandomDoubleInRange(CPMConstants.WALL_AP, CPMConstants.AP_VARIATION, random),
-                    getRandomDoubleInRange(CPMConstants.WALL_BP, CPMConstants.BP_VARIATION, random)
+                    getRandomDoubleInRange(CPMConstants.CLOSEST_WALL_AP, CPMConstants.AP_VARIATION, random),
+                    getRandomDoubleInRange(CPMConstants.CLOSEST_WALL_BP, CPMConstants.BP_VARIATION, random)
             ));
+        }
         else return resultantNc;
     }
 
