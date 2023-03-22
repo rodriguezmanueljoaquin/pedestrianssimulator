@@ -28,9 +28,9 @@ public class Graph {
     public Graph(List<Wall> walls, List<Wall> exits, Vector initialPosition) {
         this.nodes = new HashMap<>();
         this.walls = walls;
-        System.out.println("Generating graph");
+        System.out.println("\tGenerating graph.");
         this.generateGraph(initialPosition, exits);
-        System.out.println("Graph generated");
+        System.out.println("\tGraph generated.");
     }
 
     public boolean isPositionAccessible(Vector origin, Vector destiny, double radius) {

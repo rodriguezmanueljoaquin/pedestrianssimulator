@@ -46,7 +46,7 @@ public class Simulation {
     }
 
     public static void createStaticFile(String outputPath, List<Wall> walls) throws FileNotFoundException, UnsupportedEncodingException {
-        System.out.println("\tCreating static file. . .");
+        System.out.println("\tCreating static file.");
 
         PrintWriter writer = new PrintWriter(outputPath + "/static.txt", "UTF-8");
 
@@ -56,7 +56,7 @@ public class Simulation {
             writer.write(String.format(Locale.ENGLISH, "%s\n", wall.toString()));
 
         writer.close();
-        System.out.println("\tStatic file successfully created");
+        System.out.println("\tStatic file successfully created.");
     }
 
     private List<Agent> getAllAgents() {
@@ -64,7 +64,7 @@ public class Simulation {
     }
 
     public void run() {
-        System.out.println("\t\tSimulation started...");
+        System.out.println("\t\tSimulation started.");
         // first iteration
         this.writeOutput();
         double nextPercentage = 0.1;
@@ -98,13 +98,13 @@ public class Simulation {
             this.time += this.dt;
 
             if(this.time > nextPercentage * this.maxTime) {
-                System.out.printf("\t\t\t%d% percentage of the simulation finished.", nextPercentage * 100);
+                System.out.printf("\t\t\t%d%% percentage of the simulation finished.\n", Math.round(nextPercentage * 100));
                 nextPercentage += 0.1;
             }
         }
         this.writer.close();
-        System.out.println("\t\tSimulation ended");
-        System.out.println("\tSuccesfully created dynamic file");
+        System.out.println("\t\tSimulation ended.");
+        System.out.println("\tSuccesfully created dynamic file.");
     }
 
     private void checkLeavingAgents() {
@@ -164,7 +164,7 @@ public class Simulation {
     }
 
     private void createDynamicFile(String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {
-        System.out.println("\tCreating dynamic file. . .");
+        System.out.println("\tCreating dynamic file.");
         this.writer = new PrintWriter(outputDirectoryPath + "/dynamic.txt", "UTF-8");
     }
 }

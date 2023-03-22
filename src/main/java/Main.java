@@ -51,7 +51,7 @@ public class Main {
         if (!Files.exists(Paths.get(RESULTS_DIRECTORY))) {
             new File(RESULTS_DIRECTORY).mkdir();
         }
-        
+
         // -------- WALLS --------
         List<Wall> walls = CSVHandler.importWalls(CSV_DIRECTORY + "/WALLS.csv");
         Simulation.createStaticFile(RESULTS_DIRECTORY, walls);
@@ -64,10 +64,10 @@ public class Main {
                 .map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1));
 
 //         FOR GRAPH NODES PLOT  -------- DEBUGGING --------
-        graph.generateOutput("./out/");
-        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(6.542717913594863,-.5), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
-                new Vector(25., 5.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
-        System.out.println(path);
+//        graph.generateOutput("./out/");
+//        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(6.542717913594863,-.5), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
+//                new Vector(25., 5.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
+//        System.out.println(path);
 
         // -------- CONFIGURATION --------
         SimulationParametersParser parameters = new SimulationParametersParser( "./data/parameters.json", random);

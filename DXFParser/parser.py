@@ -13,7 +13,6 @@ SERVERS_LAYER = "SERVERS"
 def is_rectangle(entity):
     if entity.dxftype() == 'POLYLINE':
         # In a rectangle of polyline there are 4 vertices + 1 closing vertex (that is the same as the first one)
-        print(len(entity))
         return len(entity) == 5 and entity[0].dxf.location == entity[-1].dxf.location
     elif entity.dxftype() == 'LWPOLYLINE':
         return len(entity) == 4 and entity.dxf.flags == ezdxf.const.LWPOLYLINE_CLOSED
