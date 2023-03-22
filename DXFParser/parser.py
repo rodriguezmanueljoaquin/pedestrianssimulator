@@ -11,13 +11,13 @@ SERVERS_LAYER = "SERVERS"
 
 
 def is_rectangle(entity):
-    # In a rectangle there are 4 vertices + 1 closing vertex (that is the same as the first one)
     if entity.dxftype() == 'POLYLINE':
+        # In a rectangle of polyline there are 4 vertices + 1 closing vertex (that is the same as the first one)
+        print(len(entity))
         return len(entity) == 5 and entity[0].dxf.location == entity[-1].dxf.location
     elif entity.dxftype() == 'LWPOLYLINE':
-        return len(entity) == 5 and entity.dxf.flags == ezdxf.const.LWPOLYLINE_CLOSED
+        return len(entity) == 4 and entity.dxf.flags == ezdxf.const.LWPOLYLINE_CLOSED
     else: return False
-
 
 def get_rectangle_figure(entity):
     # If we know we are getting a rectangle, we can save just top left and bottom right vertices
@@ -58,9 +58,17 @@ def get_figures(entity, layer_prefix):
                             next_vertex_location[0], next_vertex_location[1], next_vertex_location[2]])
             
     elif entity.dxftype() == 'LWPOLYLINE':
-        for vertex in entity.vertices():
-            figures.append([vertex[0], vertex[1], 0,
-                            vertex[0], vertex[1], 0])
+        iterator = entity.vertices()
+        first_vertex_location = next(iterator)
+        previous_vertex_location = first_vertex_location
+        for current_vertex_location in iterator:
+            figures.append([previous_vertex_location[0], previous_vertex_location[1], 0,
+                            current_vertex_location[0], current_vertex_location[1], 0])
+            previous_vertex_location = current_vertex_location
+        
+        if entity.dxf.flags == ezdxf.const.LWPOLYLINE_CLOSED:
+            figures.append([previous_vertex_location[0], previous_vertex_location[1], 0,
+                            first_vertex_location[0], first_vertex_location[1], 0])
             
     else:
         raise ValueError(

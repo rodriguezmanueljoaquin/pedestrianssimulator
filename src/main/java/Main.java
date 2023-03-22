@@ -46,13 +46,15 @@ public class Main {
         return behaviourSchemes;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         Random random = new Random(1);
         if (!Files.exists(Paths.get(RESULTS_DIRECTORY))) {
             new File(RESULTS_DIRECTORY).mkdir();
         }
+        
         // -------- WALLS --------
         List<Wall> walls = CSVHandler.importWalls(CSV_DIRECTORY + "/WALLS.csv");
+        Simulation.createStaticFile(RESULTS_DIRECTORY, walls);
 
         // -------- EXITS --------
         Map<String, List<Exit>> exitsMap = CSVHandler.importExits(CSV_DIRECTORY + "/EXITS.csv");
@@ -106,13 +108,8 @@ public class Main {
 
 
         // -------- EXECUTION --------
-        try {
-            Simulation.createStaticFile(RESULTS_DIRECTORY, walls);
-            Simulation sim = new Simulation(parameters.getMaxTime(), environment, deltaT,
-                    operationalModelModule, RESULTS_DIRECTORY, random, (double) parameters.getEvacuationTime());
-            sim.run();
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        Simulation sim = new Simulation(parameters.getMaxTime(), environment, deltaT,
+                operationalModelModule, RESULTS_DIRECTORY, random, (double) parameters.getEvacuationTime());
+        sim.run();
     }
 }
