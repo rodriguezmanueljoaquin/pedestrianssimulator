@@ -1,7 +1,6 @@
 package CellIndexMethod;
 
 import Agent.Agent;
-import Agent.AgentConstants;
 import Environment.Wall;
 import Utils.Vector;
 
@@ -107,7 +106,7 @@ public class CellIndexMethod {
 
         Vector matrixSize = new Vector(this.topRight.getX() - this.bottomLeft.getX(), this.topRight.getY() - this.bottomLeft.getY());
         // Apply the extra margin to the dots, in order to give some extra space in case agents go outside the rectangle defined by the walls
-        this.bottomLeft = this.bottomLeft.substract(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE / 2));
+        this.bottomLeft = this.bottomLeft.subtract(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE / 2));
         this.topRight = this.topRight.add(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE / 2));
         //recalculate to consider margin
         matrixSize = matrixSize.add(matrixSize.scalarMultiply(EXTRA_MARGIN_SIZE));

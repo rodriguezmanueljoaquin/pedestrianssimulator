@@ -52,7 +52,7 @@ public class Vector {
         return new Vector(this.getX() + e.getX(), this.getY() + e.getY());
     }
 
-    public Vector substract(Vector e) {
+    public Vector subtract(Vector e) {
         return new Vector(this.getX() - e.getX(), this.getY() - e.getY());
     }
 
@@ -67,10 +67,7 @@ public class Vector {
     }
 
     public Double distance(Vector e) {
-        double distanceX = Math.abs(this.getX() - e.getX());
-        double distanceY = Math.abs(this.getY() - e.getY());
-
-        return Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+        return Math.sqrt(Math.pow(this.getX() - e.getX(), 2) + Math.pow(this.getY() - e.getY(), 2));
     }
 
     public Vector clone() {

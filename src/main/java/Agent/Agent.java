@@ -63,7 +63,7 @@ public class Agent {
         else {
             objectivePosition = this.currentIntermediateObjectiveNode.getPosition();
         }
-        Vector r = objectivePosition.substract(this.getPosition()).normalize();
+        Vector r = objectivePosition.subtract(this.getPosition()).normalize();
         this.setDirection(r);
     }
 

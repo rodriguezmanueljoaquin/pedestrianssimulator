@@ -98,7 +98,7 @@ public class Simulation {
             this.time += this.dt;
 
             if(this.time > nextPercentage * this.maxTime) {
-                System.out.printf("\t\t\t%d%% percentage of the simulation finished.\n", Math.round(nextPercentage * 100));
+                System.out.printf("\t\t\t%d%% percentage of the simulation finished.\n", (int) Math.ceil(nextPercentage * 100));
                 nextPercentage += 0.1;
             }
         }

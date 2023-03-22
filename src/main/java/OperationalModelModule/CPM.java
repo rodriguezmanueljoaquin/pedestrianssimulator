@@ -25,7 +25,7 @@ public class CPM implements OperationalModelModule {
 
     static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector originalDirection, double Ap, double Bp) {
         //eij (e sub ij)
-        Vector repulsionDirection = position.substract(obstacle).normalize();
+        Vector repulsionDirection = position.subtract(obstacle).normalize();
 
         //dij (d sub ij) distance between position and otherPosition
         Double repulsionDistance = position.distance(obstacle);
@@ -40,7 +40,7 @@ public class CPM implements OperationalModelModule {
     }
 
     static void escapeFromObstacle(Agent agent, Vector other) {
-        Vector oppositeDirection = agent.getPosition().substract(other);
+        Vector oppositeDirection = agent.getPosition().subtract(other);
         agent.setDirection(oppositeDirection.normalize());
     }
 
@@ -55,7 +55,6 @@ public class CPM implements OperationalModelModule {
     @Override
     public void updateAgents(List<Agent> agents) {
         this.CIM.updateAgentsPosition(agents);
-        //esto es una pinturita de streams,
         // remove from map those agent that left
         List<Integer> agentsIdToRemove = new ArrayList<>();
         for (Integer agentId : this.agentsPreviousDirection.keySet()) {

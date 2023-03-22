@@ -1,6 +1,5 @@
 package AgentsGenerator;
 
-import Agent.AgentConstants;
 import Utils.Rectangle;
 import Utils.Vector;
 
@@ -29,7 +28,7 @@ public class AgentsGeneratorZone extends Rectangle {
 
         double row = Math.floor((double) index / this.colsQty);
         double col = index % this.colsQty;
-        Vector difference = this.x2.substract(this.x1).multiply(new Vector(1. / (this.rowsQty), 1. / (this.colsQty)));
+        Vector difference = this.x2.subtract(this.x1).multiply(new Vector(1. / (this.rowsQty), 1. / (this.colsQty)));
         Vector pos = this.x1.add(difference.multiply(new Vector(row, col)));
         return pos.add(new Vector(
                 this.getRandomDoubleInRange(CELL_SIZE/4, CELL_SIZE/2),
@@ -38,7 +37,7 @@ public class AgentsGeneratorZone extends Rectangle {
     }
 
     public int getIndexByPosition(Vector position) {
-        Vector indexes = position.substract(this.x1).scalarMultiply(1/CELL_SIZE);
+        Vector indexes = position.subtract(this.x1).scalarMultiply(1/CELL_SIZE);
         return (int) (Math.floor(indexes.getX()) * this.colsQty + Math.floor(indexes.getY()));
     }
 }

@@ -1,7 +1,6 @@
 package AgentsGenerator;
 
 import Agent.Agent;
-import Agent.AgentConstants;
 import AgentsBehaviour.BehaviourScheme;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
 import Utils.Random.RandomGenerator;
@@ -53,7 +52,7 @@ public class AgentsGenerator {
                     positionsUsed.add(this.zone.getIndexByPosition(agent.getPosition()));
                 } else {
                     Vector closestPoint = agent.getPosition().add(
-                            (this.zone.getMiddlePoint().substract(agent.getPosition()))
+                            (this.zone.getMiddlePoint().subtract(agent.getPosition()))
                                     .scalarMultiply(agent.distance(this.zone.getMiddlePoint()) * this.agentsMaximumMostPossibleRadius)
                     );
                     if (this.zone.isPointInside(closestPoint)) {

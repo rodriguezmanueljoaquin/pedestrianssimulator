@@ -31,7 +31,7 @@ public class CPMAnisotropic extends CPM{
 
     private static double getBeta(Agent agent, Agent otherAgent) {
         //As PDF says, Beta = the angle formed by speed of agent and the relative direction between other agent and agent
-        Vector relativeDirection = otherAgent.getPosition().substract(agent.getPosition());
+        Vector relativeDirection = otherAgent.getPosition().subtract(agent.getPosition());
         Vector agentDirection = agent.getDirection();
         // We use acos to calculate this direction
         return Math.acos(agentDirection.dotMultiply(relativeDirection)/(agentDirection.module()* relativeDirection.module()));

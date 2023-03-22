@@ -1,6 +1,5 @@
 package Environment.Objectives.Server;
 
-import Utils.Constants;
 import Utils.Line;
 import Utils.Vector;
 
@@ -56,7 +55,7 @@ public class Queue {
             if (segmentIndex < 0)
                 return null;
 
-            return this.getX1().add(this.getX2().substract(this.getX1()).scalarMultiply(1d / this.segmentsQuantity).scalarMultiply((double) segmentIndex));
+            return this.getX1().add(this.getX2().subtract(this.getX1()).scalarMultiply(1d / this.segmentsQuantity).scalarMultiply((double) segmentIndex));
 
         }
     }

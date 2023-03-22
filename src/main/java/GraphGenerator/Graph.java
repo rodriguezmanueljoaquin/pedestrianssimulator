@@ -37,7 +37,7 @@ public class Graph {
         // checks if whole circumference of the circle can access to destiny
         // for this, picks "highest" point in circumferences and checks if it can see the "highest" point in destination
         // with "highest", we refer to the perpendicular point to the distance vector in the circumference
-        Vector distance = destiny.substract(origin);
+        Vector distance = destiny.subtract(origin);
         double originalTetha = Math.atan2(distance.getY(), distance.getX());
 
         return isProjectedPositionVisible(origin, destiny, radius, originalTetha + Math.PI / 2)

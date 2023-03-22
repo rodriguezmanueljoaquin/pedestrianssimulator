@@ -43,8 +43,8 @@ public class Wall {
     // For CPM.CPM usages
     // method from: https://math.stackexchange.com/questions/2193720/find-a-point-on-a-line-segment-which-is-the-closest-to-other-point-not-on-the-li
     public Vector getClosestPoint(Vector P) {
-        Vector u = A.substract(P);
-        Vector v = B.substract(A);
+        Vector u = A.subtract(P);
+        Vector v = B.subtract(A);
 
         double t = -v.dotMultiply(u) / v.dotMultiply(v);
 
@@ -71,6 +71,6 @@ public class Wall {
     }
 
     public Vector getCentroid() {
-        return this.A.add(this.B.substract(this.A).scalarMultiply(0.5));
+        return this.A.add(this.B.subtract(this.A).scalarMultiply(0.5));
     }
 }
