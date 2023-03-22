@@ -36,7 +36,7 @@ public class SimulationParametersParser {
             throw new RuntimeException("Exception when parsing SimulationParametersJSON: " + e);
         }
 
-        this.maxTime = (Long) jsonObject.get(EVACUATE_TIME_KEY);
+        this.maxTime = (Long) jsonObject.get(MAX_TIME_KEY);
         if(jsonObject.containsKey(EVACUATE_TIME_KEY))
             this.evacuationTime = (Long) jsonObject.get(EVACUATE_TIME_KEY);
         this.initGeneratorsParameters(seedGenerator, (JSONArray) jsonObject.get(GENERATORS_KEY));

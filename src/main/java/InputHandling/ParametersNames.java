@@ -6,6 +6,7 @@ public class ParametersNames {
     public static final String DISTRIBUTION_EXPONENTIAL_KEY = "EXPONENTIAL";
     public static String MARKET_CLIENT_BEHAVIOUR_SCHEME_KEY = "MARKET-CLIENT";
 
+    public static String MAX_TIME_KEY = "max_time";
     public static String EVACUATE_TIME_KEY = "evacuate_at";
     public static String SERVERS_KEY = "servers";
     public static String TARGETS_KEY = "targets";
