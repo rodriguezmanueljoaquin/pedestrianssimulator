@@ -65,7 +65,7 @@ public class Main {
                 .map(Exit::getExitWall).collect(Collectors.toList()), new Vector(1, 1)); // 18,18 in new map
 
 //         FOR GRAPH NODES PLOT  -------- DEBUGGING --------
-//        graph.generateOutput("./out/");
+        graph.generateOutput("./out/");
 //        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(6.542717913594863,-.5), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
 //                new Vector(25., 5.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
 //        System.out.println(path);
@@ -103,7 +103,7 @@ public class Main {
 
 
         // -------- OTHER PARAMETERS --------
-        double deltaT = parameters.getAgentsMostPossibleMaxRadius() / (2 * parameters.getAgentsHighestMaxVelocity());
+        double deltaT = parameters.getAgentsMostPossibleMaxRadius() / (4 * parameters.getAgentsHighestMaxVelocity());
         if(deltaT < 0.001) {
             System.out.println("Delta too small! Reducing it to 0.001.");
             deltaT = 0.001;

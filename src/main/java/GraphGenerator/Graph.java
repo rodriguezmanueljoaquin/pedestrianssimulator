@@ -163,16 +163,22 @@ public class Graph {
         // add nodes on exits for agents that summon outside the establishment
         // and add an extra mirrored node outside just in case
         for (Wall wall : extraWalls) {
-            Node node = new Node(wall.getCentroid());
-            Node closestNode = this.getClosestVisibleNode(node.getPosition());
-            node.addNeighbor(closestNode);
-            closestNode.addNeighbor(node);
-            this.nodes.put(node.getPosition(), node);
-
+            Node closestNode = this.getClosestVisibleNode(wall.getCentroid());
             Node mirrorNode = new Node(getMirroredPosition(wall, closestNode.getPosition()));
-            node.addNeighbor(mirrorNode);
-            mirrorNode.addNeighbor(node);
             this.nodes.put(mirrorNode.getPosition(), mirrorNode);
+            if(!isPositionVisibleWithinWalls(closestNode.getPosition(), mirrorNode.getPosition(), this.walls)) {
+                // it is necessary to add an intermediary node in the door
+                Node node = new Node(wall.getCentroid());
+                node.addNeighbor(closestNode);
+                this.nodes.put(node.getPosition(), node);
+                closestNode.addNeighbor(node);
+                mirrorNode.addNeighbor(node);
+                node.addNeighbor(closestNode);
+                node.addNeighbor(mirrorNode);
+            } else {
+                closestNode.addNeighbor(mirrorNode);
+                mirrorNode.addNeighbor(closestNode);
+            }
         }
     }
 
@@ -190,8 +196,8 @@ public class Graph {
         C /= M;
 
         double D = A * position.getX() + B * position.getY() + C;
-        double mirrorX = position.getX() - 2 * A * D;
-        double mirrorY = position.getY() - 2 * B * D;
+        double mirrorX = position.getX() - 3 * A * D;
+        double mirrorY = position.getY() - 3 * B * D;
 
         return new Vector(mirrorX, mirrorY);
     }
