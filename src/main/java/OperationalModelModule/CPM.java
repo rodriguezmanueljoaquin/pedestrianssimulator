@@ -65,24 +65,25 @@ public class CPM implements OperationalModelModule {
     }
 
     protected Vector calculateHeuristicDirection(Agent agent, Random random) {
-        Vector resultantNc = new Vector(0, 0);
+        Vector resultantDirection = new Vector(0, 0);
         //initialize with original direction if exists
         if (this.agentsPreviousDirection.containsKey(agent.getId())) {
-            resultantNc = resultantNc.add(this.agentsPreviousDirection.get(agent.getId())
+            resultantDirection = resultantDirection.add(this.agentsPreviousDirection.get(agent.getId())
                     .scalarMultiply(getRandomDoubleInRange(CPMConstants.ORIGINAL_DIRECTION_AP, CPMConstants.AP_VARIATION, random)));
         }
 
         //add new direction
-        resultantNc = resultantNc.add(agent.getDirection()
+        resultantDirection = resultantDirection.add(agent.getDirection()
                 .scalarMultiply(getRandomDoubleInRange(CPMConstants.NEW_DIRECTION_AP, CPMConstants.AP_VARIATION, random)));
 
-        resultantNc = calculateAgentRepulsion(agent, resultantNc, random);
-        resultantNc = calculateWallRepulsion(agent, resultantNc, random);
-        return resultantNc.normalize();
+        resultantDirection = resultantDirection.add(calculateAgentRepulsion(agent, random));
+        resultantDirection = resultantDirection.add(calculateWallRepulsion(agent, random));
+        return resultantDirection.normalize();
     }
 
-    protected Vector calculateAgentRepulsion(Agent agent, Vector resultantNc, Random random) {
+    protected Vector calculateAgentRepulsion(Agent agent, Random random) {
         List<Agent> neighbours = this.CIM.getAgentNeighbours(agent);
+        Vector agentsRepulsion = new Vector(0, 0);
 
         double AP, BP;
         for (Agent neighbour : neighbours) {
@@ -95,7 +96,7 @@ public class CPM implements OperationalModelModule {
                 BP = CPMConstants.AGENT_BP;
             }
 
-            resultantNc = resultantNc.add(
+            agentsRepulsion = agentsRepulsion.add(
                     calculateRepulsionForce(
                             agent.getPosition(), neighbour.getPosition(), agent.getDirection(),
                             getRandomDoubleInRange(AP, CPMConstants.AP_VARIATION, random),
@@ -103,11 +104,12 @@ public class CPM implements OperationalModelModule {
                     )
             );
         }
-        return resultantNc;
+        return agentsRepulsion;
     }
 
     // considers all walls nearby
-    protected Vector calculateWallsRepulsion(Agent agent, Vector resultantNc, Random random) {
+    protected Vector calculateWallsRepulsion(Agent agent, Random random) {
+        Vector wallsRepulsion = new Vector(0, 0);
         List<Vector> closestWallsPosition = this.environment.getWalls()
                 .stream()
                 .map((a) -> a.getClosestPoint(agent.getPosition()))
@@ -120,14 +122,14 @@ public class CPM implements OperationalModelModule {
                     getRandomDoubleInRange(CPMConstants.CLOSEST_WALLS_AP, CPMConstants.AP_VARIATION, random),
                     getRandomDoubleInRange(CPMConstants.CLOSEST_WALLS_BP, CPMConstants.BP_VARIATION, random)
             );
-            resultantNc = resultantNc.add(wallRepulsion);
+            wallsRepulsion = wallsRepulsion.add(wallRepulsion);
         }
 
-        return resultantNc;
+        return wallsRepulsion;
     }
 
     // considers the closest wall
-    protected Vector calculateWallRepulsion(Agent agent, Vector resultantNc, Random random) {
+    protected Vector calculateWallRepulsion(Agent agent, Random random) {
         Optional<Vector> closestWallPosition = this.environment.getWalls()
                 .stream()
                 .map((a) -> a.getClosestPoint(agent.getPosition()))
@@ -135,13 +137,13 @@ public class CPM implements OperationalModelModule {
                 .min(Comparator.comparingDouble(o -> o.distance(agent.getPosition())));
 
         if(closestWallPosition.isPresent()) {
-            return resultantNc.add(calculateRepulsionForce(
+            return calculateRepulsionForce(
                     agent.getPosition(), closestWallPosition.get(), agent.getDirection(),
                     getRandomDoubleInRange(CPMConstants.CLOSEST_WALL_AP, CPMConstants.AP_VARIATION, random),
                     getRandomDoubleInRange(CPMConstants.CLOSEST_WALL_BP, CPMConstants.BP_VARIATION, random)
-            ));
+            );
         }
-        else return resultantNc;
+        else return new Vector(0, 0);
     }
 
     public void updateNonCollisionAgent(Agent agent, double dt, Random random) {

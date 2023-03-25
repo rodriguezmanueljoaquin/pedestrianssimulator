@@ -103,9 +103,9 @@ public class Main {
 
 
         // -------- OTHER PARAMETERS --------
-        double deltaT = parameters.getAgentsMostPossibleMaxRadius() / (12 * parameters.getAgentsHighestMaxVelocity());
+        double deltaT = parameters.getAgentsMostPossibleMaxRadius() / (2 * parameters.getAgentsHighestMaxVelocity());
         if(deltaT < 0.001) {
-            System.out.println("Delta too small!");
+            System.out.println("Delta too small! Reducing it to 0.001.");
             deltaT = 0.001;
         }
 
