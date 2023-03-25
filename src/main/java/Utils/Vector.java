@@ -5,8 +5,8 @@ import java.util.Objects;
 import static Utils.Constants.DOUBLE_EPSILON;
 
 public class Vector {
-    private Double x;
-    private Double y;
+    private double x;
+    private double y;
 
     public Vector(Double x, Double y) {
         this.x = x;
@@ -18,7 +18,7 @@ public class Vector {
         this.y = (double) y;
     }
 
-    public Double getX() {
+    public double getX() {
         return x;
     }
 
@@ -27,7 +27,7 @@ public class Vector {
         return this;
     }
 
-    public Double getY() {
+    public double getY() {
         return y;
     }
 
@@ -40,7 +40,7 @@ public class Vector {
         return new Vector(this.getX() * e.getX(), this.getY() * e.getY());
     }
 
-    public Double dotMultiply(Vector e) {
+    public double dotMultiply(Vector e) {
         return this.getX() * e.getX() + this.getY() * e.getY();
     }
 
@@ -62,11 +62,11 @@ public class Vector {
         return this.scalarMultiply(1 / this.module());
     }
 
-    public Double module() {
+    public double module() {
         return Math.sqrt(Math.pow(this.getX(), 2) + Math.pow(this.getY(), 2));
     }
 
-    public Double distance(Vector e) {
+    public double distance(Vector e) {
         return Math.sqrt(Math.pow(this.getX() - e.getX(), 2) + Math.pow(this.getY() - e.getY(), 2));
     }
 

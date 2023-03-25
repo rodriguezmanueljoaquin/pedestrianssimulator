@@ -41,10 +41,6 @@ public class CPM implements OperationalModelModule {
 
     static void escapeFromObstacle(Agent agent, Vector other) {
         Vector oppositeDirection = agent.getPosition().subtract(other).normalize();
-        if(agent.getDirection().subtract(oppositeDirection).module() < 0.1) {
-            System.out.println("WHATT " + agent.getDirection() + "  " + oppositeDirection);
-            System.out.println(agent.getPosition() + " " + other);
-        }
         agent.setDirection(oppositeDirection);
     }
 
