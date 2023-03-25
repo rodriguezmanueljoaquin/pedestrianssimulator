@@ -15,8 +15,19 @@ def is_rectangle(entity):
         # In a rectangle of polyline there are 4 vertices + 1 closing vertex (that is the same as the first one)
         return len(entity) == 5 and entity[0].dxf.location == entity[-1].dxf.location
     elif entity.dxftype() == 'LWPOLYLINE':
-        return len(entity) == 4 and entity.dxf.flags == ezdxf.const.LWPOLYLINE_CLOSED
-    else: return False
+        if len(entity) == 4 and entity.dxf.flags == ezdxf.const.LWPOLYLINE_CLOSED:
+            return True
+        elif len(entity) == 5:
+            first_vertex = None
+            last_vertex = None
+            for i, vertex in enumerate(entity.vertices()):
+                if i == 0:
+                    first_vertex = vertex
+                elif i == 4:
+                    last_vertex = vertex
+            return first_vertex[0] - last_vertex[0] + first_vertex[1] - last_vertex[1] < 0.0001
+    
+    return False
 
 def get_rectangle_figure(entity):
     # If we know we are getting a rectangle, we can save just top left and bottom right vertices
@@ -215,7 +226,7 @@ def parse_dxf(in_file_path, out_path):
 
 
 EXAMPLE_DXF_PATH = "data/Plano prueba simulacion V05.02.dxf"
-EXAMPLE2_DXF_PATH = "data/Plano SREC PB simulacion V01.dxf"
+EXAMPLE2_DXF_PATH = "data/Plano SREC PB simulacion V02.dxf"
 EXAMPLE_JSON_PATH = "data/parameters.json"
 
 if __name__ == '__main__':
