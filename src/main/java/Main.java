@@ -99,7 +99,7 @@ public class Main {
         );
 
         // -------- OPERATIONAL MODEL MODULE --------
-        OperationalModelModule operationalModelModule = new CPM(environment, parameters.getAgentsMostPossibleMaxRadius());
+        OperationalModelModule operationalModelModule = new CPMAnisotropic(environment, parameters.getAgentsMostPossibleMaxRadius());
 
 
         // -------- OTHER PARAMETERS --------
