@@ -3,11 +3,15 @@ package OperationalModelModule;
 import Agent.Agent;
 import Environment.Environment;
 import OperationalModelModule.Collisions.AgentsCollision;
+import OperationalModelModule.Collisions.CollisionsFinder;
+import OperationalModelModule.Collisions.WallCollision;
 import Utils.Vector;
+
+import java.util.List;
 
 public class CPMAnisotropic extends CPM{
 //    Para cambiar entre CPM y CPMAnisotropic
-//    Hay que cambiar el instanciador del CPM en Main, linea 98
+//    Hay que cambiar el instanciador del CPM en Main, linea 102
 //    y el FindAnisotropic por Find en Simulation, linea 129
     public CPMAnisotropic(Environment environment, double agentsMaximumMostPossibleRadius) {
         super(environment, agentsMaximumMostPossibleRadius);
@@ -27,6 +31,11 @@ public class CPMAnisotropic extends CPM{
             escapeFromObstacle(agent2, agent1.getPosition());
             saveAgentDirection(agent2);
         }
+    }
+
+    @Override
+    public void findCollisions(List<Agent> agents, Environment environment, List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents) {
+        CollisionsFinder.FindAnisotropic(agents,environment,wallCollisions,agentsCollisions,nonCollisionAgents);
     }
 
     private static double getBeta(Agent agent, Agent otherAgent) {
@@ -102,4 +111,6 @@ public class CPMAnisotropic extends CPM{
         double C = point1.getX()*point2.getY() - point2.getX()*point1.getY();
         return Math.abs(A*circleCenter.getX() + B*circleCenter.getY() + C)/Math.sqrt(A*A + B*B);
     }
+
+
 }

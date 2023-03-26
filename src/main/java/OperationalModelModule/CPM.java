@@ -4,6 +4,7 @@ import Agent.Agent;
 import CellIndexMethod.CellIndexMethod;
 import Environment.Environment;
 import OperationalModelModule.Collisions.AgentsCollision;
+import OperationalModelModule.Collisions.CollisionsFinder;
 import OperationalModelModule.Collisions.WallCollision;
 import Utils.Vector;
 
@@ -174,6 +175,39 @@ public class CPM implements OperationalModelModule {
         collapseAgent(wallCollision.getAgent());
         escapeFromObstacle(wallCollision.getAgent(), wallCollision.getWallClosestPoint());
         saveAgentDirection(wallCollision.getAgent());
+    }
+
+    @Override
+    public void findCollisions(List<Agent> agents, Environment environment, List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents) {
+        CollisionsFinder.Find(agents,environment,wallCollisions,agentsCollisions,nonCollisionAgents);
+    }
+
+    @Override
+    public void executeOperationalModelModule(List<Agent> agents, Environment environment, double dt, Random random) {
+        this.updateAgents(agents);
+        List<WallCollision> wallCollisions = new ArrayList<>();
+        List<AgentsCollision> agentsCollisions = new ArrayList<>();
+        List<Agent> nonCollisionAgents = new ArrayList<>();
+        this.findCollisions(agents, environment, wallCollisions, agentsCollisions, nonCollisionAgents);
+
+        for (AgentsCollision agentsCollision : agentsCollisions) {
+            this.updateCollidingAgents(agentsCollision);
+        }
+
+        for (WallCollision wallCollision : wallCollisions) {
+            this.updateWallCollidingAgent(wallCollision);
+            Agent agent = wallCollision.getAgent();
+            agent.getStateMachine().updateAgentCurrentPath(agent); // maybe because of this impact it has to change its path
+        }
+
+        for (Agent agent : nonCollisionAgents) {
+            // update radius
+            this.expandAgent(agent);
+
+            if (agent.getState().getMaxVelocityFactor() != 0)
+                // if moving, update direction with heuristics
+                this.updateNonCollisionAgent(agent, dt, random);
+        }
     }
 
     protected void saveAgentDirection(Agent agent) {

@@ -91,7 +91,7 @@ public class Simulation {
 
             this.checkLeavingAgents();
 
-            this.executeOperationalModelModule();
+            this.operationalModelModule.executeOperationalModelModule(agents,environment,dt,random);
 
             // escribir output
             this.writeOutput();
@@ -124,32 +124,7 @@ public class Simulation {
         this.agents.removeAll(leavingAgents);
     }
 
-    private void executeOperationalModelModule() {
-        this.operationalModelModule.updateAgents(this.agents);
-        List<WallCollision> wallCollisions = new ArrayList<>();
-        List<AgentsCollision> agentsCollisions = new ArrayList<>();
-        List<Agent> nonCollisionAgents = new ArrayList<>();
-        CollisionsFinder.FindAnisotropic(this.agents, this.environment, wallCollisions, agentsCollisions, nonCollisionAgents);
 
-        for (AgentsCollision agentsCollision : agentsCollisions) {
-            this.operationalModelModule.updateCollidingAgents(agentsCollision);
-        }
-
-        for (WallCollision wallCollision : wallCollisions) {
-            this.operationalModelModule.updateWallCollidingAgent(wallCollision);
-            Agent agent = wallCollision.getAgent();
-            agent.getStateMachine().updateAgentCurrentPath(agent); // maybe because of this impact it has to change its path
-        }
-
-        for (Agent agent : nonCollisionAgents) {
-            // update radius
-            this.operationalModelModule.expandAgent(agent);
-
-            if (agent.getState().getMaxVelocityFactor() != 0)
-                // if moving, update direction with heuristics
-                this.operationalModelModule.updateNonCollisionAgent(agent, this.dt, this.random);
-        }
-    }
 
     private void writeOutput() {
         List<Agent> allAgents = this.getAllAgents();
