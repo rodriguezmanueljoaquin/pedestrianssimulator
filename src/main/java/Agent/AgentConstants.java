@@ -1,7 +1,6 @@
 package Agent;
 
 public class AgentConstants {
-    public static double MAX_RADIUS_OF_ALL_AGENTS = .70; // TODO: SHOULD PICK THE MAX RADIUS OF THOSE SPECIFIED IN THE GENERATORSPARAMATERS
     public static double B = .9; // used to calculate velocity dynamically according to current agent radius
     public static double MAXIMUM_VELOCITY_FACTOR = 1;
     // used to change state at the state machine, or intermediate node in agent path

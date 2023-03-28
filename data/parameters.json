@@ -9,15 +9,15 @@
             "agents": {
                 "min_radius_distribution": {
                     "type": "GAUSSIAN",
-                    "std": 0.05,
-                    "mean": 0.3
+                    "std": 0.02,
+                    "mean": 0.1
                 },
                 "max_radius_distribution": {
                     "type": "GAUSSIAN",
-                    "std": 0.05,
-                    "mean": 0.5
+                    "std": 0.02,
+                    "mean": 0.37
                 },
-                "max_velocity": 1.0
+                "max_velocity": 0.95
             },
             "active_time": 10.0,
             "inactive_time": 40.0,
@@ -36,15 +36,15 @@
             "agents": {
                 "min_radius_distribution": {
                     "type": "GAUSSIAN",
-                    "std": 0.05,
-                    "mean": 0.3
+                    "std": 0.02,
+                    "mean": 0.1
                 },
                 "max_radius_distribution": {
                     "type": "GAUSSIAN",
-                    "std": 0.05,
-                    "mean": 0.6
+                    "std": 0.02,
+                    "mean": 0.37
                 },
-                "max_velocity": 0.8
+                "max_velocity": 0.95
             },
             "active_time": 10.0,
             "inactive_time": 40.0,
