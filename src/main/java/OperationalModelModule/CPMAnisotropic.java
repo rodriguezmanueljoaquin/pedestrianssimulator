@@ -55,37 +55,6 @@ public class CPMAnisotropic extends CPM{
         }
     }
 
-//    @Override
-//    protected Vector calculateAgentRepulsion(Agent agent, Vector resultantNc, Random random) {
-//        List<Agent> neighbours = this.CIM.getAgentNeighbours(agent);
-////        neighbours = neighbours.stream().filter(a -> {
-////            Vector dir = a.getPosition().substract(agent.getPosition());
-////            Double dotProd = dir.dotMultiply( agent.getDirection());
-////            return dotProd > 0.2;
-////        }).collect(Collectors.toList());
-//
-//        double AP, BP;
-//        for (Agent neighbour : neighbours) {
-//            // agent fears more those agents not moving
-//            if (neighbour.getVelocityModule() == 0) {
-//                AP = CPMConstants.AGENT_AP * CPMConstants.NON_MOVING_AGENT_REPULSION_MULTIPLIER;
-//                BP = CPMConstants.AGENT_BP * CPMConstants.NON_MOVING_AGENT_REPULSION_MULTIPLIER;
-//            } else {
-//                AP = CPMConstants.AGENT_AP;
-//                BP = CPMConstants.AGENT_BP;
-//            }
-//
-//            resultantNc = resultantNc.add(
-//                    calculateRepulsionForce(
-//                            agent.getPosition(), neighbour.getPosition(), agent.getVelocity(),
-//                            getRandomDoubleInRange(AP, CPMConstants.AP_VARIATION, random),
-//                            getRandomDoubleInRange(BP, CPMConstants.BP_VARIATION, random)
-//                    )
-//            );
-//        }
-//        return resultantNc;
-//    }
-
     public static boolean parallelLinesIntersectAgentRadiusAndDistanceIsValid(Agent agent, Agent otherAgent) {
 //        https://math.stackexchange.com/questions/422602/convert-two-points-to-line-eq-ax-by-c-0
 //        https://math.stackexchange.com/questions/1481904/distance-between-line-and-circle
@@ -108,6 +77,5 @@ public class CPMAnisotropic extends CPM{
         double C = point1.getX()*point2.getY() - point2.getX()*point1.getY();
         return Math.abs(A*circleCenter.getX() + B*circleCenter.getY() + C)/Math.sqrt(A*A + B*B);
     }
-
 
 }

@@ -42,7 +42,7 @@ public class Queue {
 
         public QueueLine(Line line, double agentsMaximumMostPossibleRadius) {
             super(line);
-            this.segmentsQuantity = (int) (this.getX2().distance(this.getX1()) / (agentsMaximumMostPossibleRadius * 2));
+            this.segmentsQuantity = (int) (this.getX2().distance(this.getX1()) / (agentsMaximumMostPossibleRadius * 2.5));
         }
 
         public int getSegmentsQuantity() {

@@ -77,16 +77,16 @@ public class Main {
         // -------- SERVERS --------
         Map<String, List<Server>> serversMap =
                 CSVHandler.importServers(CSV_DIRECTORY + "/SERVERS.csv", parameters.getServerGroupsParameters(),
-                parameters.getAgentsMostPossibleMinRadius());
+                parameters.getAgentsMostPossibleMaxRadius());
 
         // -------- BEHAVIOUR --------
         Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exitsMap, serversMap, targetsMap,
-                parameters.getAgentsMostPossibleMinRadius(), random);
+                parameters.getAgentsMostPossibleMaxRadius(), random);
 
         // -------- AGENT GENERATORS --------
         List<AgentsGenerator> generators = CSVHandler.importAgentsGenerators(
                 CSV_DIRECTORY + "/GENERATORS.csv", behaviours,
-                parameters.getGeneratorsParameters(), parameters.getAgentsMostPossibleMinRadius(), random.nextLong()
+                parameters.getGeneratorsParameters(), parameters.getAgentsMostPossibleMaxRadius(), random.nextLong()
         );
 
         // -------- ENVIRONMENT --------
@@ -103,7 +103,7 @@ public class Main {
         } else System.out.println("DELTA_T = " + deltaT);
 
         // -------- OPERATIONAL MODEL MODULE --------
-        OperationalModelModule operationalModelModule = new CPMAnisotropic(environment, parameters.getAgentsMostPossibleMinRadius(), deltaT);
+        OperationalModelModule operationalModelModule = new CPMAnisotropic(environment, parameters.getAgentsMostPossibleMaxRadius(), deltaT);
 
         // -------- EXECUTION --------
         Simulation sim = new Simulation(parameters.getMaxTime(), environment, deltaT,
