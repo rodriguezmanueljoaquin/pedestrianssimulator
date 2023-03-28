@@ -13,7 +13,7 @@ public interface OperationalModelModule {
     //y hacer todos los demas metodos protected
     void updateAgents(List<Agent> agents);
 
-    void updateNonCollisionAgent(Agent agent, double dt, Random random);
+    void updateNonCollisionAgent(Agent agent, Random random);
 
     void expandAgent(Agent agent);
 
@@ -24,5 +24,5 @@ public interface OperationalModelModule {
     void findCollisions(List<Agent> agents, Environment environment,
                         List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents);
 
-    void executeOperationalModelModule(List<Agent> agents,Environment environment, double dt, Random random);
+    void executeOperationalModelModule(List<Agent> agents,Environment environment, Random random);
 }

@@ -17,11 +17,13 @@ public class CPM implements OperationalModelModule {
     protected final CellIndexMethod CIM;
     protected final Environment environment;
     protected final Map<Integer, Vector> agentsPreviousDirection;
+    private final double radiusIncrementCoefficient;
 
-    public CPM(Environment environment, double agentsMaximumMostPossibleRadius) {
+    public CPM(Environment environment, double agentsMaximumMostPossibleRadius, double dt) {
         this.environment = environment;
         this.CIM = new CellIndexMethod(this.environment.getWalls(), CPMConstants.NEIGHBOURS_RADIUS, agentsMaximumMostPossibleRadius);
         this.agentsPreviousDirection = new HashMap<>();
+        this.radiusIncrementCoefficient = CPMConstants.TAU/dt;
     }
 
     static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector originalDirection, double Ap, double Bp) {
@@ -147,7 +149,7 @@ public class CPM implements OperationalModelModule {
         else return new Vector(0, 0);
     }
 
-    public void updateNonCollisionAgent(Agent agent, double dt, Random random) {
+    public void updateNonCollisionAgent(Agent agent, Random random) {
         Vector heuristicDirection = calculateHeuristicDirection(agent, random);
         agent.setDirection(heuristicDirection);
         saveAgentDirection(agent);
@@ -155,7 +157,7 @@ public class CPM implements OperationalModelModule {
 
     public void expandAgent(Agent agent) {
         if (agent.getRadius() < agent.getMaxRadius()) {
-            agent.setRadius(agent.getRadius() + (agent.getMaxRadius() / CPMConstants.DTS_NEEDED_FOR_EXPANSION));
+            agent.setRadius(agent.getRadius() + ((agent.getMaxRadius() - agent.getMinRadius()) / (this.radiusIncrementCoefficient)));
         }
     }
 
@@ -183,7 +185,7 @@ public class CPM implements OperationalModelModule {
     }
 
     @Override
-    public void executeOperationalModelModule(List<Agent> agents, Environment environment, double dt, Random random) {
+    public void executeOperationalModelModule(List<Agent> agents, Environment environment, Random random) {
         this.updateAgents(agents);
         List<WallCollision> wallCollisions = new ArrayList<>();
         List<AgentsCollision> agentsCollisions = new ArrayList<>();
@@ -206,7 +208,7 @@ public class CPM implements OperationalModelModule {
 
             if (agent.getState().getMaxVelocityFactor() != 0)
                 // if moving, update direction with heuristics
-                this.updateNonCollisionAgent(agent, dt, random);
+                this.updateNonCollisionAgent(agent, random);
         }
     }
 

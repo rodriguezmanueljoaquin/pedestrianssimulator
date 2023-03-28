@@ -91,7 +91,7 @@ public class Simulation {
 
             this.checkLeavingAgents();
 
-            this.operationalModelModule.executeOperationalModelModule(agents,environment,dt,random);
+            this.operationalModelModule.executeOperationalModelModule(agents,environment,random);
 
             // escribir output
             this.writeOutput();
