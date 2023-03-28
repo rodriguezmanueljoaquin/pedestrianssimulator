@@ -26,7 +26,7 @@ public class SimulationParametersParser {
     private Map<String, ServerGroupParameters> serverGroupsParameters;
     private final Long maxTime;
     private Long evacuationTime = null;
-    private double agentsMaximumMostPossibleRadius = 0;
+    private double agentsMinimumMostPossibleRadius = 0, agentsMaximumMostPossibleRadius = 0;
 
     public SimulationParametersParser(String JSONPath, Random seedGenerator) {
         JSONObject jsonObject;
@@ -109,6 +109,11 @@ public class SimulationParametersParser {
             );
         }
 
+        this.agentsMinimumMostPossibleRadius = this.generatorsParameters.values().stream()
+                .map(AgentsGeneratorParameters::getAgentsParameters)
+                .map(AgentsGeneratorParameters.AgentsParameters::getMinRadiusGenerator)
+                .map(RandomGenerator::getHighestMostPossibleValue)
+                .mapToDouble(Double::doubleValue).min().getAsDouble();
         this.agentsMaximumMostPossibleRadius = this.generatorsParameters.values().stream()
                 .map(AgentsGeneratorParameters::getAgentsParameters)
                 .map(AgentsGeneratorParameters.AgentsParameters::getMaxRadiusGenerator)
@@ -158,6 +163,10 @@ public class SimulationParametersParser {
 
     public Map<String, AgentsGeneratorParameters> getGeneratorsParameters() {
         return this.generatorsParameters;
+    }
+
+    public double getAgentsMostPossibleMinRadius() {
+        return this.agentsMinimumMostPossibleRadius;
     }
 
     public double getAgentsMostPossibleMaxRadius() {
