@@ -151,7 +151,6 @@ public class Simulation {
                     agent.getVelocity().getY(), agent.getRadius(), agent.getState().ordinal()));
         }
         this.writer.write("\n"); // end of iterations
-        this.writer.flush();
     }
 
     private void createDynamicFile(String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {

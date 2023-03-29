@@ -21,6 +21,7 @@ public interface OperationalModelModule {
 
     void updateWallCollidingAgent(WallCollision wallCollision);
 
+    // Receives agents, environment, and the two list where it will store the collisions made by the agents
     void findCollisions(List<Agent> agents, Environment environment,
                         List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents);
 

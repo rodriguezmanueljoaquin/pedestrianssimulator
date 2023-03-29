@@ -3,8 +3,8 @@ package OperationalModelModule;
 import Agent.Agent;
 import CellIndexMethod.CellIndexMethod;
 import Environment.Environment;
+import Environment.Wall;
 import OperationalModelModule.Collisions.AgentsCollision;
-import OperationalModelModule.Collisions.CollisionsFinder;
 import OperationalModelModule.Collisions.WallCollision;
 import Utils.Vector;
 
@@ -148,6 +148,40 @@ public class CPM implements OperationalModelModule {
         } else return new Vector(0, 0);
     }
 
+    protected boolean findWallCollision(Agent agent, Environment environment, List<WallCollision> wallCollisions) {
+        Wall closestWall = environment.getClosestWall(agent.getPosition());
+        Vector closestPoint = closestWall.getClosestPoint(agent.getPosition());
+        if (agent.distance(closestPoint) < 0) {
+            wallCollisions.add(new WallCollision(agent, closestPoint));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void findCollisions(List<Agent> agents, Environment environment, List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents) {
+        for (int i = 0; i < agents.size(); i++) {
+            Agent current = agents.get(i);
+            boolean hasCollided = findWallCollision(current, environment, wallCollisions);
+
+            for (int j = i + 1; j < agents.size(); j++) {
+                Agent other = agents.get(j);
+                if (current.distance(other) <= 0) {
+                    AgentsCollision newCollision = new AgentsCollision(current, other);
+                    agentsCollisions.add(newCollision);
+                    hasCollided = true;
+                }
+            }
+
+            // chequeamos si la particula que estamos analizando esta involucrada en un choque contra otra particula
+            if (agentsCollisions.stream().anyMatch(agentsCollision -> agentsCollision.getAgent2().equals(current)))
+                hasCollided = true;
+
+            if (!hasCollided)
+                nonCollisionAgents.add(current);
+        }
+    }
+
     public void updateNonCollisionAgent(Agent agent, Random random) {
         Vector heuristicDirection = calculateHeuristicDirection(agent, random);
         agent.setDirection(heuristicDirection);
@@ -176,11 +210,6 @@ public class CPM implements OperationalModelModule {
         collapseAgent(wallCollision.getAgent());
         escapeFromObstacle(wallCollision.getAgent(), wallCollision.getWallClosestPoint());
         saveAgentDirection(wallCollision.getAgent());
-    }
-
-    @Override
-    public void findCollisions(List<Agent> agents, Environment environment, List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents) {
-        CollisionsFinder.Find(agents, environment, wallCollisions, agentsCollisions, nonCollisionAgents);
     }
 
     @Override

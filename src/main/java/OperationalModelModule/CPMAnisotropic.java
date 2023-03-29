@@ -2,8 +2,8 @@ package OperationalModelModule;
 
 import Agent.Agent;
 import Environment.Environment;
+import Environment.Wall;
 import OperationalModelModule.Collisions.AgentsCollision;
-import OperationalModelModule.Collisions.CollisionsFinder;
 import OperationalModelModule.Collisions.WallCollision;
 import Utils.Vector;
 
@@ -75,7 +75,25 @@ public class CPMAnisotropic extends CPM {
 
     @Override
     public void findCollisions(List<Agent> agents, Environment environment, List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents) {
-        CollisionsFinder.FindAnisotropic(agents, environment, wallCollisions, agentsCollisions, nonCollisionAgents);
-    }
+        for (int i = 0; i < agents.size(); i++) {
+            Agent current = agents.get(i);
+            boolean hasCollided = findWallCollision(current, environment, wallCollisions);
 
+            for (int j = i + 1; j < agents.size(); j++) {
+                Agent other = agents.get(j);
+                if (isInContactWithAgent(current, other)) {
+                    AgentsCollision newCollision = new AgentsCollision(current, other);
+                    agentsCollisions.add(newCollision);
+                    hasCollided = true;
+                }
+            }
+
+            // chequeamos si la particula que estamos analizando esta involucrada en un choque contra otra particula
+            if (agentsCollisions.stream().anyMatch(agentsCollision -> agentsCollision.getAgent2().equals(current)))
+                hasCollided = true;
+
+            if (!hasCollided)
+                nonCollisionAgents.add(current);
+        }
+    }
 }
