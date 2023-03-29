@@ -21,10 +21,10 @@ import java.util.Random;
 import static InputHandling.ParametersNames.*;
 
 public class SimulationParametersParser {
+    private final Long maxTime;
     private Map<String, AgentsGeneratorParameters> generatorsParameters;
     private Map<String, TargetGroupParameters> targetGroupsParameters;
     private Map<String, ServerGroupParameters> serverGroupsParameters;
-    private final Long maxTime;
     private Long evacuationTime = null;
     private double agentsMinimumMostPossibleRadius = 0, agentsMaximumMostPossibleRadius = 0;
 
@@ -37,7 +37,7 @@ public class SimulationParametersParser {
         }
 
         this.maxTime = (Long) jsonObject.get(MAX_TIME_KEY);
-        if(jsonObject.containsKey(EVACUATE_TIME_KEY))
+        if (jsonObject.containsKey(EVACUATE_TIME_KEY))
             this.evacuationTime = (Long) jsonObject.get(EVACUATE_TIME_KEY);
         this.initGeneratorsParameters(seedGenerator, (JSONArray) jsonObject.get(GENERATORS_KEY));
         this.initTargetsParameters(seedGenerator, (JSONArray) jsonObject.get(TARGETS_KEY));
@@ -49,21 +49,21 @@ public class SimulationParametersParser {
 
         switch ((String) parameters.get(DISTRIBUTION_TYPE_KEY)) {
             case DISTRIBUTION_UNIFORM_KEY:
-                if(parameters.get(DISTRIBUTION_MIN_KEY) == null || parameters.get(DISTRIBUTION_MAX_KEY) == null)
+                if (parameters.get(DISTRIBUTION_MIN_KEY) == null || parameters.get(DISTRIBUTION_MAX_KEY) == null)
                     throw new IllegalArgumentException("Distribution min or max values not found on the parameters JSON file when uniform distribution specified.");
 
                 randomGenerator = new UniformRandom(seed, (double) parameters.get(DISTRIBUTION_MIN_KEY), (double) parameters.get(DISTRIBUTION_MAX_KEY));
                 break;
 
             case DISTRIBUTION_GAUSSIAN_KEY:
-                if(parameters.get(DISTRIBUTION_MEAN_KEY) == null || parameters.get(DISTRIBUTION_STD_KEY) == null)
+                if (parameters.get(DISTRIBUTION_MEAN_KEY) == null || parameters.get(DISTRIBUTION_STD_KEY) == null)
                     throw new IllegalArgumentException("Distribution mean or std values not found on the parameters JSON file when gaussian distribution specified.");
 
                 randomGenerator = new GaussianRandom(seed, (double) parameters.get(DISTRIBUTION_MEAN_KEY), (double) parameters.get(DISTRIBUTION_STD_KEY));
                 break;
 
             case DISTRIBUTION_EXPONENTIAL_KEY:
-                if(parameters.get(DISTRIBUTION_MEAN_KEY) == null)
+                if (parameters.get(DISTRIBUTION_MEAN_KEY) == null)
                     throw new IllegalArgumentException("Distribution std values not found on the parameters JSON file when exponential distribution specified.");
 
                 randomGenerator = new ExponentialRandom(seed, (double) parameters.get(DISTRIBUTION_MEAN_KEY));
@@ -77,7 +77,7 @@ public class SimulationParametersParser {
     }
 
     private JSONObject getOrThrowMissingException(JSONObject from, String key) {
-        if(from.get(key) == null)
+        if (from.get(key) == null)
             throw new IllegalArgumentException("Parameter: " + key + " not found.");
 
         return (JSONObject) from.get(key);

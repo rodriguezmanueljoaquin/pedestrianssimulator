@@ -10,7 +10,7 @@ public class Rectangle implements Zone {
 
     public Rectangle(Vector x1, Vector x2) {
         // assign in such a way that this.x1 < this.x2 in both dimensions
-        if(x1.getX() < x2.getX()) {
+        if (x1.getX() < x2.getX()) {
             this.x1 = new Vector(x1.getX(), 0.);
             this.x2 = new Vector(x2.getX(), 0.);
         } else {
@@ -18,7 +18,7 @@ public class Rectangle implements Zone {
             this.x2 = new Vector(x1.getX(), 0.);
         }
 
-        if(x1.getY() < x2.getY()){
+        if (x1.getY() < x2.getY()) {
             this.x1.setY(x1.getY());
             this.x2.setY(x2.getY());
         } else {

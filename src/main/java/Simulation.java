@@ -2,9 +2,6 @@ import Agent.Agent;
 import Agent.AgentStates;
 import Environment.Environment;
 import Environment.Wall;
-import OperationalModelModule.Collisions.AgentsCollision;
-import OperationalModelModule.Collisions.CollisionsFinder;
-import OperationalModelModule.Collisions.WallCollision;
 import OperationalModelModule.OperationalModelModule;
 
 import java.io.FileNotFoundException;
@@ -71,8 +68,8 @@ public class Simulation {
 
     // returns different from zero when all agents have evacuated
     private int manageEvacuation() {
-        if(!this.alreadyEvacuating) {
-            if(this.time >= this.evacuationTime) {
+        if (!this.alreadyEvacuating) {
+            if (this.time >= this.evacuationTime) {
                 this.alreadyEvacuating = true;
                 for (Agent agent : this.agents) {
                     agent.evacuate(this.environment.getExits());
@@ -98,7 +95,7 @@ public class Simulation {
             // create new agents and update
 
             if (this.evacuationTime != null) {
-                if(this.manageEvacuation() != 0) break;
+                if (this.manageEvacuation() != 0) break;
             } else {
                 this.updateEnvironment();
             }
@@ -111,13 +108,13 @@ public class Simulation {
 
             this.checkLeavingAgents();
 
-            this.operationalModelModule.executeOperationalModelModule(agents,environment,random);
+            this.operationalModelModule.executeOperationalModelModule(agents, environment, random);
 
             // escribir output
             this.writeOutput();
             this.time += this.dt;
 
-            if(this.time > nextPercentage * this.maxTime) {
+            if (this.time > nextPercentage * this.maxTime) {
                 System.out.printf("\t\t\t%d%% percentage of the simulation finished.\n", (int) Math.ceil(nextPercentage * 100));
                 nextPercentage += 0.1;
             }
@@ -143,7 +140,6 @@ public class Simulation {
         }
         this.agents.removeAll(leavingAgents);
     }
-
 
 
     private void writeOutput() {

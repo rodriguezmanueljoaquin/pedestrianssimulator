@@ -13,6 +13,7 @@ import InputHandling.SimulationParameters.SimulationParametersParser;
 import OperationalModelModule.CPMAnisotropic;
 import OperationalModelModule.OperationalModelModule;
 import Utils.Vector;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -68,7 +69,7 @@ public class Main {
 //        System.out.println(path);
 
         // -------- CONFIGURATION --------
-        SimulationParametersParser parameters = new SimulationParametersParser( "./data/parameters.json", random);
+        SimulationParametersParser parameters = new SimulationParametersParser("./data/parameters.json", random);
 
         // -------- TARGETS --------
         Map<String, List<Target>> targetsMap =
@@ -77,7 +78,7 @@ public class Main {
         // -------- SERVERS --------
         Map<String, List<Server>> serversMap =
                 CSVHandler.importServers(CSV_DIRECTORY + "/SERVERS.csv", parameters.getServerGroupsParameters(),
-                parameters.getAgentsMostPossibleMaxRadius());
+                        parameters.getAgentsMostPossibleMaxRadius());
 
         // -------- BEHAVIOUR --------
         Map<String, BehaviourScheme> behaviours = getBehaviourSchemes(graph, exitsMap, serversMap, targetsMap,
@@ -97,7 +98,7 @@ public class Main {
 
         // -------- OTHER PARAMETERS --------
         double deltaT = parameters.getAgentsMostPossibleMinRadius() / (4 * parameters.getAgentsHighestMaxVelocity());
-        if(deltaT < 0.001) {
+        if (deltaT < 0.001) {
             System.out.println("Delta too small! Reducing it to 0.001.");
             deltaT = 0.001;
         } else System.out.println("DELTA_T = " + deltaT);

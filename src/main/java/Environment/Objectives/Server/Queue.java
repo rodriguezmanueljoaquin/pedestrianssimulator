@@ -18,9 +18,9 @@ public class Queue {
     }
 
     public Vector getSpotPosition(int spot) {
-        if(spot < 0) return null;
+        if (spot < 0) return null;
         for (QueueLine line : this.queue) {
-            if(line.getSegmentsQuantity() < spot) {
+            if (line.getSegmentsQuantity() < spot) {
                 // searched spot is not in this line
                 spot -= line.getSegmentsQuantity();
             } else {
@@ -29,7 +29,7 @@ public class Queue {
         }
 
         // spots capacity reached, return end of queue
-        return this.queue.get(this.queue.size()-1).getX2();
+        return this.queue.get(this.queue.size() - 1).getX2();
     }
 
     private class QueueLine extends Line {

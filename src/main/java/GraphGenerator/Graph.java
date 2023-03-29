@@ -166,7 +166,7 @@ public class Graph {
             Node closestNode = this.getClosestVisibleNode(wall.getCentroid());
             Node mirrorNode = new Node(getMirroredPosition(wall, closestNode.getPosition()));
             this.nodes.put(mirrorNode.getPosition(), mirrorNode);
-            if(!isPositionVisibleWithinWalls(closestNode.getPosition(), mirrorNode.getPosition(), this.walls)) {
+            if (!isPositionVisibleWithinWalls(closestNode.getPosition(), mirrorNode.getPosition(), this.walls)) {
                 // it is necessary to add an intermediary node in the door
                 Node node = new Node(wall.getCentroid());
                 node.addNeighbor(closestNode);

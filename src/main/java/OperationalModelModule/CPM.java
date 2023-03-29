@@ -23,7 +23,7 @@ public class CPM implements OperationalModelModule {
         this.environment = environment;
         this.CIM = new CellIndexMethod(this.environment.getWalls(), CPMConstants.NEIGHBOURS_RADIUS, agentsMaximumMostPossibleRadius);
         this.agentsPreviousDirection = new HashMap<>();
-        this.radiusIncrementCoefficient = CPMConstants.TAU/dt;
+        this.radiusIncrementCoefficient = CPMConstants.TAU / dt;
     }
 
     static Vector calculateRepulsionForce(Vector position, Vector obstacle, Vector originalDirection, double Ap, double Bp) {
@@ -139,14 +139,13 @@ public class CPM implements OperationalModelModule {
                 .filter((a) -> a.distance(agent.getPosition()) <= WALL_DISTANCE_CONSIDERATION)
                 .min(Comparator.comparingDouble(o -> o.distance(agent.getPosition())));
 
-        if(closestWallPosition.isPresent()) {
+        if (closestWallPosition.isPresent()) {
             return calculateRepulsionForce(
                     agent.getPosition(), closestWallPosition.get(), agent.getDirection(),
                     getRandomDoubleInRange(CPMConstants.CLOSEST_WALL_AP, CPMConstants.AP_VARIATION, random),
                     getRandomDoubleInRange(CPMConstants.CLOSEST_WALL_BP, CPMConstants.BP_VARIATION, random)
             );
-        }
-        else return new Vector(0, 0);
+        } else return new Vector(0, 0);
     }
 
     public void updateNonCollisionAgent(Agent agent, Random random) {
@@ -181,7 +180,7 @@ public class CPM implements OperationalModelModule {
 
     @Override
     public void findCollisions(List<Agent> agents, Environment environment, List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents) {
-        CollisionsFinder.Find(agents,environment,wallCollisions,agentsCollisions,nonCollisionAgents);
+        CollisionsFinder.Find(agents, environment, wallCollisions, agentsCollisions, nonCollisionAgents);
     }
 
     @Override

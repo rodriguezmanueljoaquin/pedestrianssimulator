@@ -14,8 +14,8 @@ import Environment.Wall;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.ServerGroupParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.TargetGroupParameters;
-import Utils.*;
 import Utils.Vector;
+import Utils.*;
 
 import java.io.File;
 import java.util.*;
@@ -147,7 +147,7 @@ public class CSVHandler {
     }
 
     public static Map<String, List<Server>> importServers(String filePath, Map<String, ServerGroupParameters> serverGroupsParameters,
-                                                        double agentsMaximumMostPossibleRadius) {
+                                                          double agentsMaximumMostPossibleRadius) {
         Map<String, List<Server>> serversMap = new HashMap<>();
         for (String key : serverGroupsParameters.keySet()) {
             serversMap.put(key, new ArrayList<>());
@@ -216,7 +216,7 @@ public class CSVHandler {
                         break;
 
                     default:
-                        if(type.startsWith("QUEUE")) {
+                        if (type.startsWith("QUEUE")) {
                             queueLines.add(new Line(start, end));
                         } else throw new RuntimeException("ERROR IN SERVERS.csv on row: " + Arrays.toString(row));
                 }

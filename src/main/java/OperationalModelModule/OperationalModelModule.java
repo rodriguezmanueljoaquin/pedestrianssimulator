@@ -24,5 +24,5 @@ public interface OperationalModelModule {
     void findCollisions(List<Agent> agents, Environment environment,
                         List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents);
 
-    void executeOperationalModelModule(List<Agent> agents,Environment environment, Random random);
+    void executeOperationalModelModule(List<Agent> agents, Environment environment, Random random);
 }

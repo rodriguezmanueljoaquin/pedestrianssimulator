@@ -15,7 +15,7 @@ public class NodePath {
     }
 
     public void add(Node node) {
-        if(!node.equals(this.getLastNode())) {
+        if (!node.equals(this.getLastNode())) {
             // avoid repetition
             this.path.add(node);
             recalculateFunctionValueAndDistance();
@@ -30,7 +30,7 @@ public class NodePath {
 
     public NodePath copy() {
         NodePath answer = new NodePath();
-        for (Node copyNode: this.path) {
+        for (Node copyNode : this.path) {
             answer.add(copyNode);
         }
         return answer;
@@ -60,7 +60,7 @@ public class NodePath {
     }
 
     public Node next() {
-        if(this.path.size() == 0)
+        if (this.path.size() == 0)
             return null;
         return this.path.remove(0);
     }
@@ -73,7 +73,7 @@ public class NodePath {
             return null;
         }
 
-        return this.path.get(index+1);
+        return this.path.get(index + 1);
     }
 
     public Double getFunctionValue() {
@@ -90,7 +90,7 @@ public class NodePath {
         for (Node node : this.path) {
             answer.append(node.getId() + ";");
         }
-        if(answer.length() > 0)
+        if (answer.length() > 0)
             // remove last delimiter
             answer.deleteCharAt(answer.length() - 1);
         return answer.toString();

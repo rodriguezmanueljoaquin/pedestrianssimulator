@@ -30,10 +30,10 @@ public class Agent {
         this.position = x;
         this.direction = new Vector(0, 1);
 
-        if(maxRadius < 0)
+        if (maxRadius < 0)
             this.maxRadius = 0.5;
         else this.maxRadius = maxRadius;
-        if(minRadius > this.maxRadius || minRadius < 0) {
+        if (minRadius > this.maxRadius || minRadius < 0) {
             this.minRadius = maxRadius * 0.95;
         } else this.minRadius = minRadius;
 

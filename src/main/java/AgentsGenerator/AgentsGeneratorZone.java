@@ -4,12 +4,13 @@ import Utils.Rectangle;
 import Utils.Vector;
 
 public class AgentsGeneratorZone extends Rectangle {
-    private int rowsQty, colsQty;
     private final double CELL_SIZE;
+    private int rowsQty, colsQty;
+
     public AgentsGeneratorZone(Vector x1, Vector x2, double agentsMaximumMostPossibleRadius) {
         super(x1, x2);
-        this.CELL_SIZE = (agentsMaximumMostPossibleRadius* 2) *2; // at least 2 agents fit in one cell;
-        this.rowsQty =  (int) Math.floor((this.x2.getY() - this.x1.getY()) / CELL_SIZE);
+        this.CELL_SIZE = (agentsMaximumMostPossibleRadius * 2) * 2; // at least 2 agents fit in one cell;
+        this.rowsQty = (int) Math.floor((this.x2.getY() - this.x1.getY()) / CELL_SIZE);
         this.colsQty = (int) Math.floor((this.x2.getX() - this.x1.getX()) / CELL_SIZE);
         if (this.rowsQty <= 0)
             this.rowsQty = 1;
@@ -23,7 +24,7 @@ public class AgentsGeneratorZone extends Rectangle {
     }
 
     public Vector getPositionByIndex(int index) {
-        if(index > this.getZoneMatrixSize())
+        if (index > this.getZoneMatrixSize())
             throw new IllegalArgumentException("Index: " + index + " out of bounds: " + this.getZoneMatrixSize() + " in agents generator zone");
 
         double row = Math.floor((double) index / this.colsQty);
@@ -31,13 +32,13 @@ public class AgentsGeneratorZone extends Rectangle {
         Vector difference = this.x2.subtract(this.x1).multiply(new Vector(1. / (this.rowsQty), 1. / (this.colsQty)));
         Vector pos = this.x1.add(difference.multiply(new Vector(row, col)));
         return pos.add(new Vector(
-                this.getRandomDoubleInRange(CELL_SIZE/4, CELL_SIZE/2),
-                this.getRandomDoubleInRange(CELL_SIZE/4, CELL_SIZE/2)
+                this.getRandomDoubleInRange(CELL_SIZE / 4, CELL_SIZE / 2),
+                this.getRandomDoubleInRange(CELL_SIZE / 4, CELL_SIZE / 2)
         ));
     }
 
     public int getIndexByPosition(Vector position) {
-        Vector indexes = position.subtract(this.x1).scalarMultiply(1/CELL_SIZE);
+        Vector indexes = position.subtract(this.x1).scalarMultiply(1 / CELL_SIZE);
         return (int) (Math.floor(indexes.getX()) * this.colsQty + Math.floor(indexes.getY()));
     }
 }

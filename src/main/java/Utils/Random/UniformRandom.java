@@ -6,7 +6,7 @@ public class UniformRandom extends RandomGenerator {
 
     public UniformRandom(long seed, double from, double to) {
         super(seed);
-        if(from > to) {
+        if (from > to) {
             this.from = to;
             this.to = from;
         } else {

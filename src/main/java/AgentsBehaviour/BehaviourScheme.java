@@ -1,13 +1,11 @@
 package AgentsBehaviour;
 
-import Agent.AgentConstants;
 import AgentsBehaviour.StateMachine.StateMachine;
 import Environment.Objectives.Exit;
 import Environment.Objectives.Objective;
 import Environment.Objectives.ObjectiveType;
 import Environment.Objectives.Server.Server;
 import GraphGenerator.Graph;
-import Utils.Random.GaussianRandom;
 import Utils.Random.RandomGenerator;
 import Utils.Random.UniformRandom;
 import Utils.Vector;
@@ -90,7 +88,7 @@ public class BehaviourScheme {
 
         public ObjectiveGroup(List<Objective> possibleObjectives, int minOccurrences, int maxOccurrences, long randomSeed) {
             this.possibleObjectives = possibleObjectives;
-            this.objectiveGenerator = new UniformRandom(randomSeed, 0, possibleObjectives.size()-1);
+            this.objectiveGenerator = new UniformRandom(randomSeed, 0, possibleObjectives.size() - 1);
             this.objectivesQuantityGenerator = new UniformRandom(randomSeed, minOccurrences, maxOccurrences);
         }
 

@@ -27,7 +27,7 @@ public class AgentsGenerator {
         this.zone = zone;
         this.generatorParameters = generatorParameters;
         this.generationUnitsGenerator = generatorParameters.getGenerationParameters().getGenerationUnitsGenerator();
-        this.generationIndexGenerator = new UniformRandom(seed, 0, this.zone.getZoneMatrixSize()-1);
+        this.generationIndexGenerator = new UniformRandom(seed, 0, this.zone.getZoneMatrixSize() - 1);
         this.minRadiusGenerator = generatorParameters.getAgentsParameters().getMinRadiusGenerator();
         this.maxRadiusGenerator = generatorParameters.getAgentsParameters().getMaxRadiusGenerator();
         this.agentsMaximumMostPossibleRadius = agentsMaximumMostPossibleRadius;
@@ -42,13 +42,13 @@ public class AgentsGenerator {
             this.lastGenerationTime = time;
             // generate is on Active time, and it's time to create another generation
             int agentsToCreate = (int) Math.round(this.generationUnitsGenerator.getNewRandomNumber());
-            if(agentsToCreate > this.zone.getZoneMatrixSize())
+            if (agentsToCreate > this.zone.getZoneMatrixSize())
                 agentsToCreate = this.zone.getZoneMatrixSize();
 
             Set<Integer> positionsUsed = new HashSet<>();
             // first, check positionsUsed by already existing agents
             for (Agent agent : currentAgents) {
-                if(this.zone.isPointInside(agent.getPosition())) {
+                if (this.zone.isPointInside(agent.getPosition())) {
                     positionsUsed.add(this.zone.getIndexByPosition(agent.getPosition()));
                 } else {
                     Vector closestPoint = agent.getPosition().add(
@@ -62,7 +62,7 @@ public class AgentsGenerator {
             }
 
             for (int i = 0; i < agentsToCreate; i++) {
-                if(positionsUsed.size() == this.zone.getZoneMatrixSize())
+                if (positionsUsed.size() == this.zone.getZoneMatrixSize())
                     break;
 
                 // get position to generate agent, which has to be different from the ones the other agents get to avoid overlap

@@ -5,7 +5,7 @@ public class ExponentialRandom extends RandomGenerator {
 
     public ExponentialRandom(long seed, double mean) {
         super(seed);
-        this.lambda = 1/mean;
+        this.lambda = 1 / mean;
     }
 
     @Override
@@ -15,7 +15,7 @@ public class ExponentialRandom extends RandomGenerator {
 
     @Override
     public double getMean() {
-        return 1/this.lambda;
+        return 1 / this.lambda;
     }
 
     @Override
