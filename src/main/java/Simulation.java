@@ -27,6 +27,7 @@ public class Simulation {
     private final OperationalModelModule operationalModelModule;
     private final Double evacuationTime;
     private double time;
+    private boolean alreadyEvacuating = false;
     private PrintWriter writer;
 
     public Simulation(double maxTime, Environment environment, double deltaT,
@@ -63,6 +64,31 @@ public class Simulation {
         return Stream.concat(this.agents.stream(), this.leavingAgents.stream()).collect(Collectors.toList());
     }
 
+    private void updateEnvironment() {
+        List<Agent> newAgents = this.environment.update(this.time, this.agents);
+        this.agents.addAll(newAgents);
+    }
+
+    // returns different from zero when all agents have evacuated
+    private int manageEvacuation() {
+        if(!this.alreadyEvacuating) {
+            if(this.time >= this.evacuationTime) {
+                this.alreadyEvacuating = true;
+                for (Agent agent : this.agents) {
+                    agent.evacuate(this.environment.getExits());
+                }
+            } else {
+                // still not evacuation time, update as usual
+                this.updateEnvironment();
+            }
+        } else {
+            if (this.agents.size() == 0)
+                // stop simulation
+                return 1;
+        }
+        return 0;
+    }
+
     public void run() {
         System.out.println("\t\tSimulation started.");
         // first iteration
@@ -70,18 +96,12 @@ public class Simulation {
         double nextPercentage = 0.1;
         while (this.time < this.maxTime) {
             // create new agents and update
-            List<Agent> newAgents = this.environment.update(this.time, this.agents);
 
-            // check for evacuation
-            if (this.evacuationTime != null && this.time >= this.evacuationTime) {
-                if (this.agents.size() == 0)
-                    // stop simulation
-                    break;
-
-                for (Agent agent : this.agents) {
-                    agent.evacuate(this.environment.getExits());
-                }
-            } else this.agents.addAll(newAgents);
+            if (this.evacuationTime != null) {
+                if(this.manageEvacuation() != 0) break;
+            } else {
+                this.updateEnvironment();
+            }
 
             // update positions and state
             for (Agent agent : this.getAllAgents()) {
