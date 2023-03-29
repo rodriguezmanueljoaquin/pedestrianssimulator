@@ -1,6 +1,7 @@
 package GraphGenerator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 // necessary for AStar heuristic
@@ -11,14 +12,29 @@ public class NodePath {
 
     public NodePath() {
         this.path = new ArrayList<>();
-        recalculateFunctionValueAndDistance();
+        this.functionValue = 0.;
+        this.distance = 0.;
+    }
+
+    public NodePath(Node firstNode) {
+        this.path = new ArrayList<>();
+        this.path.add(firstNode);
+        this.functionValue = 0.;
+        this.distance = 0.;
+    }
+
+    public NodePath(List<Node> path, double functionValue, double distance) {
+        this.path = path;
+        this.functionValue = functionValue;
+        this.distance = distance;
     }
 
     public void add(Node node) {
         if (!node.equals(this.getLastNode())) {
             // avoid repetition
             this.path.add(node);
-            recalculateFunctionValueAndDistance();
+            this.distance += this.path.get(this.path.size()-2).getPosition().distance(node.getPosition());
+            this.functionValue = this.distance; // TODO: FALTA HEURISTICA, AHORA SOLO CONSIDERA COSTO (Fn = Cn)
         }
     }
 
@@ -29,11 +45,7 @@ public class NodePath {
     }
 
     public NodePath copy() {
-        NodePath answer = new NodePath();
-        for (Node copyNode : this.path) {
-            answer.add(copyNode);
-        }
-        return answer;
+        return new NodePath(new ArrayList<>(this.path), this.functionValue, this.distance);
     }
 
     public Node getLastNode() {
@@ -47,16 +59,6 @@ public class NodePath {
             return null;
 
         return this.path.get(0);
-    }
-
-    private void recalculateFunctionValueAndDistance() {
-        double totalDistance = 0;
-        for (int i = 0; i < this.path.size() - 1; i++) {
-            totalDistance += this.path.get(i).getPosition().distance(this.path.get(i + 1).getPosition());
-        }
-
-        this.distance = totalDistance;
-        this.functionValue = this.distance; // TODO: FALTA HEURISITCA, AHORA SOLO CONSIDERA COSTO
     }
 
     public Node next() {

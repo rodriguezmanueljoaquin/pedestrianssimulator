@@ -233,14 +233,12 @@ public class Graph {
             return path;
 
         Node prevNode = currentNode;
-        NodePath reducedPath = new NodePath();
-
         // keep last visible node from fromPosition
         while (currentNode != null && this.isPositionAccessible(fromPosition, currentNode.getPosition(), radius)) {
             prevNode = currentNode;
             currentNode = path.getNodeAfter(prevNode);
         }
-        reducedPath.add(prevNode);
+        NodePath reducedPath = new NodePath(prevNode);
 
         currentNode = prevNode; // reset current
         // keep only essential in between nodes  (erase those that are between nodes (and toPosition) that can see each other)
@@ -262,8 +260,7 @@ public class Graph {
     public NodePath AStar(Node from, Vector to, double radius) {
         PriorityQueue<NodePath> frontierPaths = new PriorityQueue<>(Comparator.comparingDouble(NodePath::getFunctionValue));
         Node currentNode = from;
-        NodePath currentPath = new NodePath();
-        currentPath.add(from);
+        NodePath currentPath = new NodePath(from);
 
         HashSet<Integer> visitedNodesId = new HashSet<>();
 
