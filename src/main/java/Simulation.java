@@ -7,6 +7,7 @@ import OperationalModelModule.OperationalModelModule;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +27,7 @@ public class Simulation {
     private double time;
     private boolean alreadyEvacuating = false;
     private PrintWriter writer;
+    private final DecimalFormat outputDecimalFormatter = new DecimalFormat("######.###");
 
     public Simulation(double maxTime, Environment environment, double deltaT,
                       OperationalModelModule operationalModelModule,
@@ -146,9 +148,14 @@ public class Simulation {
         List<Agent> allAgents = this.getAllAgents();
         this.writer.write(String.format(Locale.ENGLISH, "%f;%d\n", this.time, allAgents.size()));
         for (Agent agent : allAgents) {
-            this.writer.write(String.format(Locale.ENGLISH, "%d;%f;%f;%f;%f;%f;%d\n",
-                    agent.getId(), agent.getPosition().getX(), agent.getPosition().getY(), agent.getVelocity().getX(),
-                    agent.getVelocity().getY(), agent.getRadius(), agent.getState().ordinal()));
+            StringBuilder newLine = new StringBuilder();
+            newLine.append(agent.getId()).append(";");
+            newLine.append(this.outputDecimalFormatter.format(agent.getPosition().getX())).append(";");
+            newLine.append(this.outputDecimalFormatter.format(agent.getPosition().getY())).append(";");
+            newLine.append(this.outputDecimalFormatter.format(agent.getVelocity().getX())).append(";");
+            newLine.append(this.outputDecimalFormatter.format(agent.getVelocity().getY())).append(";");
+            newLine.append(this.outputDecimalFormatter.format(agent.getRadius())).append(";");
+            newLine.append(agent.getState().ordinal()).append("\n");
         }
         this.writer.write("\n"); // end of iterations
     }
