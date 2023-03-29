@@ -2,10 +2,10 @@ package OperationalModelModule;
 
 import Agent.Agent;
 import Environment.Environment;
-import Environment.Wall;
 import OperationalModelModule.Collisions.AgentsCollision;
 import OperationalModelModule.Collisions.WallCollision;
 import Utils.Vector;
+import org.apache.commons.math3.util.FastMath;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class CPMAnisotropic extends CPM {
         Vector relativeDirection = otherAgent.getPosition().subtract(agent.getPosition());
         Vector agentDirection = agent.getDirection();
         // We use acos to calculate this direction
-        return Math.acos(agentDirection.dotMultiply(relativeDirection) / (agentDirection.module() * relativeDirection.module()));
+        return FastMath.acos(agentDirection.dotMultiply(relativeDirection) / (agentDirection.module() * relativeDirection.module()));
     }
 
     public static boolean isInContactWithAgent(Agent agent, Agent otherAgent) {

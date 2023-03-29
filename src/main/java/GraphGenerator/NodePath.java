@@ -49,9 +49,10 @@ public class NodePath {
     }
 
     public Node getLastNode() {
-        if (this.path.size() == 0)
+        int size = this.path.size();
+        if (size == 0)
             return null;
-        return this.path.get(this.path.size() - 1);
+        return this.path.get(size - 1);
     }
 
     public Node getFirstNode() {

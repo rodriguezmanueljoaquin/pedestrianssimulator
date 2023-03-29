@@ -148,16 +148,16 @@ public class Simulation {
         List<Agent> allAgents = this.getAllAgents();
         this.writer.write(String.format(Locale.ENGLISH, "%f;%d\n", this.time, allAgents.size()));
         for (Agent agent : allAgents) {
-            StringBuilder newLine = new StringBuilder();
-            newLine.append(agent.getId()).append(";");
-            newLine.append(this.outputDecimalFormatter.format(agent.getPosition().getX())).append(";");
-            newLine.append(this.outputDecimalFormatter.format(agent.getPosition().getY())).append(";");
-            newLine.append(this.outputDecimalFormatter.format(agent.getVelocity().getX())).append(";");
-            newLine.append(this.outputDecimalFormatter.format(agent.getVelocity().getY())).append(";");
-            newLine.append(this.outputDecimalFormatter.format(agent.getRadius())).append(";");
-            newLine.append(agent.getState().ordinal()).append("\n");
+            String newLine = agent.getId() + ";" +
+                    (float) agent.getPosition().getX() + ";" +
+                    (float) agent.getPosition().getY() + ";" +
+                    (float) agent.getVelocity().getX() + ";" +
+                    (float) agent.getVelocity().getY() + ";" +
+                    (float) agent.getRadius() + ";" +
+                    agent.getState().ordinal() + "\n";
+            this.writer.write(newLine);
         }
-        this.writer.write("\n"); // end of iterations
+        this.writer.write("\n"); // end of iteration
     }
 
     private void createDynamicFile(String outputDirectoryPath) throws FileNotFoundException, UnsupportedEncodingException {
