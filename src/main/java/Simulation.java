@@ -149,6 +149,7 @@ public class Simulation {
         this.writer.write(String.format(Locale.ENGLISH, "%f;%d\n", this.time, allAgents.size()));
         for (Agent agent : allAgents) {
             String newLine = agent.getId() + ";" +
+                    // cast to float to reduce precision output for performance
                     (float) agent.getPosition().getX() + ";" +
                     (float) agent.getPosition().getY() + ";" +
                     (float) agent.getVelocity().getX() + ";" +

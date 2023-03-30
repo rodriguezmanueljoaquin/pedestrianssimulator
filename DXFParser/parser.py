@@ -226,7 +226,7 @@ def parse_dxf(in_file_path, out_path):
 
 
 EXAMPLE_DXF_PATH = "data/Plano prueba simulacion V05.02.dxf"
-EXAMPLE2_DXF_PATH = "data/Plano SREC PB simulacion V02.dxf"
+EXAMPLE2_DXF_PATH = "data/Plano SREC PB simulacion V04.01.dxf"
 EXAMPLE_JSON_PATH = "data/parameters.json"
 
 if __name__ == '__main__':
