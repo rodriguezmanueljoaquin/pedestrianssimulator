@@ -2,11 +2,11 @@ package OperationalModelModule;
 
 public class CPMConstants {
     public static final double DTS_NEEDED_FOR_EXPANSION = 200;
-    public static final double NEIGHBOURS_RADIUS = 3.0;
+    public static final double NEIGHBORS_RADIUS = 3.0;
     public static final double TAU = 0.5; // time a particle needs to reach its maximum radius, from the minimum
     public static final double
             ORIGINAL_DIRECTION_AP = 400,
-            NEW_DIRECTION_AP = 100,
+            NEW_DIRECTION_AP = 150,
             AGENT_AP = 250,
             AGENT_BP = 1,
 

@@ -22,7 +22,8 @@ public class CPMAnisotropic extends CPM {
         return FastMath.acos(agentDirection.dotMultiply(relativeDirection) / (agentDirection.module() * relativeDirection.module()));
     }
 
-    public static boolean isInContactWithAgent(Agent agent, Agent otherAgent) {
+    @Override
+    public boolean agentCollidesAgainst(Agent agent, Agent otherAgent) {
         if (agent.getRadius() == agent.getMinRadius()) {
             // like CPM
             return agent.distance(otherAgent) < 0;
@@ -34,7 +35,19 @@ public class CPMAnisotropic extends CPM {
         }
     }
 
-    public static boolean parallelLinesIntersectAgentRadiusAndDistanceIsValid(Agent agent, Agent otherAgent) {
+    @Override
+    public void findCollisions(List<Agent> agents, Environment environment, List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents) {
+        for (int i = 0; i < agents.size(); i++) {
+            Agent current = agents.get(i);
+            boolean hasCollided = findWallCollision(current, environment, wallCollisions) ||
+                                    findAgentCollision(current, agents.subList(i+1, agents.size()), agentsCollisions);
+
+            if (!hasCollided)
+                nonCollisionAgents.add(current);
+        }
+    }
+
+    private static boolean parallelLinesIntersectAgentRadiusAndDistanceIsValid(Agent agent, Agent otherAgent) {
 //        https://math.stackexchange.com/questions/422602/convert-two-points-to-line-eq-ax-by-c-0
 //        https://math.stackexchange.com/questions/1481904/distance-between-line-and-circle
 //        Aca, en vez de calcular para las dos lineas paralelas me fijo si la distancia
@@ -61,39 +74,9 @@ public class CPMAnisotropic extends CPM {
     public void updateCollidingAgents(AgentsCollision agentsCollision) {
         Agent agent1 = agentsCollision.getAgent1();
         Agent agent2 = agentsCollision.getAgent2();
-        if (isInContactWithAgent(agent1, agent2)) {
-            saveAgentDirection(agent1);
-            collapseAgent(agent1);
-            escapeFromObstacle(agent1, agent2.getPosition());
-        }
-        if (isInContactWithAgent(agent2, agent1)) {
-            collapseAgent(agent2);
-            escapeFromObstacle(agent2, agent1.getPosition());
-            saveAgentDirection(agent2);
-        }
+        saveAgentDirection(agent1);
+        collapseAgent(agent1);
+        escapeFromObstacle(agent1, agent2.getPosition());
     }
 
-    @Override
-    public void findCollisions(List<Agent> agents, Environment environment, List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents) {
-        for (int i = 0; i < agents.size(); i++) {
-            Agent current = agents.get(i);
-            boolean hasCollided = findWallCollision(current, environment, wallCollisions);
-
-            for (int j = i + 1; j < agents.size(); j++) {
-                Agent other = agents.get(j);
-                if (isInContactWithAgent(current, other)) {
-                    AgentsCollision newCollision = new AgentsCollision(current, other);
-                    agentsCollisions.add(newCollision);
-                    hasCollided = true;
-                }
-            }
-
-            // chequeamos si la particula que estamos analizando esta involucrada en un choque contra otra particula
-            if (agentsCollisions.stream().anyMatch(agentsCollision -> agentsCollision.getAgent2().equals(current)))
-                hasCollided = true;
-
-            if (!hasCollided)
-                nonCollisionAgents.add(current);
-        }
-    }
 }

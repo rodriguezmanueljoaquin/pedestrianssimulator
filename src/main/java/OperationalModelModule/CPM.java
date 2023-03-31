@@ -21,7 +21,7 @@ public class CPM implements OperationalModelModule {
 
     public CPM(Environment environment, double agentsMaximumMostPossibleRadius, double dt) {
         this.environment = environment;
-        this.CIM = new CellIndexMethod(this.environment.getWalls(), CPMConstants.NEIGHBOURS_RADIUS, agentsMaximumMostPossibleRadius);
+        this.CIM = new CellIndexMethod(this.environment.getWalls(), CPMConstants.NEIGHBORS_RADIUS, agentsMaximumMostPossibleRadius);
         this.agentsPreviousDirection = new HashMap<>();
         this.radiusIncrementCoefficient = CPMConstants.TAU / dt;
     }
@@ -85,11 +85,11 @@ public class CPM implements OperationalModelModule {
     }
 
     protected Vector calculateAgentRepulsion(Agent agent, Random random) {
-        List<Agent> neighbours = this.CIM.getAgentNeighbours(agent);
+        List<Agent> neighbors = this.CIM.getAgentNeighbors(agent);
         Vector agentsRepulsion = new Vector(0, 0);
 
         double AP, BP;
-        for (Agent neighbour : neighbours) {
+        for (Agent neighbour : neighbors) {
             // agent fears more those agents not moving
             if (neighbour.getVelocityModule() == 0) {
                 AP = CPMConstants.AGENT_AP * CPMConstants.NON_MOVING_AGENT_REPULSION_MULTIPLIER;
@@ -158,20 +158,30 @@ public class CPM implements OperationalModelModule {
         return false;
     }
 
+    protected boolean findAgentCollision(Agent agent, List<Agent> others, List<AgentsCollision> agentsCollisions) {
+        boolean hasCollided = false;
+        for (Agent other : others)
+            if (agent.distance(other) <= 0) {
+                AgentsCollision newCollision = new AgentsCollision(agent, other);
+                agentsCollisions.add(newCollision);
+                hasCollided = true;
+            }
+
+        return hasCollided;
+    }
+
     @Override
-    public void findCollisions(List<Agent> agents, Environment environment, List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents) {
+    public boolean agentCollidesAgainst(Agent agent, Agent otherAgent) {
+        return agent.distance(otherAgent) <= 0;
+    }
+
+    @Override
+    public void findCollisions(List<Agent> agents, Environment environment, List<WallCollision> wallCollisions,
+                               List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents) {
         for (int i = 0; i < agents.size(); i++) {
             Agent current = agents.get(i);
-            boolean hasCollided = findWallCollision(current, environment, wallCollisions);
-
-            for (int j = i + 1; j < agents.size(); j++) {
-                Agent other = agents.get(j);
-                if (current.distance(other) <= 0) {
-                    AgentsCollision newCollision = new AgentsCollision(current, other);
-                    agentsCollisions.add(newCollision);
-                    hasCollided = true;
-                }
-            }
+            boolean hasCollided = findWallCollision(current, environment, wallCollisions) ||
+                                    findAgentCollision(current, agents.subList(i+1, agents.size()), agentsCollisions);
 
             // chequeamos si la particula que estamos analizando esta involucrada en un choque contra otra particula
             if (agentsCollisions.stream().anyMatch(agentsCollision -> agentsCollision.getAgent2().equals(current)))

@@ -44,7 +44,7 @@ public class CellIndexMethod {
             currentMax.setY(possibleNewMax.getY());
     }
 
-    public List<Agent> getAgentNeighbours(Agent agent) {
+    public List<Agent> getAgentNeighbors(Agent agent) {
         int i = ((Double) ((this.bottomLeft.getX() + agent.getPosition().getX()) / this.cellSize)).intValue();
         int j = ((Double) ((this.bottomLeft.getY() + agent.getPosition().getY()) / this.cellSize)).intValue();
 

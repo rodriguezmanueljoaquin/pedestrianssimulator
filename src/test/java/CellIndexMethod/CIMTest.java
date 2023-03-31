@@ -45,7 +45,7 @@ public class CIMTest {
         cim.updateAgentsPosition(agents);
 
         for (Agent agent : agents) {
-            List<Agent> neighboursCIM = cim.getAgentNeighbours(agent);
+            List<Agent> neighboursCIM = cim.getAgentNeighbors(agent);
             List<Agent> neighboursBruteForce = getAgentNeighboursBruteForce(agent, agents, neighbourhoodRadius);
 
             if (!neighboursCIM.containsAll(neighboursBruteForce))

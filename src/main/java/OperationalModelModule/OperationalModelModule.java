@@ -21,6 +21,9 @@ public interface OperationalModelModule {
 
     void updateWallCollidingAgent(WallCollision wallCollision);
 
+    // Method that returns true if OMM considers agent is in contact with other
+    boolean agentCollidesAgainst(Agent agent, Agent other);
+
     // Receives agents, environment, and the two list where it will store the collisions made by the agents
     void findCollisions(List<Agent> agents, Environment environment,
                         List<WallCollision> wallCollisions, List<AgentsCollision> agentsCollisions, List<Agent> nonCollisionAgents);

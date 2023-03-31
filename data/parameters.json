@@ -1,6 +1,6 @@
 {
     "max_time": 1250,
-    "evacuate_at": 300,
+    "evacuate_at": 1000,
 
     "agents_generators": [
         {
