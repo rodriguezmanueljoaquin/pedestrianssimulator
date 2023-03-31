@@ -8,6 +8,8 @@ import Utils.Vector;
 import org.apache.commons.math3.util.FastMath;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CPMAnisotropic extends CPM {
     public CPMAnisotropic(Environment environment, double agentsMaximumMostPossibleRadius, double dt) {
@@ -40,7 +42,13 @@ public class CPMAnisotropic extends CPM {
         for (int i = 0; i < agents.size(); i++) {
             Agent current = agents.get(i);
             boolean hasCollided = findWallCollision(current, environment, wallCollisions) ||
-                                    findAgentCollision(current, agents.subList(i+1, agents.size()), agentsCollisions);
+                    // we may consider X agent collided against Y agent, but Y agent have not collided against X agent
+                                    findAgentCollision(current,
+                                            Stream.concat(
+                                                    agents.subList(0, i).stream(),
+                                                    agents.subList(i+1, agents.size()).stream())
+                                                    .collect(Collectors.toList()),
+                                            agentsCollisions);
 
             if (!hasCollided)
                 nonCollisionAgents.add(current);
@@ -74,9 +82,10 @@ public class CPMAnisotropic extends CPM {
     public void updateCollidingAgents(AgentsCollision agentsCollision) {
         Agent agent1 = agentsCollision.getAgent1();
         Agent agent2 = agentsCollision.getAgent2();
-        saveAgentDirection(agent1);
         collapseAgent(agent1);
         escapeFromObstacle(agent1, agent2.getPosition());
+
+        saveAgentDirection(agent1);
     }
 
 }

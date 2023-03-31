@@ -52,4 +52,4 @@ def visualize_graph_results():
 
 if __name__ == "__main__":
     visualize_simulation_results()
-    visualize_graph_results()
+    #visualize_graph_results()
