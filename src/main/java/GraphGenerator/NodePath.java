@@ -65,6 +65,7 @@ public class NodePath {
     public Node next() {
         if (this.path.size() == 0)
             return null;
+
         return this.path.remove(0);
     }
 

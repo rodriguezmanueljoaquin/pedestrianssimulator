@@ -2,6 +2,7 @@ import Agent.Agent;
 import Agent.AgentStates;
 import Environment.Environment;
 import Environment.Wall;
+import GraphGenerator.Graph;
 import OperationalModelModule.OperationalModelModule;
 
 import java.io.FileNotFoundException;
@@ -21,6 +22,7 @@ public class Simulation {
     private final double maxTime;
     private final double dt;
     private final Environment environment;
+    private final Graph graph;
     private final Random random;
     private final OperationalModelModule operationalModelModule;
     private final Double evacuationTime;
@@ -29,11 +31,12 @@ public class Simulation {
     private PrintWriter writer;
     private final DecimalFormat outputDecimalFormatter = new DecimalFormat("######.###");
 
-    public Simulation(double maxTime, Environment environment, double deltaT,
+    public Simulation(double maxTime, Environment environment, Graph graph, double deltaT,
                       OperationalModelModule operationalModelModule,
                       String outputDirectoryPath, Random random, Double evacuationTime) throws FileNotFoundException, UnsupportedEncodingException {
         this.maxTime = maxTime;
         this.environment = environment;
+        this.graph = graph;
         this.operationalModelModule = operationalModelModule;
         this.random = random;
         this.evacuationTime = evacuationTime;
@@ -138,7 +141,7 @@ public class Simulation {
         for (Agent agent : this.agents) {
             if (agent.getState() == AgentStates.LEAVING) {
                 this.leavingAgents.add(agent);
-            } else agent.updateDirection();
+            } else agent.updateDirection(this.graph);
         }
         this.agents.removeAll(leavingAgents);
     }

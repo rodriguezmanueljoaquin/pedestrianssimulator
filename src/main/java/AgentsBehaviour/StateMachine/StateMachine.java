@@ -6,7 +6,6 @@ import Environment.Objectives.Exit;
 import java.util.List;
 
 public interface StateMachine {
-    void updateAgentCurrentPath(Agent agent);
 
     void updateAgent(Agent agent, double currentTime);
 

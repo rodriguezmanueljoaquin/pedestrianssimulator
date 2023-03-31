@@ -130,7 +130,7 @@ public class Main {
         OperationalModelModule operationalModelModule = new CPMAnisotropic(environment, parameters.getAgentsMostPossibleMaxRadius(), deltaT);
 
         // -------- EXECUTION --------
-        Simulation sim = new Simulation(parameters.getMaxTime(), environment, deltaT,
+        Simulation sim = new Simulation(parameters.getMaxTime(), environment, graph, deltaT,
                 operationalModelModule, RESULTS_DIRECTORY, random, (double) parameters.getEvacuationTime());
         sim.run();
     }

@@ -7,6 +7,7 @@ import Environment.Objectives.ObjectiveType;
 import GraphGenerator.Graph;
 import GraphGenerator.Node;
 import GraphGenerator.NodePath;
+import Utils.Constants;
 import Utils.Vector;
 
 import java.util.ArrayList;
@@ -24,11 +25,10 @@ public class DefaultSM implements StateMachine {
         this.graph = graph;
     }
 
-    public void updateAgentCurrentPath(Agent agent) {
+    private void updateAgentCurrentPath(Agent agent) {
         NodePath path = this.graph.getPathToPosition(agent.getPosition(), agent.getCurrentObjective().getPosition(agent), agent.getMaxRadius());
 
         if (path == null) {
-            // FIXME! Checkear por que a veces da null
             System.out.println("ERROR: NULL searching for path to objective, from: " + agent.getPosition() + " to: " + agent.getCurrentObjective().getPosition(agent));
             agent.setState(AgentStates.LEAVING);
         } else {
@@ -44,7 +44,7 @@ public class DefaultSM implements StateMachine {
 
         // get the exit with matches with the closest position found
         Exit closestExit = exits.stream()
-                .filter(e -> e.getCentroidPosition().distance(closestExitPosition) < DOUBLE_EPSILON).findFirst()
+                .filter(e -> e.getCentroidPosition().distance(closestExitPosition) < Constants.DOUBLE_EPSILON).findFirst()
                 .orElseThrow(RuntimeException::new);
 
         agent.setObjectives(new ArrayList<>(Collections.singletonList(closestExit)));
@@ -111,7 +111,7 @@ public class DefaultSM implements StateMachine {
                 if (currentTime % 10 < 1) {
                     Node intermediateObjectiveNode = agent.getIntermediateObjectiveNode();
                     // every 10 frames
-                    // check if agent current path is correct, otherwise (maybe it changed because of CPM) update it
+                    // check if agent current path is correct (maybe agent got wrongly redirected because of CPM heuristics), otherwise update it
                     if (intermediateObjectiveNode == null) {
                         if (!this.graph.isPositionAccessible(agent.getPosition(), agent.getCurrentObjective().getPosition(agent), agent.getMaxRadius())) {
                             this.updateAgentCurrentPath(agent);
@@ -135,7 +135,7 @@ public class DefaultSM implements StateMachine {
 
             case MOVING_TO_QUEUE_POSITION:
                 Node lastNode = agent.getCurrentPath().getLastNode();
-                if (lastNode != null && !graph.isPositionAccessible(lastNode.getPosition(),
+                if (lastNode != null && !this.graph.isPositionAccessible(lastNode.getPosition(),
                         agent.getCurrentObjective().getPosition(agent),
                         agent.getMaxRadius()))
                     // objective position in queue changed while going to it and the position is not accessible from current path

@@ -3,6 +3,7 @@ package Agent;
 import AgentsBehaviour.StateMachine.StateMachine;
 import Environment.Objectives.Exit;
 import Environment.Objectives.Objective;
+import GraphGenerator.Graph;
 import GraphGenerator.Node;
 import GraphGenerator.NodePath;
 import Utils.Vector;
@@ -45,14 +46,22 @@ public class Agent {
         this.objectives = objectives;
     }
 
-    public void updateDirection() {
+    public void updateDirection(Graph graph) {
         if (this.getState() == AgentStates.LEAVING) {
             return;
         }
-        // first check if intermediate node has to be updated
-        if (this.currentIntermediateObjectiveNode != null && this.reachedPosition(this.currentIntermediateObjectiveNode.getPosition())) {
-            // intermediate node reached, update it
-            this.currentIntermediateObjectiveNode = this.currentPath.next();
+        // first check if intermediate node has to be updated (next intermediate node is accessible)
+        if (this.currentIntermediateObjectiveNode != null) {
+            Node nextNode = this.currentPath.getFirstNode();
+            Vector nextObjectivePosition;
+            if(nextNode != null) {
+                nextObjectivePosition = nextNode.getPosition();
+            } else {
+                // nextNode is null, therefore currentIntermediateObjectiveNode is the last one before getting to the objective
+                nextObjectivePosition = this.getCurrentObjective().getPosition(this);
+            }
+            if(graph.isPositionAccessible(this.position, nextObjectivePosition, this.maxRadius))
+                this.currentIntermediateObjectiveNode = this.currentPath.next();
         }
 
         Vector objectivePosition;

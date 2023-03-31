@@ -236,8 +236,6 @@ public class CPM implements OperationalModelModule {
 
         for (WallCollision wallCollision : wallCollisions) {
             this.updateWallCollidingAgent(wallCollision);
-            Agent agent = wallCollision.getAgent();
-            agent.getStateMachine().updateAgentCurrentPath(agent); // maybe because of this impact it has to change its path
         }
 
         for (Agent agent : nonCollisionAgents) {
