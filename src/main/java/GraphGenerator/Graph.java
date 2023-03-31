@@ -11,6 +11,9 @@ import java.util.function.Predicate;
 
 public class Graph {
     private final static double STEP_SIZE = 1.8; // Found empirically, TODO: AUTOMATIZE STEP SIZE SELECTION
+    public static String dxfDataFileName = "/DXF_DATA.txt";
+    public static String graphBackupFileName = "/graph.csv";
+    private final String dxfName;
 
     // CLOCKWISE
     private final static Vector[] POSSIBLE_NEIGHBORS_POSITION_DIFFERENCE = {
@@ -22,15 +25,23 @@ public class Graph {
     };
 
     // Map because we avoid recreating nodes on positions (key in map) already visited
-    private final Map<Vector, Node> nodes;
+    private final Map<Integer, Node> nodes;
     private final List<Wall> walls;
 
-    public Graph(List<Wall> walls, List<Wall> exits, Vector initialPosition) {
+    public Graph(List<Wall> walls, List<Wall> exits, Vector initialPosition, String dxfName) {
         this.nodes = new HashMap<>();
         this.walls = walls;
+        this.dxfName = dxfName;
         System.out.println("\tGenerating graph.");
         this.generateGraph(initialPosition, exits);
         System.out.println("\tGraph generated.");
+    }
+
+    public Graph(Map<Integer, Node> nodes, List<Wall> walls, String dxfName) {
+        this.nodes = nodes;
+        this.walls = walls;
+        this.dxfName = dxfName;
+        System.out.println("\tGraph backup imported.");
     }
 
     public boolean isPositionAccessible(Vector origin, Vector destiny, double radius) {
@@ -103,11 +114,7 @@ public class Graph {
         if (this.isPositionAccessible(fromPosition, toPosition, radius))
             return new NodePath();
 
-        // first try to get by current position, otherwise get the closest accessible
-        Node fromNode = this.nodes.get(fromPosition);
-        if (fromNode == null) {
-            fromNode = this.getClosestAccessibleNode(fromPosition, radius);
-        }
+        Node fromNode = this.getClosestAccessibleNode(fromPosition, radius);
 
         NodePath fullPath = this.AStar(fromNode, toPosition, radius);
         if (fullPath == null) {
@@ -125,10 +132,12 @@ public class Graph {
         wallsToConsider.addAll(extraWalls);
 
         Node root = new Node(initialPosition);
-        this.nodes.put(initialPosition, root);
+        this.nodes.put(root.getId(), root);
 
         List<Node> notVisitedNodes = new ArrayList<>();
         notVisitedNodes.add(root);
+        HashMap<Vector, Node> nodesByPosition = new HashMap<>();
+        nodesByPosition.put(root.getPosition(), root);
 
         while (!notVisitedNodes.isEmpty()) {
             Node current = notVisitedNodes.remove(0);
@@ -139,9 +148,9 @@ public class Graph {
                 Vector possibleNeighbourPosition = difference.add(startPosition);
 
                 Node neighbor;
-                if (this.nodes.containsKey(possibleNeighbourPosition)) {
+                if (nodesByPosition.containsKey(possibleNeighbourPosition)) {
                     // position already considered, is not necessary to create the node
-                    neighbor = this.nodes.get(possibleNeighbourPosition);
+                    neighbor = nodesByPosition.get(possibleNeighbourPosition);
 
                     // check if its visible
                     if (isPositionVisibleWithinWalls(startPosition, possibleNeighbourPosition, wallsToConsider))
@@ -150,7 +159,8 @@ public class Graph {
                 } else if (isPositionVisibleWithinWalls(startPosition, possibleNeighbourPosition, wallsToConsider)) {
                     // position not considered and valid
                     neighbor = new Node(possibleNeighbourPosition);
-                    this.nodes.put(possibleNeighbourPosition, neighbor);
+                    this.nodes.put(neighbor.getId(), neighbor);
+                    nodesByPosition.put(possibleNeighbourPosition, neighbor);
 
                     currentNeighbours.add(neighbor);
                     notVisitedNodes.add(neighbor);
@@ -165,19 +175,19 @@ public class Graph {
         for (Wall wall : extraWalls) {
             Node closestNode = this.getClosestVisibleNode(wall.getCentroid());
             Node mirrorNode = new Node(getMirroredPosition(wall, closestNode.getPosition()));
-            this.nodes.put(mirrorNode.getPosition(), mirrorNode);
+            this.nodes.put(mirrorNode.getId(), mirrorNode);
             if (!isPositionVisibleWithinWalls(closestNode.getPosition(), mirrorNode.getPosition(), this.walls)) {
                 // it is necessary to add an intermediary node in the door
                 Node node = new Node(wall.getCentroid());
-                node.addNeighbor(closestNode);
-                this.nodes.put(node.getPosition(), node);
-                closestNode.addNeighbor(node);
-                mirrorNode.addNeighbor(node);
-                node.addNeighbor(closestNode);
-                node.addNeighbor(mirrorNode);
+                node.addNeighbor(closestNode.getId());
+                this.nodes.put(node.getId(), node);
+                closestNode.addNeighbor(node.getId());
+                mirrorNode.addNeighbor(node.getId());
+                node.addNeighbor(closestNode.getId());
+                node.addNeighbor(mirrorNode.getId());
             } else {
-                closestNode.addNeighbor(mirrorNode);
-                mirrorNode.addNeighbor(closestNode);
+                closestNode.addNeighbor(mirrorNode.getId());
+                mirrorNode.addNeighbor(closestNode.getId());
             }
         }
     }
@@ -268,9 +278,9 @@ public class Graph {
             // once target is visible from the last node of the path, return it
             visitedNodesId.add(currentNode.getId());
 
-            for (Node next : currentNode.getNeighbors()) {
-                if (!visitedNodesId.contains(next.getId())) {
-                    frontierPaths.add(currentPath.copyAndAdd(next));
+            for (Integer nextNodeId : currentNode.getNeighborsId()) {
+                if (!visitedNodesId.contains(nextNodeId)) {
+                    frontierPaths.add(currentPath.copyAndAdd(this.nodes.get(nextNodeId)));
                 }
             }
 
@@ -286,21 +296,29 @@ public class Graph {
         return currentPath;
     }
 
-    // Method for showing the node positions (DEBUGGING)
     public void generateOutput(String outputPath) {
         System.out.println("\tCreating static file. . .");
 
         PrintWriter writer = null;
         try {
-            writer = new PrintWriter(outputPath + "graph.txt", "UTF-8");
+            writer = new PrintWriter(outputPath + dxfDataFileName, "UTF-8");
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        writer.write(this.dxfName + "\n");
+        writer.close();
+
+        try {
+            writer = new PrintWriter(outputPath + graphBackupFileName, "UTF-8");
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
 
+        writer.write("AGENT_ID,POSITION_X,POSITION_Y,NEIGHBOURS*\n");
         for (Node node : this.nodes.values()) {
-            StringBuilder neighboursIds = new StringBuilder();
-            node.getNeighbors().forEach(node1 -> neighboursIds.append(String.format(Locale.ENGLISH, "%d;", node1.getId())));
-            writer.write(String.format(Locale.ENGLISH, "%d;%s;%s\n", node.getId(), node.getPosition().toString(), neighboursIds));
+            StringBuilder neighborsIds = new StringBuilder();
+            node.getNeighborsId().forEach(neighborId -> neighborsIds.append(String.format(Locale.ENGLISH, "%d,", neighborId)));
+            writer.write(String.format(Locale.ENGLISH, "%d,%s,%s,%s\n", node.getId(), node.getPosition().getX(), node.getPosition().getY(), neighborsIds));
         }
 
         writer.close();

@@ -1,6 +1,6 @@
 {
     "max_time": 1250,
-    "evacuate_at": 1000,
+    "evacuate_at": 300,
 
     "agents_generators": [
         {
@@ -8,14 +8,14 @@
             "behaviour_scheme": "MARKET-CLIENT",
             "agents": {
                 "min_radius_distribution": {
-                    "type": "GAUSSIAN",
-                    "std": 0.02,
-                    "mean": 0.1
+                    "type": "UNIFORM",
+                    "min": 0.15,
+                    "max": 0.15
                 },
                 "max_radius_distribution": {
-                    "type": "GAUSSIAN",
-                    "std": 0.02,
-                    "mean": 0.37
+                    "type": "UNIFORM",
+                    "min": 0.32,
+                    "max": 0.32
                 },
                 "max_velocity": 0.95
             },
@@ -35,14 +35,14 @@
             "behaviour_scheme": "MARKET-CLIENT",
             "agents": {
                 "min_radius_distribution": {
-                    "type": "GAUSSIAN",
-                    "std": 0.02,
-                    "mean": 0.1
+                    "type": "UNIFORM",
+                    "min": 0.15,
+                    "max": 0.15
                 },
                 "max_radius_distribution": {
-                    "type": "GAUSSIAN",
-                    "std": 0.02,
-                    "mean": 0.37
+                    "type": "UNIFORM",
+                    "min": 0.32,
+                    "max": 0.32
                 },
                 "max_velocity": 0.95
             },

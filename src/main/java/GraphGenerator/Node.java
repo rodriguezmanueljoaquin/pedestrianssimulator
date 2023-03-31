@@ -10,21 +10,27 @@ import java.util.stream.Collectors;
 public class Node {
     private static Integer count = 1;
     private final Vector position;
-    private final List<Node> neighbors;
+    private final List<Integer> neighborsId;
     private final Integer id;
 
     public Node(Vector position) {
         this.position = position;
-        this.neighbors = new ArrayList<>();
+        this.neighborsId = new ArrayList<>();
         this.id = count++;
+    }
+
+    public Node(Integer id, Vector position, List<Integer> neighborsId) {
+        this.position = position;
+        this.neighborsId = neighborsId;
+        this.id = id;
     }
 
     public Vector getPosition() {
         return position;
     }
 
-    public List<Node> getNeighbors() {
-        return neighbors;
+    public List<Integer> getNeighborsId() {
+        return neighborsId;
     }
 
     public Integer getId() {
@@ -33,12 +39,12 @@ public class Node {
 
     public void addNeighbors(List<Node> nodes) {
         for (Node node : nodes)
-            this.addNeighbor(node);
+            this.addNeighbor(node.getId());
     }
 
-    public void addNeighbor(Node node) {
-        if (!this.neighbors.contains(node))
-            this.neighbors.add(node);
+    public void addNeighbor(Integer node) {
+        if (!this.neighborsId.contains(node))
+            this.neighborsId.add(node);
     }
 
     @Override
@@ -58,7 +64,7 @@ public class Node {
     public String toString() {
         return "Node{" +
                 "position=" + position +
-                ", neighbors=" + neighbors.stream().map(Node::getId).collect(Collectors.toList()) +
+                ", neighbors=" + neighborsId +
                 ", id=" + id +
                 '}';
     }

@@ -1,52 +1,32 @@
-package InputHandling.EnvironmentData;
+package InputHandling;
 
 import AgentsBehaviour.BehaviourScheme;
 import AgentsGenerator.AgentsGenerator;
 import AgentsGenerator.AgentsGeneratorZone;
-import Environment.Objectives.Exit;
 import Environment.Objectives.Server.DynamicServer;
 import Environment.Objectives.Server.Queue;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Objectives.Target.DotTarget;
 import Environment.Objectives.Target.Target;
-import Environment.Wall;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.ServerGroupParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.TargetGroupParameters;
-import Utils.Vector;
 import Utils.*;
+import Utils.Vector;
 
-import java.io.File;
 import java.util.*;
 
-public class CSVHandler {
-    public static List<Wall> importWalls(String filePath) {
-        List<Wall> result = new ArrayList<>();
-        Scanner scanner = getCSVScanner(filePath);
+import static InputHandling.FileHandlers.getScanner;
 
-        List<Double> inputs = new ArrayList<>(Arrays.asList(0., 0., 0., 0., 0., 0.));
-        while (scanner.hasNextLine()) {
-            String[] row = scanner.nextLine().split(",");
-            for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Double.parseDouble(row[i]));
-            }
-
-            result.add(new Wall(new Utils.Vector(inputs.get(0), inputs.get(1)), new Utils.Vector(inputs.get(3), inputs.get(4))));
-        }
-
-        scanner.close();
-
-        return result;
-    }
-
+public class EnvironmentHandler {
     public static List<AgentsGenerator> importAgentsGenerators(String filePath,
                                                                Map<String, BehaviourScheme> possibleBehaviourSchemes,
                                                                Map<String, AgentsGeneratorParameters> generatorsParameters,
                                                                double agentsMaximumMostPossibleRadius,
                                                                long randomSeed) {
         List<AgentsGenerator> generators = new ArrayList<>();
-        Scanner scanner = getCSVScanner(filePath);
+        Scanner scanner = getScanner(filePath);
         Random random = new Random(randomSeed);
 
         while (scanner.hasNextLine()) {
@@ -79,37 +59,13 @@ public class CSVHandler {
         return generators;
     }
 
-    public static Map<String, List<Exit>> importExits(String filePath) {
-        Map<String, List<Exit>> exitsMap = new HashMap<>();
-
-        Scanner scanner = getCSVScanner(filePath);
-        while (scanner.hasNextLine()) {
-            String[] row = scanner.nextLine().split(",");
-            Vector start = new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2]));
-            Vector end = new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]));
-
-            String exitGroupId = row[0];
-            if (!exitsMap.containsKey(exitGroupId))
-                exitsMap.put(exitGroupId, new ArrayList<>());
-
-            exitsMap.get(exitGroupId).add(
-                    new Exit(
-                            new Wall(start, end)
-                    )
-            );
-        }
-
-        scanner.close();
-        return exitsMap;
-    }
-
     public static Map<String, List<Target>> importTargets(String filePath, Map<String, TargetGroupParameters> targetGroupsParameters) {
         Map<String, List<Target>> targets = new HashMap<>();
         for (String key : targetGroupsParameters.keySet()) {
             targets.put(key, new ArrayList<>());
         }
 
-        Scanner scanner = getCSVScanner(filePath);
+        Scanner scanner = getScanner(filePath);
         while (scanner.hasNextLine()) {
             String[] row = scanner.nextLine().split(",");
 
@@ -123,12 +79,12 @@ public class CSVHandler {
             switch (row.length) {
                 case 5:
                     //Circle
-                    targetZone = new Circle(new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])), Double.parseDouble(row[4]));
+                    targetZone = new Circle(new Utils.Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])), Double.parseDouble(row[4]));
                     break;
 
                 case 7:
                     //Rectangle
-                    targetZone = new Rectangle(new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),
+                    targetZone = new Rectangle(new Utils.Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),
                             new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5])));
                     break;
                 default:
@@ -153,7 +109,7 @@ public class CSVHandler {
             serversMap.put(key, new ArrayList<>());
         }
 
-        Scanner scanner = getCSVScanner(filePath);
+        Scanner scanner = getScanner(filePath);
         Map<String, List<String[]>> rowsMap = new HashMap<>();
         while (scanner.hasNextLine()) {
             // group data by server name and id, so queue and zone are together
@@ -223,19 +179,4 @@ public class CSVHandler {
             }
         }
     }
-
-    private static Scanner getCSVScanner(String filePath) {
-        File file;
-        Scanner scanner;
-        try {
-            file = new File(filePath);
-            scanner = new Scanner(file);
-            scanner.useDelimiter(",");
-        } catch (Exception e) {
-            throw new RuntimeException("Encountered exception when trying to read file " + filePath);
-        }
-
-        return scanner;
-    }
-
 }

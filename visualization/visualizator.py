@@ -11,12 +11,13 @@ def visualize_graph_results():
     import networkx as nx
 
     G = nx.Graph()
-    file = open(input_files_directory_path + "graph.txt" , 'r')
+    file = open("tmp/graph_backup/graph.csv" , 'r')
+    line = file.readline() # skip header
     line = file.readline()
 
     pos = dict()
     while line:
-        data = line.split(";")[:-1]
+        data = line.split(",")[:-1]
         id = int(data[0])
         pos[id] = (float(data[1]),float(data[2]))
         for neighbor in list(map(int, data[3:])):
@@ -51,4 +52,4 @@ def visualize_graph_results():
 
 if __name__ == "__main__":
     visualize_simulation_results()
-#     visualize_graph_results()
+    visualize_graph_results()

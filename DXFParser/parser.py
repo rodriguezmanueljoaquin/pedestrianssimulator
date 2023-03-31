@@ -192,7 +192,7 @@ def parse_layer_and_write_to_file(msp, layer, expected_types, out_file_path, fig
         array = get_blocks_figures(
             msp, layer, expected_types, figures_can_be_rectangles)
 
-    file = open(out_file_path + layer + ".csv", "w")
+    file = open(out_file_path + '/' + layer + ".csv", "w")
     write_to_file(file, array)
     file.close()
 
@@ -246,9 +246,14 @@ Defaults to: " + EXAMPLE_JSON_PATH,
                         type=str, default=EXAMPLE_JSON_PATH, required=False)
 
     args = parser.parse_args()
-    out_path = "tmp/simulation_input/"
+    out_path = "tmp/simulation_input"
     if not os.path.exists("tmp"):
         os.makedirs("tmp")
     if not os.path.exists(out_path):
         os.makedirs(out_path)
+
+    
+    file = open(out_path + "/DXF_DATA" + ".txt", "w")
+    file.write(f'{args.dxf.rsplit("/",1)[-1]}\n')
+    file.close()
     parse_dxf(args.dxf, out_path)
