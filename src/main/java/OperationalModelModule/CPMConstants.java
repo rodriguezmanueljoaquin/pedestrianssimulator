@@ -5,8 +5,8 @@ public class CPMConstants {
     public static final double NEIGHBORS_RADIUS = 3.0;
     public static final double TAU = 0.5; // time a particle needs to reach its maximum radius, from the minimum
     public static final double
-            ORIGINAL_DIRECTION_AP = 600,
-            NEW_DIRECTION_AP = 150,
+            ORIGINAL_DIRECTION_AP = 400,
+            NEW_DIRECTION_AP = 200,
             AGENT_AP = 250,
             AGENT_BP = 1,
 

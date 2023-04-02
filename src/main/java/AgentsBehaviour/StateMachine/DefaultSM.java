@@ -106,22 +106,23 @@ public class DefaultSM implements StateMachine {
 
     @Override
     public void updateAgent(Agent agent, double currentTime) {
+        if(currentTime % 10 < 1 && (agent.getState() == AgentStates.MOVING || agent.getState() == AgentStates.MOVING_TO_QUEUE_POSITION)) {
+            Node intermediateObjectiveNode = agent.getIntermediateObjectiveNode();
+            // every 10 frames
+            // check if agent current path is correct (maybe agent got wrongly redirected because of CPM heuristics), otherwise update it
+            if (intermediateObjectiveNode == null) {
+                if (!this.graph.isPositionAccessible(agent.getPosition(), agent.getCurrentObjective().getPosition(agent), agent.getMaxRadius())) {
+                    this.updateAgentCurrentPath(agent);
+                }
+            } else {
+                if (!this.graph.isPositionAccessible(agent.getPosition(), intermediateObjectiveNode.getPosition(), agent.getMaxRadius())) {
+                    this.updateAgentCurrentPath(agent);
+                }
+            }
+        }
+
         switch (agent.getState()) {
             case MOVING:
-                if (currentTime % 10 < 1) {
-                    Node intermediateObjectiveNode = agent.getIntermediateObjectiveNode();
-                    // every 10 frames
-                    // check if agent current path is correct (maybe agent got wrongly redirected because of CPM heuristics), otherwise update it
-                    if (intermediateObjectiveNode == null) {
-                        if (!this.graph.isPositionAccessible(agent.getPosition(), agent.getCurrentObjective().getPosition(agent), agent.getMaxRadius())) {
-                            this.updateAgentCurrentPath(agent);
-                        }
-                    } else {
-                        if (!this.graph.isPositionAccessible(agent.getPosition(), intermediateObjectiveNode.getPosition(), agent.getMaxRadius())) {
-                            this.updateAgentCurrentPath(agent);
-                        }
-                    }
-                }
                 movingBehaviour(agent, currentTime);
                 break;
 
