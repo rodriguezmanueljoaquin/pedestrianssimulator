@@ -1,0 +1,168 @@
+{
+    "max_time": 1250,
+    "evacuate_at": 1000,
+
+    "agents_generators": [
+        {
+            "group_name": "MAIN ENTRANCE",
+            "behaviour_scheme": "SREC-STUDENT",
+            "agents": {
+                "min_radius_distribution": {
+                    "type": "UNIFORM",
+                    "min": 0.15,
+                    "max": 0.15
+                },
+                "max_radius_distribution": {
+                    "type": "UNIFORM",
+                    "min": 0.32,
+                    "max": 0.32
+                },
+                "max_velocity": 0.95
+            },
+            "active_time": 30.0,
+            "inactive_time": 20.0,
+            "generation": {
+                "frequency": 5.5,
+                "quantity_distribution": {
+                    "type": "UNIFORM",
+                    "min": 2.0,
+                    "max": 3.0
+                }
+            }
+        }
+    ],
+
+    "targets": [
+        {
+            "group_name": "LIBRARY",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 4.0,
+                "max": 6.0
+            }
+        },
+        {
+            "group_name": "NEWSLETTER",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 8.0,
+                "max": 12.0
+            }
+        },
+        {
+            "group_name": "SUM 1",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 20.0,
+                "max": 25.0
+            }
+        },
+        {
+            "group_name": "SUM 2",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 10.0,
+                "max": 25.0
+            }
+        },
+        {
+            "group_name": "SUM 3",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 30.0,
+                "max": 35.0
+            }
+        },
+        {
+            "group_name": "SUM 4",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 20.0,
+                "max": 25.0
+            }
+        }
+    ],
+
+    "servers": [
+        {
+            "group_name": "CLASS 1",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 100.0,
+                "max": 100.0
+            },
+            "max_capacity": 20,
+            "start_time": 200.0
+        },
+        {
+            "group_name": "CLASS 2",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 100.0,
+                "max": 100.0
+            },
+            "max_capacity": 20,
+            "start_time": 200.0
+        },
+        {
+            "group_name": "CLASS 3",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 100.0,
+                "max": 100.0
+            },
+            "max_capacity": 20,
+            "start_time": 200.0
+        },
+        {
+            "group_name": "CLASS 4",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 100.0,
+                "max": 100.0
+            },
+            "max_capacity": 20,
+            "start_time": 200.0
+        },
+        {
+            "group_name": "CLASS 5",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 100.0,
+                "max": 100.0
+            },
+            "max_capacity": 20,
+            "start_time": 200.0
+        },
+        {
+            "group_name": "VENDING MACHINE",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 5.0,
+                "max": 10.0
+            },
+            "max_capacity": 1,
+            "start_time": 0.0
+        },
+        {
+            "group_name": "COFFEE MACHINE",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 5.0,
+                "max": 10.0
+            },
+            "max_capacity": 1,
+            "start_time": 0.0
+        },
+        {
+            "group_name": "CHECK IN",
+            "attending_time_distribution": {
+                "type": "UNIFORM",
+                "min": 2.5,
+                "max": 5.0
+            },
+            "max_capacity": 1,
+            "start_time": 0.0
+        }
+    ]
+}

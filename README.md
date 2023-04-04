@@ -6,7 +6,8 @@
 
 ## Dependencias
 + Java 8 JRE y JDK, o posterior
-+ pip install ezdxf
++ Python 3
++ ezdxf (python package)
 + Maven
 
 ## Requisitos DXF

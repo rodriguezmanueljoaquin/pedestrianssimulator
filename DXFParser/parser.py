@@ -1,7 +1,8 @@
 import argparse
 import ezdxf
 import re as regex
-import os
+from pathlib import Path
+import shutil
 
 WALLS_LAYER = "WALLS"
 EXITS_LAYER = "EXITS"
@@ -135,11 +136,13 @@ def write_with_figure_type_to_file(file, array):
             file.write(f'CIRCLE, ')
             for i in range(with_name == True, len(value)):
                 file.write(f'{round(value[i], DECIMALS)}, ')
-            file.write(f'0.0, 0.0, 0.0\n') 
+            file.write(f'0.0, 0.0, 0.0') 
         else:
             file.write(f'RECTANGLE, -1, ') # radius = -1
             for i in range(with_name == True, len(value)):
                 file.write(f'{round(value[i], DECIMALS)}, ')
+
+        file.write('\n')
 
 
 def write_to_file(file, array):
@@ -261,8 +264,8 @@ def parse_dxf(in_file_path, out_path):
     print("Parsing of dxf file finished...")
 
 
-EXAMPLE_DXF_PATH = "data/Plano prueba simulacion V05.02.dxf"
-EXAMPLE2_DXF_PATH = "data/Plano SREC PB simulacion V04.01.dxf"
+EXAMPLE_DXF_PATH = "data/Plano-prueba-simulacion-V05.02.dxf"
+EXAMPLE2_DXF_PATH = "data/Plano-SREC-PB-simulacion-V04.01.dxf"
 EXAMPLE_JSON_PATH = "data/parameters.json"
 
 if __name__ == '__main__':
@@ -273,7 +276,7 @@ if __name__ == '__main__':
                         help="Path to the .dxf file to be used by the program to define the environment of the simulation. \
 This file has to follow the requirements indicated on the README. \
 Defaults to: " + EXAMPLE2_DXF_PATH,
-                        type=str, default=EXAMPLE_DXF_PATH, required=False)
+                        type=str, default=EXAMPLE2_DXF_PATH, required=False)
 
     parser.add_argument("-params",
                         help="Path to the .json file to be used by the program to define the behavior of the components of the simulation. \
@@ -283,13 +286,11 @@ Defaults to: " + EXAMPLE_JSON_PATH,
 
     args = parser.parse_args()
     out_path = "tmp/simulation_input"
-    if not os.path.exists("tmp"):
-        os.makedirs("tmp")
-    if not os.path.exists(out_path):
-        os.makedirs(out_path)
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True) # create file and intermediate directories if they don't exist
 
     
     file = open(out_path + "/DXF_DATA" + ".txt", "w")
     file.write(f'{args.dxf.rsplit("/",1)[-1]}\n')
     file.close()
+    shutil.copyfile(args.params, out_path + "/parameters" + ".json")
     parse_dxf(args.dxf, out_path)
