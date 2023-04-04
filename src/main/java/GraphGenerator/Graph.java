@@ -296,15 +296,7 @@ public class Graph {
 
     public void generateOutput(String outputPath) {
         System.out.println("\tCreating static file. . .");
-
         PrintWriter writer = null;
-        try {
-            writer = new PrintWriter(outputPath + dxfDataFileName, "UTF-8");
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        writer.write(this.dxfName + "\n");
-        writer.close();
 
         try {
             writer = new PrintWriter(outputPath + graphBackupFileName, "UTF-8");
@@ -319,6 +311,13 @@ public class Graph {
             writer.write(String.format(Locale.ENGLISH, "%d,%s,%s,%s\n", node.getId(), node.getPosition().getX(), node.getPosition().getY(), neighborsIds));
         }
 
+        writer.close();
+        try {
+            writer = new PrintWriter(outputPath + dxfDataFileName, "UTF-8");
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        writer.write(this.dxfName + "\n");
         writer.close();
         System.out.println("\tStatic file successfully created");
     }

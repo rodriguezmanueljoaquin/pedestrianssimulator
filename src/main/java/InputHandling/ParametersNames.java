@@ -5,6 +5,7 @@ public class ParametersNames {
     public static final String DISTRIBUTION_GAUSSIAN_KEY = "GAUSSIAN";
     public static final String DISTRIBUTION_EXPONENTIAL_KEY = "EXPONENTIAL";
     public static String MARKET_CLIENT_BEHAVIOUR_SCHEME_KEY = "MARKET-CLIENT";
+    public static String SREC_STUDENT_BEHAVIOUR_SCHEME_KEY = "SREC-STUDENT";
 
     public static String MAX_TIME_KEY = "max_time";
     public static String EVACUATE_TIME_KEY = "evacuate_at";

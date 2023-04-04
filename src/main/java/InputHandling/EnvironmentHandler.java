@@ -118,8 +118,10 @@ public class EnvironmentHandler {
             String targetGroupId = row[0];
             TargetGroupParameters targetGroupParameters = targetGroupsParameters.get(targetGroupId);
 
-            if (targetGroupParameters == null)
-                throw new RuntimeException("No parameters found for target group: " + targetGroupId);
+            if (targetGroupParameters == null) {
+                System.out.println("No parameters found for target group: " + targetGroupId + ", skipping it.");
+                continue;
+            }
 
             Zone targetZone;
             switch (row[1].trim().toUpperCase(Locale.ROOT)) {
@@ -176,8 +178,10 @@ public class EnvironmentHandler {
         for (String serverFullName : rowsMap.keySet()) {
             String serverGroupId = serverFullName.substring(0, serverFullName.indexOf('_'));
             ServerGroupParameters serverGroupParameters = serverGroupsParameters.get(serverGroupId);
-            if (serverGroupParameters == null)
-                throw new RuntimeException("No parameters found for server group: " + serverGroupId);
+            if (serverGroupParameters == null) {
+                System.out.println("No parameters found for server group: " + serverGroupId + ", skipping it.");
+                continue;
+            }
 
             List<String[]> serverRows = rowsMap.get(serverFullName);
             // sort so first QUEUE are analyzed, and then the SERVER
