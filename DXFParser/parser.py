@@ -53,8 +53,8 @@ def get_figures(entity, layer_prefix):
                         entity.dxf.end[0], entity.dxf.end[1], entity.dxf.end[2]])
         
     elif entity.dxftype() == 'CIRCLE':
-        figures.append([entity.dxf.center[0], entity.dxf.center[1],
-                       entity.dxf.center[2], entity.dxf.radius])
+        figures.append([entity.dxf.radius, entity.dxf.center[0], entity.dxf.center[1],
+                       entity.dxf.center[2]])
         
     elif entity.dxftype() == 'POLYLINE':
         lines_qty = len(entity)
@@ -108,6 +108,38 @@ def parse_entities(entities, layer_prefix, expected_types, name=None, figures_ca
     if len(figures) == 0:
         raise ValueError(f'Layer {WALLS_LAYER} is empty.')
     return figures
+
+def write_headers_to_file(file, layer):
+    headers = ''
+    if layer == WALLS_LAYER:
+        headers = f'x1, y1, z1, x2, y2, z2\n'
+    elif layer == EXITS_LAYER or layer == GENERATORS_LAYER or layer == SERVERS_LAYER:
+        headers = f'group_name, x1, y1, z1, x2, y2, z2\n'
+    elif layer == TARGETS_LAYER:
+        headers = f'group_name, figure_type, radius, x1, y1, z1, x2, y2, z2\n'
+    else: ValueError(f'Layer {layer} is not supported.')
+
+    file.write(headers)
+
+def write_with_figure_type_to_file(file, array):
+    for value in array:
+        with_name = False
+        if type(value[0]) is str:
+            with_name = True
+            file.write(f'{value[0]}, ')
+
+        # round to 6 decimals to avoid minimal innacuracies from autocad
+        DECIMALS = 6
+        if(len(value) - with_name == 4):
+            # CIRCLE, because it has x1,y1,z1,radius
+            file.write(f'CIRCLE, ')
+            for i in range(with_name == True, len(value)):
+                file.write(f'{round(value[i], DECIMALS)}, ')
+            file.write(f'0.0, 0.0, 0.0\n') 
+        else:
+            file.write(f'RECTANGLE, -1, ') # radius = -1
+            for i in range(with_name == True, len(value)):
+                file.write(f'{round(value[i], DECIMALS)}, ')
 
 
 def write_to_file(file, array):
@@ -193,7 +225,11 @@ def parse_layer_and_write_to_file(msp, layer, expected_types, out_file_path, fig
             msp, layer, expected_types, figures_can_be_rectangles)
 
     file = open(out_file_path + '/' + layer + ".csv", "w")
-    write_to_file(file, array)
+    write_headers_to_file(file, layer)
+    if layer == TARGETS_LAYER:
+        write_with_figure_type_to_file(file, array)
+    else:
+        write_to_file(file, array)
     file.close()
 
 

@@ -78,11 +78,11 @@ public class Main {
         }
 
         // -------- WALLS --------
-        List<Wall> walls = FileHandlers.importWalls(CSV_DIRECTORY + "/WALLS.csv");
+        List<Wall> walls = EnvironmentHandler.importWalls(CSV_DIRECTORY + "/WALLS.csv");
         Simulation.createStaticFile(RESULTS_DIRECTORY, walls);
 
         // -------- EXITS --------
-        Map<String, List<Exit>> exitsMap = FileHandlers.importExits(CSV_DIRECTORY + "/EXITS.csv");
+        Map<String, List<Exit>> exitsMap = EnvironmentHandler.importExits(CSV_DIRECTORY + "/EXITS.csv");
 
         // -------- GRAPH --------
         Graph graph = createOrImportGraph(walls, exitsMap);
@@ -124,7 +124,7 @@ public class Main {
         if (deltaT < 0.001) {
             System.out.println("Delta too small! Reducing it to 0.001.");
             deltaT = 0.001;
-        } else System.out.println("DELTA_T = " + deltaT);
+        }
 
         // -------- OPERATIONAL MODEL MODULE --------
         OperationalModelModule operationalModelModule = new CPMAnisotropic(environment, parameters.getAgentsMostPossibleMaxRadius(), deltaT);

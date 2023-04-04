@@ -3,12 +3,14 @@ package InputHandling;
 import AgentsBehaviour.BehaviourScheme;
 import AgentsGenerator.AgentsGenerator;
 import AgentsGenerator.AgentsGeneratorZone;
+import Environment.Objectives.Exit;
 import Environment.Objectives.Server.DynamicServer;
 import Environment.Objectives.Server.Queue;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Server.StaticServer;
 import Environment.Objectives.Target.DotTarget;
 import Environment.Objectives.Target.Target;
+import Environment.Wall;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.ServerGroupParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.TargetGroupParameters;
@@ -18,15 +20,60 @@ import Utils.Vector;
 import java.util.*;
 
 import static InputHandling.FileHandlers.getScanner;
+import static InputHandling.FileHandlers.getScannerFromSecondLine;
 
 public class EnvironmentHandler {
+
+    public static Map<String, List<Exit>> importExits(String filePath) {
+        Map<String, List<Exit>> exitsMap = new HashMap<>();
+
+        Scanner scanner = getScannerFromSecondLine(filePath);
+        while (scanner.hasNextLine()) {
+            String[] row = scanner.nextLine().split(",");
+            Utils.Vector start = new Utils.Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2]));
+            Utils.Vector end = new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]));
+
+            String exitGroupId = row[0];
+            if (!exitsMap.containsKey(exitGroupId))
+                exitsMap.put(exitGroupId, new ArrayList<>());
+
+            exitsMap.get(exitGroupId).add(
+                    new Exit(
+                            new Wall(start, end)
+                    )
+            );
+        }
+
+        scanner.close();
+        return exitsMap;
+    }
+
+    public static List<Wall> importWalls(String filePath) {
+        List<Wall> result = new ArrayList<>();
+        Scanner scanner = getScannerFromSecondLine(filePath);
+
+        List<Double> inputs = new ArrayList<>(Arrays.asList(0., 0., 0., 0., 0., 0.));
+        while (scanner.hasNextLine()) {
+            String[] row = scanner.nextLine().split(",");
+            for (int i = 0; i < inputs.size(); i++) {
+                inputs.set(i, Double.parseDouble(row[i]));
+            }
+
+            result.add(new Wall(new Utils.Vector(inputs.get(0), inputs.get(1)), new Utils.Vector(inputs.get(3), inputs.get(4))));
+        }
+
+        scanner.close();
+
+        return result;
+    }
+
     public static List<AgentsGenerator> importAgentsGenerators(String filePath,
                                                                Map<String, BehaviourScheme> possibleBehaviourSchemes,
                                                                Map<String, AgentsGeneratorParameters> generatorsParameters,
                                                                double agentsMaximumMostPossibleRadius,
                                                                long randomSeed) {
         List<AgentsGenerator> generators = new ArrayList<>();
-        Scanner scanner = getScanner(filePath);
+        Scanner scanner = getScannerFromSecondLine(filePath);
         Random random = new Random(randomSeed);
 
         while (scanner.hasNextLine()) {
@@ -65,7 +112,7 @@ public class EnvironmentHandler {
             targets.put(key, new ArrayList<>());
         }
 
-        Scanner scanner = getScanner(filePath);
+        Scanner scanner = getScannerFromSecondLine(filePath);
         while (scanner.hasNextLine()) {
             String[] row = scanner.nextLine().split(",");
 
@@ -76,16 +123,14 @@ public class EnvironmentHandler {
                 throw new RuntimeException("No parameters found for target group: " + targetGroupId);
 
             Zone targetZone;
-            switch (row.length) {
-                case 5:
-                    //Circle
-                    targetZone = new Circle(new Utils.Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])), Double.parseDouble(row[4]));
+            switch (row[1].trim().toUpperCase(Locale.ROOT)) {
+                case "CIRCLE":
+                    targetZone = new Circle(new Utils.Vector(Double.parseDouble(row[2]), Double.parseDouble(row[3])), Double.parseDouble(row[4]));
                     break;
 
-                case 7:
-                    //Rectangle
-                    targetZone = new Rectangle(new Utils.Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),
-                            new Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5])));
+                case "RECTANGLE":
+                    targetZone = new Rectangle(new Utils.Vector(Double.parseDouble(row[3]), Double.parseDouble(row[4])),
+                            new Vector(Double.parseDouble(row[6]), Double.parseDouble(row[7])));
                     break;
                 default:
                     throw new RuntimeException("Target.CSV row wrong formatted: " + Arrays.toString(row));
@@ -109,7 +154,7 @@ public class EnvironmentHandler {
             serversMap.put(key, new ArrayList<>());
         }
 
-        Scanner scanner = getScanner(filePath);
+        Scanner scanner = getScannerFromSecondLine(filePath);
         Map<String, List<String[]>> rowsMap = new HashMap<>();
         while (scanner.hasNextLine()) {
             // group data by server name and id, so queue and zone are together
