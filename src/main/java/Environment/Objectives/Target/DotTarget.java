@@ -17,16 +17,16 @@ public class DotTarget extends Target {
 
     @Override
     public Vector getPosition(Agent agent) {
-        return zone.getMiddlePoint();
+        return zone.getCentroid();
     }
 
     @Override
     public Vector getCentroidPosition() {
-        return zone.getMiddlePoint();
+        return zone.getCentroid();
     }
 
     @Override
     public Boolean reachedObjective(Agent agent) {
-        return agent.distance(zone.getMiddlePoint()) < Constants.DOUBLE_EPSILON;
+        return agent.distance(zone.getCentroid()) < Constants.DOUBLE_EPSILON;
     }
 }

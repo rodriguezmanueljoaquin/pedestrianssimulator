@@ -31,7 +31,7 @@ public class RandomPointTarget extends Target {
 
     @Override
     public Vector getCentroidPosition() {
-        return this.zone.getMiddlePoint();
+        return this.zone.getCentroid();
     }
 
     @Override

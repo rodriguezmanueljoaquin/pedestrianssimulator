@@ -16,12 +16,12 @@ public class BorderTarget extends Target {
 
     @Override
     public Vector getPosition(Agent agent) {
-        return zone.getMiddlePoint();
+        return zone.getCentroid();
     }
 
     @Override
     public Vector getCentroidPosition() {
-        return zone.getMiddlePoint();
+        return zone.getCentroid();
     }
 
     @Override

@@ -29,7 +29,7 @@ public class Rectangle implements Zone {
     }
 
     @Override
-    public Vector getMiddlePoint() {
+    public Vector getCentroid() {
         return this.x1.add(this.x2).scalarMultiply(1 / 2.);
     }
 

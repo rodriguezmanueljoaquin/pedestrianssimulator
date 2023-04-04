@@ -51,5 +51,5 @@ def visualize_graph_results():
     plt.show()
 
 if __name__ == "__main__":
-    visualize_simulation_results()
-    #visualize_graph_results()
+    #visualize_simulation_results()
+    visualize_graph_results()

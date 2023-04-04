@@ -9,7 +9,7 @@ public class Dot implements Zone {
 
 
     @Override
-    public Vector getMiddlePoint() {
+    public Vector getCentroid() {
         return position;
     }
 

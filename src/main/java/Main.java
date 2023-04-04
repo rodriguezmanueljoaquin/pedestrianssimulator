@@ -16,7 +16,6 @@ import InputHandling.ParametersNames;
 import InputHandling.SimulationParameters.SimulationParametersParser;
 import OperationalModelModule.CPMAnisotropic;
 import OperationalModelModule.OperationalModelModule;
-import Utils.Vector;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,16 +49,19 @@ public class Main {
     }
 
     private static Graph createOrImportGraph(List<Wall> walls, Map<String, List<Exit>> exitsMap) {
-        String newCSVName = FileHandlers.getSecondLineOfFile(INPUT_DIRECTORY + Graph.dxfDataFileName);
+        String newCSVName = FileHandlers.getSpecificLineOfFile(INPUT_DIRECTORY + Graph.dxfDataFileName, 0);
         Path graphBackupDir = Paths.get(GRAPH_BACKUP_DIRECTORY);
         if (Files.exists(graphBackupDir) &&
-                Objects.equals(newCSVName, FileHandlers.getSecondLineOfFile(GRAPH_BACKUP_DIRECTORY + Graph.dxfDataFileName))) {
+                Objects.equals(newCSVName, FileHandlers.getSpecificLineOfFile(GRAPH_BACKUP_DIRECTORY + Graph.dxfDataFileName, 0))) {
             // backup exists and dxf shares the same name
             Map<Integer, Node> nodes = OldGraphHandler.getGraphNodes(GRAPH_BACKUP_DIRECTORY + Graph.graphBackupFileName);
             return new Graph(nodes, walls, newCSVName);
         } else {
-            Graph graph = new Graph(walls, exitsMap.values().stream().flatMap(List::stream)
-                    .map(Exit::getExitWall).collect(Collectors.toList()), new Vector(18, 18), newCSVName); // 18,18 in new map; 1,1 in previous
+            Graph graph = new Graph(walls,
+                                exitsMap.values().stream().flatMap(List::stream).map(Exit::getExitWall).collect(Collectors.toList()),
+                                EnvironmentHandler.getFirstAgentsGeneratorCentroid(INPUT_DIRECTORY + "/GENERATORS.csv"),
+                                newCSVName
+            );
 
             if (!Files.exists(graphBackupDir)) {
                 new File(GRAPH_BACKUP_DIRECTORY).mkdir();

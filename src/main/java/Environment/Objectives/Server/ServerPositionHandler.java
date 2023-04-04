@@ -18,7 +18,7 @@ class ServerPositionHandler {
     }
 
     public Vector getCentroid() {
-        return this.zone.getMiddlePoint();
+        return this.zone.getCentroid();
     }
 
     public boolean isAgentInside(Agent agent) {

@@ -10,7 +10,7 @@ public class Circle implements Zone {
     }
 
     @Override
-    public Vector getMiddlePoint() {
+    public Vector getCentroid() {
         return middlePoint;
     }
 
@@ -25,6 +25,6 @@ public class Circle implements Zone {
 
     @Override
     public boolean isPointInside(Vector point) {
-        return this.getMiddlePoint().distance(point) < radius;
+        return this.getCentroid().distance(point) < radius;
     }
 }

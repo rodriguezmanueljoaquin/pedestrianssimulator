@@ -52,8 +52,8 @@ public class AgentsGenerator {
                     positionsUsed.add(this.zone.getIndexByPosition(agent.getPosition()));
                 } else {
                     Vector closestPoint = agent.getPosition().add(
-                            (this.zone.getMiddlePoint().subtract(agent.getPosition()))
-                                    .scalarMultiply(agent.distance(this.zone.getMiddlePoint()) * this.agentsMaximumMostPossibleRadius)
+                            (this.zone.getCentroid().subtract(agent.getPosition()))
+                                    .scalarMultiply(agent.distance(this.zone.getCentroid()) * this.agentsMaximumMostPossibleRadius)
                     );
                     if (this.zone.isPointInside(closestPoint)) {
                         positionsUsed.add(this.zone.getIndexByPosition(closestPoint));

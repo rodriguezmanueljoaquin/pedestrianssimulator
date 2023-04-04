@@ -23,9 +23,14 @@ public class FileHandlers {
         return scanner;
     }
 
-    public static String getSecondLineOfFile(String filePath) {
+    public static String getSpecificLineOfFile(String filePath, int index) {
         Scanner scanner = getScanner(filePath);
+        int i = 0;
         String answer = scanner.nextLine();
+        while (i < index && scanner.hasNext()) {
+            answer = scanner.nextLine();
+            i++;
+        }
         scanner.close();
         return answer;
     }

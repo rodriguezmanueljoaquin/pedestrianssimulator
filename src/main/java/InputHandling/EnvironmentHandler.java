@@ -20,6 +20,7 @@ import Utils.*;
 import java.util.*;
 
 import static InputHandling.FileHandlers.getScannerFromSecondLine;
+import static InputHandling.FileHandlers.getSpecificLineOfFile;
 
 public class EnvironmentHandler {
 
@@ -64,6 +65,17 @@ public class EnvironmentHandler {
         scanner.close();
 
         return result;
+    }
+
+    public static Vector getFirstAgentsGeneratorCentroid(String filePath) {
+        String[] row = getSpecificLineOfFile(filePath, 1).split(",");
+
+        Rectangle zone = new Rectangle(
+                new Utils.Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2])),
+                new Utils.Vector(Double.parseDouble(row[4]), Double.parseDouble(row[5]))
+        );
+
+        return zone.getCentroid();
     }
 
     public static List<AgentsGenerator> importAgentsGenerators(String filePath,
