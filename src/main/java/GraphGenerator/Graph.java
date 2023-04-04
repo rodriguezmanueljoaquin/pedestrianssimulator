@@ -10,7 +10,9 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class Graph {
-    private final static double STEP_SIZE = 1.8; // Found empirically, TODO: AUTOMATIZE STEP SIZE SELECTION
+    // Found empirically, TODO: AUTOMATIZE STEP SIZE SELECTION
+//    private final static double STEP_SIZE = 1.8; // test sim
+    private final static double STEP_SIZE = 1.4; // SREC sim
     // CLOCKWISE
     private final static Vector[] POSSIBLE_NEIGHBORS_POSITION_DIFFERENCE = {
             new Vector(0., STEP_SIZE),
@@ -270,15 +272,18 @@ public class Graph {
         Node currentNode = from;
         NodePath currentPath = new NodePath(from);
 
-        HashSet<Integer> visitedNodesId = new HashSet<>();
+        HashMap<Integer, Double> visitedNodesIdWithMinWeight = new HashMap<>();
+        visitedNodesIdWithMinWeight.put(currentNode.getId(), currentPath.getFunctionValue()); // root
 
         while (!isPositionAccessible(currentNode.getPosition(), to, radius)) {
             // once target is visible from the last node of the path, return it
-            visitedNodesId.add(currentNode.getId());
 
             for (Integer nextNodeId : currentNode.getNeighborsId()) {
-                if (!visitedNodesId.contains(nextNodeId)) {
+                double newPathDistance = currentPath.getDistanceValueAdding(this.nodes.get(nextNodeId));
+                if (!visitedNodesIdWithMinWeight.containsKey(nextNodeId) || visitedNodesIdWithMinWeight.get(nextNodeId) > newPathDistance) {
+                    // expand on new node or when a better path is found
                     frontierPaths.add(currentPath.copyAndAdd(this.nodes.get(nextNodeId)));
+                    visitedNodesIdWithMinWeight.put(nextNodeId, newPathDistance);
                 }
             }
 

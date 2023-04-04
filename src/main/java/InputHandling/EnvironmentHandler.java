@@ -126,7 +126,7 @@ public class EnvironmentHandler {
             Zone targetZone;
             switch (row[1].trim().toUpperCase(Locale.ROOT)) {
                 case "CIRCLE":
-                    targetZone = new Circle(new Utils.Vector(Double.parseDouble(row[2]), Double.parseDouble(row[3])), Double.parseDouble(row[4]));
+                    targetZone = new Circle(new Utils.Vector(Double.parseDouble(row[3]), Double.parseDouble(row[4])), Double.parseDouble(row[2]));
                     break;
 
                 case "RECTANGLE":

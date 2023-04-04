@@ -3,7 +3,6 @@ package GraphGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-// necessary for AStar heuristic
 public class NodePath {
     private final List<Node> path;
     private Double functionValue;
@@ -31,9 +30,9 @@ public class NodePath {
     public void add(Node node) {
         if (!node.equals(this.getLastNode())) {
             // avoid repetition
-            this.path.add(node);
-            this.distance += this.path.get(this.path.size() - 2).getPosition().distance(node.getPosition());
+            this.distance += getDistanceValueAdding(node);
             this.functionValue = this.distance; // TODO: FALTA HEURISTICA, AHORA SOLO CONSIDERA COSTO (Fn = Cn)
+            this.path.add(node);
         }
     }
 
@@ -81,6 +80,10 @@ public class NodePath {
 
     public Double getFunctionValue() {
         return this.functionValue;
+    }
+
+    public Double getDistanceValueAdding(Node lastNode) {
+        return this.distance + this.path.get(this.path.size() - 1).getPosition().distance(lastNode.getPosition());
     }
 
     public Double getDistance() {
