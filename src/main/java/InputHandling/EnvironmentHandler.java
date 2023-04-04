@@ -14,12 +14,11 @@ import Environment.Wall;
 import InputHandling.SimulationParameters.AuxiliarClasses.AgentsGeneratorParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.ServerGroupParameters;
 import InputHandling.SimulationParameters.AuxiliarClasses.TargetGroupParameters;
-import Utils.*;
 import Utils.Vector;
+import Utils.*;
 
 import java.util.*;
 
-import static InputHandling.FileHandlers.getScanner;
 import static InputHandling.FileHandlers.getScannerFromSecondLine;
 
 public class EnvironmentHandler {

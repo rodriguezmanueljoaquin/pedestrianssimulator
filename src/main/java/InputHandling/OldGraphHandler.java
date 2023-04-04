@@ -19,7 +19,7 @@ public class OldGraphHandler {
 
         while (scanner.hasNextLine()) {
             String[] row = scanner.nextLine().split(",");
-            Vector pos = new Vector(Double.parseDouble(row[1]),Double.parseDouble(row[2]));
+            Vector pos = new Vector(Double.parseDouble(row[1]), Double.parseDouble(row[2]));
             Integer id = Integer.parseInt(row[0]);
             nodes.put(id,
                     new Node(

@@ -54,13 +54,13 @@ public class Agent {
         if (this.currentIntermediateObjectiveNode != null) {
             Node nextNode = this.currentPath.getFirstNode();
             Vector nextObjectivePosition;
-            if(nextNode != null) {
+            if (nextNode != null) {
                 nextObjectivePosition = nextNode.getPosition();
             } else {
                 // nextNode is null, therefore currentIntermediateObjectiveNode is the last one before getting to the objective
                 nextObjectivePosition = this.getCurrentObjective().getPosition(this);
             }
-            if(graph.isPositionAccessible(this.position, nextObjectivePosition, this.maxRadius))
+            if (graph.isPositionAccessible(this.position, nextObjectivePosition, this.maxRadius))
                 this.currentIntermediateObjectiveNode = this.currentPath.next();
         }
 

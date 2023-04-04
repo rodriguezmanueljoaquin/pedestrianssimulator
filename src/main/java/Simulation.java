@@ -26,10 +26,10 @@ public class Simulation {
     private final Random random;
     private final OperationalModelModule operationalModelModule;
     private final Double evacuationTime;
+    private final DecimalFormat outputDecimalFormatter = new DecimalFormat("######.###");
     private double time;
     private boolean alreadyEvacuating = false;
     private PrintWriter writer;
-    private final DecimalFormat outputDecimalFormatter = new DecimalFormat("######.###");
 
     public Simulation(double maxTime, Environment environment, Graph graph, double deltaT,
                       OperationalModelModule operationalModelModule,

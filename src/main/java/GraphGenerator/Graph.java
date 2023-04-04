@@ -11,10 +11,6 @@ import java.util.function.Predicate;
 
 public class Graph {
     private final static double STEP_SIZE = 1.8; // Found empirically, TODO: AUTOMATIZE STEP SIZE SELECTION
-    public static String dxfDataFileName = "/DXF_DATA.txt";
-    public static String graphBackupFileName = "/graph.csv";
-    private final String dxfName;
-
     // CLOCKWISE
     private final static Vector[] POSSIBLE_NEIGHBORS_POSITION_DIFFERENCE = {
             new Vector(0., STEP_SIZE),
@@ -23,7 +19,9 @@ public class Graph {
             new Vector(-STEP_SIZE, 0.),
 
     };
-
+    public static String dxfDataFileName = "/DXF_DATA.txt";
+    public static String graphBackupFileName = "/graph.csv";
+    private final String dxfName;
     // Map because we avoid recreating nodes on positions (key in map) already visited
     private final Map<Integer, Node> nodes;
     private final List<Wall> walls;

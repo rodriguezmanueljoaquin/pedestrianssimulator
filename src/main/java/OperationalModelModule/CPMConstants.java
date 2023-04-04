@@ -12,15 +12,15 @@ public class CPMConstants {
 
     // ----------- WALLS COEFFICIENTS -----------
     // IF CONSIDERING ONLY THE CLOSEST WALL FOR HEURISTIC DIRECTION
-            CLOSEST_WALL_AP = 250,
+    CLOSEST_WALL_AP = 250,
             CLOSEST_WALL_BP = 0.8, // cuanto mas grande, a mayor empieza a reaccionar
     // IF CONSIDERING ONLY ALL THE WALL IN THE WALL DISTANCE CONSIDERATION RADIUS FOR HEURISTIC DIRECTION
-            CLOSEST_WALLS_AP = 150,
+    CLOSEST_WALLS_AP = 150,
             CLOSEST_WALLS_BP = 0.8,
     // ----------- WALLS COEFFICIENTS -----------
 
 
-            AP_VARIATION = 50,
+    AP_VARIATION = 50,
             BP_VARIATION = 0.1,
             NON_MOVING_AGENT_REPULSION_MULTIPLIER = 1,
             WALL_DISTANCE_CONSIDERATION = 3;

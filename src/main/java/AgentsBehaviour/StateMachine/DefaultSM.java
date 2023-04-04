@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static Utils.Constants.DOUBLE_EPSILON;
 import static Utils.Constants.LEAVING_TIME;
 
 public class DefaultSM implements StateMachine {
@@ -106,7 +105,7 @@ public class DefaultSM implements StateMachine {
 
     @Override
     public void updateAgent(Agent agent, double currentTime) {
-        if(currentTime % 10 < 1 && (agent.getState() == AgentStates.MOVING || agent.getState() == AgentStates.MOVING_TO_QUEUE_POSITION)) {
+        if (currentTime % 10 < 1 && (agent.getState() == AgentStates.MOVING || agent.getState() == AgentStates.MOVING_TO_QUEUE_POSITION)) {
             Node intermediateObjectiveNode = agent.getIntermediateObjectiveNode();
             // every 10 frames
             // check if agent current path is correct (maybe agent got wrongly redirected because of CPM heuristics), otherwise update it

@@ -1,11 +1,7 @@
 package InputHandling;
 
-import Environment.Objectives.Exit;
-import Environment.Wall;
-import Utils.Vector;
-
 import java.io.File;
-import java.util.*;
+import java.util.Scanner;
 
 public class FileHandlers {
     public static Scanner getScanner(String filePath) {

@@ -181,7 +181,7 @@ public class CPM implements OperationalModelModule {
         for (int i = 0; i < agents.size(); i++) {
             Agent current = agents.get(i);
             boolean hasCollided = findWallCollision(current, environment, wallCollisions) ||
-                                    findAgentCollision(current, agents.subList(i+1, agents.size()), agentsCollisions);
+                    findAgentCollision(current, agents.subList(i + 1, agents.size()), agentsCollisions);
 
             // chequeamos si la particula que estamos analizando esta involucrada en un choque contra otra particula
             if (agentsCollisions.stream().anyMatch(agentsCollision -> agentsCollision.getAgent2().equals(current)))

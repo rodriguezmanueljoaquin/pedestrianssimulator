@@ -28,7 +28,7 @@ public class CIMTest {
         walls.add(new Wall(new Vector(50., 0.), new Vector(50, 20)));
         walls.add(new Wall(new Vector(50., 20.), new Vector(0, 20)));
         walls.add(new Wall(new Vector(0., 20.), new Vector(0, 0)));
-        StateMachine stateMachine = new SuperMarketClientSM(new Graph(walls, new ArrayList<>(), new Vector(1, 1),"test"));
+        StateMachine stateMachine = new SuperMarketClientSM(new Graph(walls, new ArrayList<>(), new Vector(1, 1), "test"));
 
         List<Agent> agents = new ArrayList<>();
         Agent analyzedAgent = new Agent(new Vector(10, 10), 0.1, 0.2, 1, stateMachine, new ArrayList<>());

@@ -24,6 +24,23 @@ public class CPMAnisotropic extends CPM {
         return FastMath.acos(agentDirection.dotMultiply(relativeDirection) / (agentDirection.module() * relativeDirection.module()));
     }
 
+    private static boolean parallelLinesIntersectAgentRadiusAndDistanceIsValid(Agent agent, Agent otherAgent) {
+//        https://math.stackexchange.com/questions/422602/convert-two-points-to-line-eq-ax-by-c-0
+//        https://math.stackexchange.com/questions/1481904/distance-between-line-and-circle
+        Vector point1 = agent.getPosition();
+        Vector point2 = agent.getPosition().add(agent.getDirection());
+        Vector circleCenter = otherAgent.getPosition();
+        double circleRadius = otherAgent.getRadius();
+        return distanceLineFromCircle(point1, point2, circleCenter) - agent.getRadius() - circleRadius < 0;
+    }
+
+    private static double distanceLineFromCircle(Vector point1, Vector point2, Vector circleCenter) {
+        double A = point1.getY() - point2.getY();
+        double B = point2.getX() - point1.getX();
+        double C = point1.getX() * point2.getY() - point2.getX() * point1.getY();
+        return Math.abs(A * circleCenter.getX() + B * circleCenter.getY() + C) / Math.sqrt(A * A + B * B);
+    }
+
     @Override
     public boolean agentCollidesAgainst(Agent agent, Agent otherAgent) {
         if (agent.getRadius() == agent.getMinRadius()) {
@@ -43,39 +60,16 @@ public class CPMAnisotropic extends CPM {
             Agent current = agents.get(i);
             boolean hasCollided = findWallCollision(current, environment, wallCollisions) ||
                     // we may consider X agent collided against Y agent, but Y agent have not collided against X agent
-                                    findAgentCollision(current,
-                                            Stream.concat(
-                                                    agents.subList(0, i).stream(),
-                                                    agents.subList(i+1, agents.size()).stream())
-                                                    .collect(Collectors.toList()),
-                                            agentsCollisions);
+                    findAgentCollision(current,
+                            Stream.concat(
+                                            agents.subList(0, i).stream(),
+                                            agents.subList(i + 1, agents.size()).stream())
+                                    .collect(Collectors.toList()),
+                            agentsCollisions);
 
             if (!hasCollided)
                 nonCollisionAgents.add(current);
         }
-    }
-
-    private static boolean parallelLinesIntersectAgentRadiusAndDistanceIsValid(Agent agent, Agent otherAgent) {
-//        https://math.stackexchange.com/questions/422602/convert-two-points-to-line-eq-ax-by-c-0
-//        https://math.stackexchange.com/questions/1481904/distance-between-line-and-circle
-//        Aca, en vez de calcular para las dos lineas paralelas me fijo si la distancia
-//        Entre el circulo y la linea menos el radio del agente es menor que 0
-//        Es distinto a lo que dice el paper asi que checkear con Rafa
-//        Revisar esto y ver como hago para sacar el punto P que es el mas cercano, asi lo comparo con
-//        la distancia al centro del agente y me fijo que sea menor a 2*ri que es la segunda condicion del Ademas
-//        SI REVERTIMOS LAS CONDICIONES, LEER EL EXTRA, solo deberia llamar esta funcion si el radio es menor a 2*ri
-        Vector point1 = agent.getPosition();
-        Vector point2 = agent.getPosition().add(agent.getDirection());
-        Vector circleCenter = otherAgent.getPosition();
-        double circleRadius = otherAgent.getRadius();
-        return distanceLineFromCircle(point1, point2, circleCenter) - agent.getRadius() - circleRadius < 0;
-    }
-
-    private static double distanceLineFromCircle(Vector point1, Vector point2, Vector circleCenter) {
-        double A = point1.getY() - point2.getY();
-        double B = point2.getX() - point1.getX();
-        double C = point1.getX() * point2.getY() - point2.getX() * point1.getY();
-        return Math.abs(A * circleCenter.getX() + B * circleCenter.getY() + C) / Math.sqrt(A * A + B * B);
     }
 
     @Override
