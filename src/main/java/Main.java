@@ -4,6 +4,7 @@ import AgentsBehaviour.PredefinedBehaviours.SRECStudentBehaviourScheme;
 import AgentsGenerator.AgentsGenerator;
 import Environment.Environment;
 import Environment.Objectives.Exit;
+import Environment.Objectives.Objective;
 import Environment.Objectives.Server.Server;
 import Environment.Objectives.Target.Target;
 import Environment.Wall;
@@ -16,6 +17,7 @@ import InputHandling.ParametersNames;
 import InputHandling.SimulationParameters.SimulationParametersParser;
 import OperationalModelModule.CPMAnisotropic;
 import OperationalModelModule.OperationalModelModule;
+import Utils.Vector;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
     private static final String RESULTS_DIRECTORY = "./out/";
@@ -48,7 +51,7 @@ public class Main {
         return behaviourSchemes;
     }
 
-    private static Graph createOrImportGraph(List<Wall> walls, Map<String, List<Exit>> exitsMap) {
+    private static Graph createOrImportGraph(List<Wall> walls, Map<String, List<Exit>> exitsMap, List<Vector> accessiblePositions) {
         String newCSVName = FileHandlers.getSpecificLineOfFile(INPUT_DIRECTORY + Graph.dxfDataFileName, 0);
         Path graphBackupDir = Paths.get(GRAPH_BACKUP_DIRECTORY);
         if (Files.exists(graphBackupDir) &&
@@ -59,6 +62,7 @@ public class Main {
         } else {
             Graph graph = new Graph(walls,
                                 exitsMap.values().stream().flatMap(List::stream).map(Exit::getExitWall).collect(Collectors.toList()),
+                                accessiblePositions,
                                 EnvironmentHandler.getFirstAgentsGeneratorCentroid(INPUT_DIRECTORY + "/GENERATORS.csv"),
                                 newCSVName
             );
@@ -88,13 +92,6 @@ public class Main {
         // -------- EXITS --------
         Map<String, List<Exit>> exitsMap = EnvironmentHandler.importExits(INPUT_DIRECTORY + "/EXITS.csv");
 
-        // -------- GRAPH --------
-        Graph graph = createOrImportGraph(walls, exitsMap);
-//         FOR GRAPH NODES PLOT  -------- DEBUGGING OF PATH --------
-//        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(6.542717913594863,-.5), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
-//                new Vector(25., 5.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
-//        System.out.println(path);
-
         // -------- CONFIGURATION --------
         SimulationParametersParser parameters = new SimulationParametersParser(INPUT_DIRECTORY + "/parameters.json", random);
 
@@ -106,6 +103,22 @@ public class Main {
         Map<String, List<Server>> serversMap =
                 EnvironmentHandler.importServers(INPUT_DIRECTORY + "/SERVERS.csv", parameters.getServerGroupsParameters(),
                         parameters.getAgentsMostPossibleMaxRadius());
+
+        // -------- GRAPH --------
+        List<Vector> accessiblePositions =
+                Stream.concat(
+                    targetsMap.values().stream(),
+                    Stream.concat(
+                            serversMap.values().stream(),
+                            exitsMap.values().stream())
+                )
+                .flatMap(List::stream)
+                .map(Objective::getCentroidPosition).collect(Collectors.toList());
+        Graph graph = createOrImportGraph(walls, exitsMap, accessiblePositions);
+//         FOR GRAPH NODES PLOT  -------- DEBUGGING OF PATH --------
+//        NodePath path = graph.AStar(graph.getClosestAccessibleNode(new Vector(6.542717913594863,-.5), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS),
+//                new Vector(25., 5.0), AgentConstants.MAX_RADIUS_OF_ALL_AGENTS);
+//        System.out.println(path);
 
         // -------- BEHAVIOUR --------
         Map<String, BehaviourScheme> behaviours = getPredefinedBehaviourSchemes(graph, exitsMap, serversMap, targetsMap,

@@ -8,12 +8,12 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Graph {
     // Found empirically, TODO: AUTOMATIZE STEP SIZE SELECTION
-//    private final static double STEP_SIZE = 1.8; // test sim
-    private final static double STEP_SIZE = 1.4; // SREC sim
-    // CLOCKWISE
+    private final static double STEP_SIZE = 1.33;
     private final static Vector[] POSSIBLE_NEIGHBORS_POSITION_DIFFERENCE = {
             new Vector(0., STEP_SIZE),
             new Vector(STEP_SIZE, 0.),
@@ -24,17 +24,19 @@ public class Graph {
     public static String dxfDataFileName = "/DXF_DATA.txt";
     public static String graphBackupFileName = "/graph.csv";
     private final String dxfName;
-    // Map because we avoid recreating nodes on positions (key in map) already visited
     private final Map<Integer, Node> nodes;
     private final List<Wall> walls;
 
-    public Graph(List<Wall> walls, List<Wall> exits, Vector initialPosition, String dxfName) {
+    public Graph(List<Wall> walls, List<Wall> exits, List<Vector> accessiblePositions, Vector initialPosition, String dxfName) {
         this.nodes = new HashMap<>();
         this.walls = walls;
         this.dxfName = dxfName;
         System.out.println("\tGenerating graph.");
         this.generateGraph(initialPosition, exits);
         System.out.println("\tGraph generated.");
+        System.out.println("\tReducing graph.");
+        this.reduceGraph(walls, accessiblePositions);
+        System.out.println("\tGraph reduced.");
     }
 
     public Graph(Map<Integer, Node> nodes, List<Wall> walls, String dxfName) {
@@ -153,12 +155,15 @@ public class Graph {
                     neighbor = nodesByPosition.get(possibleNeighbourPosition);
 
                     // check if its visible
-                    if (isPositionVisibleWithinWalls(startPosition, possibleNeighbourPosition, wallsToConsider))
+                    if (isPositionVisibleWithinWalls(startPosition, possibleNeighbourPosition, wallsToConsider)) {
                         currentNeighbours.add(neighbor);
+                        neighbor.addNeighbor(current.getId());
+                    }
 
                 } else if (isPositionVisibleWithinWalls(startPosition, possibleNeighbourPosition, wallsToConsider)) {
                     // position not considered and valid
                     neighbor = new Node(possibleNeighbourPosition);
+                    neighbor.addNeighbor(current.getId());
                     this.nodes.put(neighbor.getId(), neighbor);
                     nodesByPosition.put(possibleNeighbourPosition, neighbor);
 
@@ -190,6 +195,102 @@ public class Graph {
                 mirrorNode.addNeighbor(closestNode.getId());
             }
         }
+    }
+
+    private void merge(Node node1, Node node2, Vector newPosition,
+                       Map<Integer, List<Vector>> positionsAccessibleByNodeId, List<Vector> positionsAccessibleByBothNodes) {
+        // merge nodes
+        List<Integer> newNeighbours = Stream.concat(node1.getNeighborsId().stream(), node2.getNeighborsId().stream())
+                .filter(id -> !Objects.equals(id, node1.getId()) && !Objects.equals(id, node2.getId()))
+                .distinct().collect(Collectors.toList());
+
+        Node newNode = new Node(newPosition, newNeighbours);
+        // update all neighbours
+        for(int neighbourId : newNeighbours) {
+            Node neighbour = this.nodes.get(neighbourId);
+            neighbour.addNeighbor(newNode.getId());
+        }
+
+        positionsAccessibleByNodeId.put(newNode.getId(), positionsAccessibleByBothNodes);
+        positionsAccessibleByNodeId.remove(node1.getId());
+        positionsAccessibleByNodeId.remove(node2.getId());
+        this.nodes.put(newNode.getId(), newNode);
+
+        removeNode(node1);
+        removeNode(node2);
+    }
+
+    private boolean tryToMerge(Node node1, Node node2, Map<Integer, List<Vector>> positionsAccessibleByNodeId) {
+        if(!isPositionVisibleWithinWalls(node1.getPosition(), node2.getPosition(), this.walls))
+            return false;
+        Vector middlePoint = node1.getPosition()
+                .add(node2.getPosition().subtract(node1.getPosition()).scalarMultiply(0.5));
+        List<Vector> positionsAccessibleByBothNodes = Stream.concat(
+                positionsAccessibleByNodeId.get(node1.getId()).stream(),
+                positionsAccessibleByNodeId.get(node2.getId()).stream()
+        ).distinct().collect(Collectors.toList());
+
+        for (Vector target : positionsAccessibleByBothNodes) {
+            if(!isPositionVisibleWithinWalls(middlePoint, target, this.walls)) {
+                return false; // CANT BE MERGED
+            }
+        }
+
+        merge(node1, node2, middlePoint, positionsAccessibleByNodeId, positionsAccessibleByBothNodes);
+        return true;
+    }
+
+    private void removeNode(Node node) {
+        for(int neighbourId : node.getNeighborsId()) {
+            Node neighbour = this.nodes.get(neighbourId);
+            neighbour.removeNeighbor(node.getId());
+        }
+        this.nodes.remove(node.getId());
+    }
+
+    private void reduceGraph(List<Wall> walls, List<Vector> accessiblePositions) {
+        // we need to know to which targets/Servers each node has access to, in order to check later that the reduced nodes has access to them to
+        Map<Integer, List<Vector>> positionsAccessibleByNodeId = new HashMap<>();
+        this.nodes.forEach((id, node) -> {
+            List<Vector> positionsAccessible = new ArrayList<>();
+            for (Vector pos : accessiblePositions) {
+                if(isPositionVisibleWithinWalls(node.getPosition(), pos, walls))
+                    positionsAccessible.add(pos);
+            }
+            positionsAccessibleByNodeId.put(id, positionsAccessible);
+        });
+
+        // Iterate with BFS, when possible merge found, do it and restart
+        HashSet<Integer> visitedIds = new HashSet<>();
+        LinkedList<Integer> queue = new LinkedList<>();
+        int removedNodes = -1;
+        boolean hasBeenMerged = true;
+        Node current;
+        while (hasBeenMerged) {
+            removedNodes++;
+            hasBeenMerged = false;
+            int firstId = this.nodes.values().stream().findFirst().get().getId();
+            queue.clear();
+            queue.add(firstId);
+            visitedIds.clear();
+
+            while (queue.size() != 0 && !hasBeenMerged) {
+                current = this.nodes.get(queue.poll());
+                visitedIds.add(current.getId());
+
+                for (int neighbour : current.getNeighborsId()) {
+                    if(!visitedIds.contains(neighbour)) {
+                        if(tryToMerge(current, this.nodes.get(neighbour), positionsAccessibleByNodeId)) {
+                            //merged, restart BFS
+                            hasBeenMerged = true;
+                            break;
+                        }
+                        queue.add(neighbour);
+                    }
+                }
+            }
+        }
+        System.out.println("\t\t" + removedNodes + " nodes of " + (this.nodes.size() + removedNodes) + " have been removed.");
     }
 
     private Vector getMirroredPosition(Wall line, Vector position) {

@@ -24,6 +24,12 @@ public class Node {
         this.id = id;
     }
 
+    public Node(Vector position, List<Integer> neighborsId) {
+        this.position = position;
+        this.neighborsId = neighborsId;
+        this.id = count++;
+    }
+
     public Vector getPosition() {
         return position;
     }
@@ -41,9 +47,13 @@ public class Node {
             this.addNeighbor(node.getId());
     }
 
-    public void addNeighbor(Integer node) {
-        if (!this.neighborsId.contains(node))
-            this.neighborsId.add(node);
+    public void addNeighbor(Integer nodeId) {
+        if (!this.neighborsId.contains(nodeId))
+            this.neighborsId.add(nodeId);
+    }
+
+    public void removeNeighbor(Integer nodeId) {
+        this.neighborsId.remove(nodeId);
     }
 
     @Override
